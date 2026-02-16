@@ -774,7 +774,7 @@ dropZone.addEventListener("drop", e => {
 
 // ===== MOBILE MENU =====
 const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-const sidebar = document.querySelector(".sidebar");
+
 const overlay = document.querySelector(".mobile-overlay");
 
 if (mobileMenuBtn && sidebar && overlay) {

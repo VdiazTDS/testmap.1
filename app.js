@@ -774,30 +774,27 @@ dropZone.addEventListener("drop", e => {
 
 // ===== MOBILE MENU =====
 const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-const overlay = document.querySelector(".mobile-overlay"); // ← MUST be declared first
+const sidebar = document.querySelector(".sidebar");
+const overlay = document.querySelector(".mobile-overlay");
 
-if (mobileMenuBtn && sidebar) {
+if (mobileMenuBtn && sidebar && overlay) {
 
   mobileMenuBtn.addEventListener("click", () => {
     const open = sidebar.classList.toggle("open");
 
     mobileMenuBtn.textContent = open ? "✕" : "☰";
-
-    // show / hide dark overlay
-    if (overlay) overlay.classList.toggle("show", open);
+    overlay.classList.toggle("show", open);
 
     setTimeout(() => map.invalidateSize(), 200);
   });
 
-  // tap dark background to close menu
-  if (overlay) {
-    overlay.addEventListener("click", () => {
-      sidebar.classList.remove("open");
-      mobileMenuBtn.textContent = "☰";
-      overlay.classList.remove("show");
-    });
-  }
+  overlay.addEventListener("click", () => {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+    mobileMenuBtn.textContent = "☰";
+  });
 }
+
 
   // ===== RESIZABLE BOTTOM SUMMARY PANEL =====
   const panel = document.getElementById("bottomSummary");

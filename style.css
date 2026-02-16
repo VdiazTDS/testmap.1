@@ -621,6 +621,28 @@ header p {
   flex-direction: column;
 
   z-index: 400;
+/* ===== MOBILE FIX FOR ROUTE SUMMARY POSITION ===== */
+@media (max-width: 900px) {
+
+  #bottomSummary {
+    left: 0 !important;      /* remove desktop sidebar offset */
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    max-height: 75vh;
+
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+
+    z-index: 1200;
+  }
+
+  /* Ensure selection panel sits above summary cleanly */
+  #selectionBox {
+    bottom: calc(75vh + 12px);
+  }
+}
 
   /* Smooth movement when sidebar toggles */
   transition:

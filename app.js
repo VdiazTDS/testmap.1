@@ -239,63 +239,23 @@ function buildRouteCheckboxes(routes) {
   c.innerHTML = "";
 
   routes.forEach(route => {
-    // wrapper label (keeps checkbox behavior intact)
     const label = document.createElement("label");
 
-    // checkbox
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.value = route;
     checkbox.checked = true;
     checkbox.addEventListener("change", applyFilters);
 
-    // route text
-    const text = document.createElement("span");
-    text.textContent = " " + route;
+    const text = document.createTextNode(" " + route);
 
-    // --- get symbol used on map ---
-    const keyMatch = Object.keys(symbolMap).find(k => k.startsWith(route + "|"));
-    const sym = keyMatch ? symbolMap[keyMatch] : null;
-
-    // symbol icon element
-    const icon = document.createElement("span");
-    icon.style.marginLeft = "6px";
-    icon.style.display = "inline-block";
-    icon.style.width = "10px";
-    icon.style.height = "10px";
-
-    if (sym) {
-      if (sym.shape === "circle") {
-        icon.style.background = sym.color;
-        icon.style.borderRadius = "50%";
-      }
-
-      if (sym.shape === "square") {
-        icon.style.background = sym.color;
-      }
-
-      if (sym.shape === "triangle") {
-        icon.style.width = "0";
-        icon.style.height = "0";
-        icon.style.borderLeft = "5px solid transparent";
-        icon.style.borderRight = "5px solid transparent";
-        icon.style.borderBottom = `10px solid ${sym.color}`;
-      }
-
-      if (sym.shape === "diamond") {
-        icon.style.background = sym.color;
-        icon.style.transform = "rotate(45deg)";
-      }
-    }
-
-    // assemble
     label.appendChild(checkbox);
     label.appendChild(text);
-    label.appendChild(icon);
 
     c.appendChild(label);
   });
 }
+
 
 
 function buildDayCheckboxes() {

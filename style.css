@@ -840,4 +840,13 @@ header p {
   }
 }
 
+/* ===== Fix menu button hidden by iPhone notch ===== */
+#mobileMenuBtn {
+  margin-top: calc(6px + env(safe-area-inset-top));
+}
+
+/* Also protect the header itself */
+header {
+  padding-top: calc(10px + env(safe-area-inset-top));
+}
 

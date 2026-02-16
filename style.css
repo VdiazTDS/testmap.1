@@ -798,3 +798,17 @@ header p {
     max-height: 80vh;
   }
 }
+
+@media (max-width: 900px) {
+
+  #selectionBox {
+    display: none;
+  }
+
+  #selectionBox.show-mobile {
+    display: block;
+  }
+
+}
+
+

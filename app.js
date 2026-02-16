@@ -170,7 +170,7 @@ function getSymbol(key) {
 
 // Create marker with correct shape
 function createMarker(lat, lon, symbol) {
-  const size = 6;
+  const size = 6; // pixel size that stays visible at all zoom levels
 
   // ===== CIRCLE =====
   if (symbol.shape === "circle") {
@@ -178,22 +178,33 @@ function createMarker(lat, lon, symbol) {
       radius: size,
       color: symbol.color,
       fillColor: symbol.color,
-      fillOpacity: 0.9,
+      fillOpacity: 0.95,
       renderer: canvasRenderer
     });
   }
+
+  // Helper to convert pixel size → lat/lng offset
+  function pixelOffset() {
+    const zoom = map.getZoom();
+    const scale = 40075016.686 / Math.pow(2, zoom + 8); // meters per pixel
+    const latOffset = size * scale / 111320;
+    const lngOffset = latOffset / Math.cos(lat * Math.PI / 180);
+    return [latOffset, lngOffset];
+  }
+
+  const [dLat, dLng] = pixelOffset();
 
   // ===== SQUARE =====
   if (symbol.shape === "square") {
     return L.rectangle(
       [
-        [lat - 0.00015, lon - 0.00015],
-        [lat + 0.00015, lon + 0.00015]
+        [lat - dLat, lon - dLng],
+        [lat + dLat, lon + dLng]
       ],
       {
         color: symbol.color,
         fillColor: symbol.color,
-        fillOpacity: 0.9,
+        fillOpacity: 0.95,
         weight: 1,
         renderer: canvasRenderer
       }
@@ -204,14 +215,14 @@ function createMarker(lat, lon, symbol) {
   if (symbol.shape === "triangle") {
     return L.polygon(
       [
-        [lat + 0.00018, lon],
-        [lat - 0.00018, lon - 0.00018],
-        [lat - 0.00018, lon + 0.00018]
+        [lat + dLat, lon],
+        [lat - dLat, lon - dLng],
+        [lat - dLat, lon + dLng]
       ],
       {
         color: symbol.color,
         fillColor: symbol.color,
-        fillOpacity: 0.9,
+        fillOpacity: 0.95,
         weight: 1,
         renderer: canvasRenderer
       }
@@ -222,21 +233,22 @@ function createMarker(lat, lon, symbol) {
   if (symbol.shape === "diamond") {
     return L.polygon(
       [
-        [lat + 0.00018, lon],
-        [lat, lon + 0.00018],
-        [lat - 0.00018, lon],
-        [lat, lon - 0.00018]
+        [lat + dLat, lon],
+        [lat, lon + dLng],
+        [lat - dLat, lon],
+        [lat, lon - dLng]
       ],
       {
         color: symbol.color,
         fillColor: symbol.color,
-        fillOpacity: 0.9,
+        fillOpacity: 0.95,
         weight: 1,
         renderer: canvasRenderer
       }
     );
   }
 }
+
 
 
 // ================= FILTER CHECKBOX UI =================

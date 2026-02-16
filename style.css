@@ -407,11 +407,6 @@ header p {
   text-align: center;
 }
 
-/* Move collapse arrow left so Leaflet watermark never covers it */
-
-
-
-
 
 
 
@@ -491,7 +486,8 @@ header p {
 
 /* Keep collapse arrow left and clear of Leaflet watermark */
 .collapse-btn {
-  margin-left: 6px;
+  position: relative;
+  left: -400px;   /* ← moves it 400px left */
 }
 
 

@@ -745,5 +745,28 @@ header p {
 }
 
 
+/* Route+Day layer list */
+.route-day-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  margin: 4px 0;
+}
+
+/* Left side: checkbox + label */
+.route-day-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Symbol preview matching map marker */
+.route-day-symbol {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
 
 

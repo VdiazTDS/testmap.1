@@ -779,11 +779,15 @@ header p {
    FINAL BOTTOM SUMMARY PANEL — SINGLE SOURCE OF TRUTH
    ========================================================= */
 
+/* =========================================================
+   RESPONSIVE BOTTOM ROUTE SUMMARY (SIDEBAR-AWARE)
+   ========================================================= */
+
 #bottomSummary {
   position: fixed;
   bottom: 0;
 
-  /* keep it from covering the left sidebar */
+  /* Align with left sidebar when open */
   left: 320px;
   right: 0;
 
@@ -794,26 +798,34 @@ header p {
   display: flex;
   flex-direction: column;
 
-  z-index: 400; /* BELOW sidebar so sidebar is always clickable */
-  transition: height 0.2s ease, left 0.25s ease;
+  z-index: 400;
+
+  /* Smooth movement when sidebar toggles */
+  transition:
+    height 0.2s ease,
+    left 0.25s ease,
+    width 0.25s ease;
 }
 
-/* When LEFT sidebar is collapsed */
+/* ===== When LEFT SIDEBAR is collapsed ===== */
 .app-container.collapsed #bottomSummary {
-  left: 0;
+  left: 0;          /* take full screen */
 }
 
-/* Collapsed height only */
+/* ===== Collapsed height only ===== */
 #bottomSummary.collapsed {
   height: 40px;
 }
 
-/* Hide table content when collapsed */
+/* Hide table when collapsed */
 #bottomSummary.collapsed .bottom-summary-content {
   display: none;
 }
 
-/* Header drag cursor */
+/* =========================================================
+   HEADER (drag + title)
+   ========================================================= */
+
 .bottom-summary-header {
   height: 40px;
   background: #2a2a2a;
@@ -827,7 +839,7 @@ header p {
   position: relative;
 }
 
-/* Center title */
+/* Center title perfectly */
 .summary-title {
   flex: 1;
   text-align: center;
@@ -835,7 +847,10 @@ header p {
   color: #fff;
 }
 
-/* Scrollable content */
+/* =========================================================
+   CONTENT AREA
+   ========================================================= */
+
 .bottom-summary-content {
   flex: 1;
   overflow: auto;
@@ -859,5 +874,3 @@ header p {
 .bottom-summary-content th {
   background: #333;
 }
-
-

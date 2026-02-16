@@ -782,6 +782,26 @@ dropZone.addEventListener("drop", e => {
       setTimeout(() => map.invalidateSize(), 200);
     });
   }
+  // ===== MOBILE OVERLAY FOR DRAWER =====
+const overlay = document.createElement("div");
+overlay.className = "mobile-overlay";
+document.body.appendChild(overlay);
+
+if (mobileMenuBtn && sidebar) {
+  mobileMenuBtn.addEventListener("click", () => {
+    const open = sidebar.classList.toggle("open");
+    overlay.classList.toggle("show", open);
+    mobileMenuBtn.textContent = open ? "✕" : "☰";
+  });
+}
+
+// Tap outside drawer → close it
+overlay.addEventListener("click", () => {
+  sidebar.classList.remove("open");
+  overlay.classList.remove("show");
+  mobileMenuBtn.textContent = "☰";
+});
+
 
   // ===== RESIZABLE BOTTOM SUMMARY PANEL =====
   const panel = document.getElementById("bottomSummary");

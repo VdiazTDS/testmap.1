@@ -39,6 +39,9 @@ function normalizeName(name) {
 // ================= MAP SETUP =================
 // Create Leaflet map
 const map = L.map("map").setView([0, 0], 2);
+// Shared Canvas renderer for high-performance drawing
+const canvasRenderer = L.canvas({ padding: 0.5 });
+
 
 // Base map layers
 const baseMaps = {
@@ -167,30 +170,72 @@ function getSymbol(key) {
 
 // Create marker with correct shape
 function createMarker(lat, lon, symbol) {
+  const size = 6;
 
-  // Circle marker
+  // ===== CIRCLE =====
   if (symbol.shape === "circle") {
     return L.circleMarker([lat, lon], {
-      radius: 5,
+      radius: size,
       color: symbol.color,
       fillColor: symbol.color,
-      fillOpacity: 0.9
+      fillOpacity: 0.9,
+      renderer: canvasRenderer
     });
   }
 
-  // Custom HTML shapes
-  let html = "";
+  // ===== SQUARE =====
+  if (symbol.shape === "square") {
+    return L.rectangle(
+      [
+        [lat - 0.00015, lon - 0.00015],
+        [lat + 0.00015, lon + 0.00015]
+      ],
+      {
+        color: symbol.color,
+        fillColor: symbol.color,
+        fillOpacity: 0.9,
+        weight: 1,
+        renderer: canvasRenderer
+      }
+    );
+  }
 
-  if (symbol.shape === "square")
-    html = `<div style="width:10px;height:10px;background:${symbol.color}"></div>`;
+  // ===== TRIANGLE =====
+  if (symbol.shape === "triangle") {
+    return L.polygon(
+      [
+        [lat + 0.00018, lon],
+        [lat - 0.00018, lon - 0.00018],
+        [lat - 0.00018, lon + 0.00018]
+      ],
+      {
+        color: symbol.color,
+        fillColor: symbol.color,
+        fillOpacity: 0.9,
+        weight: 1,
+        renderer: canvasRenderer
+      }
+    );
+  }
 
-  if (symbol.shape === "triangle")
-    html = `<div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:10px solid ${symbol.color}"></div>`;
-
-  if (symbol.shape === "diamond")
-    html = `<div style="width:10px;height:10px;background:${symbol.color};transform:rotate(45deg)"></div>`;
-
-  return L.marker([lat, lon], { icon: L.divIcon({ html, className: "" }) });
+  // ===== DIAMOND =====
+  if (symbol.shape === "diamond") {
+    return L.polygon(
+      [
+        [lat + 0.00018, lon],
+        [lat, lon + 0.00018],
+        [lat - 0.00018, lon],
+        [lat, lon - 0.00018]
+      ],
+      {
+        color: symbol.color,
+        fillColor: symbol.color,
+        fillOpacity: 0.9,
+        weight: 1,
+        renderer: canvasRenderer
+      }
+    );
+  }
 }
 
 

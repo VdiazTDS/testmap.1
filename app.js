@@ -53,29 +53,7 @@ const baseMaps = {
 //======
 
 // ================= POLYGON SELECT =================
-let drawnLayer = new L.FeatureGroup();
-map.addLayer(drawnLayer);
 
-const drawControl = new L.Control.Draw({
-  draw: {
-    polygon: true,
-    rectangle: true,
-    circle: false,
-    marker: false,
-    polyline: false,
-    circlemarker: false
-  },
-  edit: { featureGroup: drawnLayer }
-});
-
-map.addControl(drawControl);
-
-// helper: check if marker inside polygon
-function pointInPolygon(latlng, polygon) {
-  return L.Polygon.prototype.isPrototypeOf(polygon)
-    ? polygon.getBounds().contains(latlng)
-    : false;
-}
 
 // when polygon created
 // ================= POLYGON SELECT =================

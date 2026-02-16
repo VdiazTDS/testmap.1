@@ -355,86 +355,10 @@ header p {
   }
 }
 
-/* ===== ROUTE SUMMARY PANEL ===== */
 
-
-.summary-header button {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
 }
 
 
-/* TABLE STYLE */
-.summary-content table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.summary-content th,
-.summary-content td {
-  padding: 6px;
-  border-bottom: 1px solid #333;
-  text-align: left;
-}
-
-.summary-content th {
-  background: #1e1e1e;
-}
-
-/* ===== BOTTOM SUMMARY PANEL (FINAL CLEAN VERSION) ===== */
-#bottomSummary {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 250px;
-  background: #1e1e1e;
-  border-top: 2px solid #333;
-  display: flex;
-  flex-direction: column;
-  z-index: 999;
-}
-
-
-
-
-/* CONTENT AREA */
-.bottom-summary-content {
-  flex: 1;
-  overflow: auto;
-  padding: 10px;
-}
-
-/* COLLAPSED STATE — shrink only */
-#bottomSummary.collapsed {
-  height: 40px;
-}
-
-/* Hide table when collapsed */
-#bottomSummary.collapsed .bottom-summary-content {
-  display: none;
-}
-
-/* TABLE STYLE */
-.bottom-summary-content table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.bottom-summary-content th,
-.bottom-summary-content td {
-  border: 1px solid #444;
-  padding: 6px;
-  text-align: left;
-}
-
-.bottom-summary-content th {
-  background: #333;
-}
 
 
 
@@ -475,59 +399,7 @@ header p {
 }
 
 
-/* ===== DRAGGABLE BOTTOM SUMMARY ===== */
-.bottom-summary {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 250px;
-  background: #1e1e1e;
-  border-top: 2px solid #333;
-  display: flex;
-  flex-direction: column;
-  z-index: 999;
-}
 
-
-
-.bottom-summary-content {
-  overflow: auto;
-  flex: 1;
-  padding: 10px;
-}
-/* ===== Bottom summary header layout ===== */
-
-/* Title */
-.summary-title {
-  flex: 1;
-  text-align: center;
-  font-weight: 600;
-  color: #fff;
-}
-
-
-/* ===== Modern action button ===== */
-/* ===== Modern primary action button ===== */
-
-
-/* Hover */
-.modern-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.45);
-  filter: brightness(1.08);
-}
-
-/* Click */
-.modern-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
-  filter: brightness(0.95);
-}
-
-/* Collapse arrow button */
-
-/* ===== FINAL HEADER LAYOUT FIX ===== */
 
 
 /* Keep title perfectly centered */
@@ -536,9 +408,6 @@ header p {
 }
 
 /* Move collapse arrow left so Leaflet watermark never covers it */
-.collapse-btn {
-  margin-right: 170px;  /* ← key spacing from watermark */
-}
 
 
 
@@ -858,6 +727,79 @@ header p {
 }
 
 /* Table styling */
+.bottom-summary-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.bottom-summary-content th,
+.bottom-summary-content td {
+  border: 1px solid #444;
+  padding: 6px;
+  text-align: left;
+}
+
+.bottom-summary-content th {
+  background: #333;
+}
+
+
+
+/* =========================================================
+   RESPONSIVE BOTTOM ROUTE SUMMARY (SIDEBAR-AWARE)
+   ========================================================= */
+
+#bottomSummary {
+  position: fixed;
+  bottom: 0;
+  left: 320px;
+  right: 0;
+  height: 250px;
+  background: #1e1e1e;
+  border-top: 2px solid #333;
+  display: flex;
+  flex-direction: column;
+  z-index: 400;
+  transition: height 0.2s ease, left 0.25s ease, width 0.25s ease;
+}
+
+.app-container.collapsed #bottomSummary {
+  left: 0;
+}
+
+#bottomSummary.collapsed {
+  height: 40px;
+}
+
+#bottomSummary.collapsed .bottom-summary-content {
+  display: none;
+}
+
+.bottom-summary-header {
+  height: 40px;
+  background: #2a2a2a;
+  border-bottom: 1px solid #444;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  cursor: ns-resize;
+  position: relative;
+}
+
+.summary-title {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  color: #fff;
+}
+
+.bottom-summary-content {
+  flex: 1;
+  overflow: auto;
+  padding: 10px;
+}
+
 .bottom-summary-content table {
   width: 100%;
   border-collapse: collapse;

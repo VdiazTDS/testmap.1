@@ -677,8 +677,8 @@ header p {
 }
 
 /* ===== When LEFT SIDEBAR is collapsed ===== */
-.app-container.collapsed #bottomSummary {
-  left: 0;          /* take full screen */
+.app-container.collapsed ~ #bottomSummary {
+  left: 0;
 }
 
 /* ===== Collapsed height only ===== */

@@ -772,43 +772,32 @@ dropZone.addEventListener("drop", e => {
     });
   }
 
-  // ===== MOBILE MENU =====
-  const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-
-  if (mobileMenuBtn && sidebar) {
-    mobileMenuBtn.addEventListener("click", () => {
-      const open = sidebar.classList.toggle("open");
-      mobileMenuBtn.textContent = open ? "✕" : "☰";
-      setTimeout(() => map.invalidateSize(), 200);
-    });
-  }
-
-  // tap dark background to close
-overlay?.addEventListener("click", () => {
-  sidebar.classList.remove("open");
-  mobileMenuBtn.textContent = "☰";
-  overlay.classList.remove("show");
-});
-  // ===== MOBILE OVERLAY FOR DRAWER =====
-const overlay = document.createElement("div");
-overlay.className = "mobile-overlay";
-document.body.appendChild(overlay);
+// ===== MOBILE MENU =====
+const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+const overlay = document.querySelector(".mobile-overlay"); // ← MUST be declared first
 
 if (mobileMenuBtn && sidebar) {
+
   mobileMenuBtn.addEventListener("click", () => {
     const open = sidebar.classList.toggle("open");
-    overlay.classList.toggle("show", open);
+
     mobileMenuBtn.textContent = open ? "✕" : "☰";
+
+    // show / hide dark overlay
+    if (overlay) overlay.classList.toggle("show", open);
+
+    setTimeout(() => map.invalidateSize(), 200);
   });
+
+  // tap dark background to close menu
+  if (overlay) {
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("open");
+      mobileMenuBtn.textContent = "☰";
+      overlay.classList.remove("show");
+    });
+  }
 }
-
-// Tap outside drawer → close it
-overlay.addEventListener("click", () => {
-  sidebar.classList.remove("open");
-  overlay.classList.remove("show");
-  mobileMenuBtn.textContent = "☰";
-});
-
 
   // ===== RESIZABLE BOTTOM SUMMARY PANEL =====
   const panel = document.getElementById("bottomSummary");

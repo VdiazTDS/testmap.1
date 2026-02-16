@@ -78,34 +78,43 @@ function pointInPolygon(latlng, polygon) {
 }
 
 // when polygon created
-map.on(L.Draw.Event.CREATED, e => {
-  drawnLayer.clearLayers();
-  drawnLayer.addLayer(e.layer);
+// ================= POLYGON SELECT =================
+let drawnLayer = new L.FeatureGroup();
+map.addLayer(drawnLayer);
 
+const drawControl = new L.Control.Draw({
+  draw: {
+    polygon: true,
+    rectangle: true,
+    circle: false,
+    marker: false,
+    polyline: false,
+    circlemarker: false
+  },
+  edit: { featureGroup: drawnLayer }
+});
+
+map.addControl(drawControl);
+
+// ===== SELECTION COUNT FUNCTION (GLOBAL & CORRECT) =====
 function updateSelectionCount() {
   const polygon = drawnLayer.getLayers()[0];
-
   let count = 0;
 
   Object.entries(routeDayGroups).forEach(([key, group]) => {
     const sym = symbolMap[key];
 
     group.layers.forEach(layer => {
-
       const base = layer._base;
       if (!base) return;
 
       const latlng = L.latLng(base.lat, base.lon);
 
-      // --- reset original color first ---
+      // Reset original color
       layer.setStyle?.({ color: sym.color, fillColor: sym.color });
 
-      // --- highlight if inside drawn polygon ---
-      if (
-        polygon &&
-        polygon.getBounds().contains(latlng) &&
-        map.hasLayer(layer)
-      ) {
+      // Highlight if inside polygon
+      if (polygon && polygon.getBounds().contains(latlng) && map.hasLayer(layer)) {
         layer.setStyle?.({ color: "#ffff00", fillColor: "#ffff00" });
         count++;
       }
@@ -115,42 +124,12 @@ function updateSelectionCount() {
   document.getElementById("selectionCount").textContent = count;
 }
 
-
-//===============
-
-
-function updateSelectionCount() {
-  const polygon = drawnLayer.getLayers()[0];
-
-  let count = 0;
-
-  Object.entries(routeDayGroups).forEach(([key, group]) => {
-    const sym = symbolMap[key];
-
-    group.layers.forEach(marker => {
-      const latlng = marker.getLatLng();
-
-      // --- RESET marker to original color FIRST ---
-      marker.setStyle?.({ color: sym.color, fillColor: sym.color });
-
-      // --- APPLY highlight only if inside polygon ---
-      if (polygon && polygon.getBounds().contains(latlng) && map.hasLayer(marker)) {
-        marker.setStyle?.({ color: "#ffff00", fillColor: "#ffff00" });
-        count++;
-      }
-    });
-  });
-
-  document.getElementById("selectionCount").textContent = count;
-}
-
-
-
-//========================
-
- 
-
-
+// ===== WHEN POLYGON IS DRAWN =====
+map.on(L.Draw.Event.CREATED, e => {
+  drawnLayer.clearLayers();
+  drawnLayer.addLayer(e.layer);
+  updateSelectionCount();
+});
 
 // Default map
 baseMaps.streets.addTo(map);

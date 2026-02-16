@@ -782,6 +782,13 @@ dropZone.addEventListener("drop", e => {
       setTimeout(() => map.invalidateSize(), 200);
     });
   }
+
+  // tap dark background to close
+overlay?.addEventListener("click", () => {
+  sidebar.classList.remove("open");
+  mobileMenuBtn.textContent = "☰";
+  overlay.classList.remove("show");
+});
   // ===== MOBILE OVERLAY FOR DRAWER =====
 const overlay = document.createElement("div");
 overlay.className = "mobile-overlay";

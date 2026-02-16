@@ -82,15 +82,38 @@ map.on(L.Draw.Event.CREATED, e => {
   drawnLayer.clearLayers();
   drawnLayer.addLayer(e.layer);
 
-  updateSelectionCount();
-});
+function updateSelectionCount() {
+  const polygon = drawnLayer.getLayers()[0];
 
-// when polygon edited/deleted
-map.on(L.Draw.Event.EDITED, updateSelectionCount);
-map.on(L.Draw.Event.DELETED, () => {
-  updateSelectionCount(); // resets colors + count
-});
+  let count = 0;
 
+  Object.entries(routeDayGroups).forEach(([key, group]) => {
+    const sym = symbolMap[key];
+
+    group.layers.forEach(layer => {
+
+      const base = layer._base;
+      if (!base) return;
+
+      const latlng = L.latLng(base.lat, base.lon);
+
+      // --- reset original color first ---
+      layer.setStyle?.({ color: sym.color, fillColor: sym.color });
+
+      // --- highlight if inside drawn polygon ---
+      if (
+        polygon &&
+        polygon.getBounds().contains(latlng) &&
+        map.hasLayer(layer)
+      ) {
+        layer.setStyle?.({ color: "#ffff00", fillColor: "#ffff00" });
+        count++;
+      }
+    });
+  });
+
+  document.getElementById("selectionCount").textContent = count;
+}
 
 
 //===============

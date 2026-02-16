@@ -628,6 +628,8 @@ header p {
     width 0.25s ease;
 }
 
+
+
 /* ===== MOBILE FIX FOR ROUTE SUMMARY POSITION ===== */
 @media (max-width: 900px) {
 
@@ -650,6 +652,7 @@ header p {
     bottom: calc(75vh + 12px);
   }
 }
+
 
 /* ===== When LEFT SIDEBAR is collapsed ===== */
 .app-container.collapsed ~ #bottomSummary {

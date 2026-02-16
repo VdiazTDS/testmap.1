@@ -510,7 +510,8 @@ async function uploadFile(file) {
 
 
 // ================= ROUTE SUMMARY DISPLAY =================
-function showRouteSummary(rows, worksheet) {
+function showRouteSummary(rows, headers)
+ {
   const tableBox = document.getElementById("routeSummaryTable");
   const panel = document.getElementById("bottomSummary");
   const btn = document.getElementById("summaryToggleBtn");
@@ -525,7 +526,7 @@ function showRouteSummary(rows, worksheet) {
   }
 
   // ✅ Get headers EXACTLY in Excel order
-  const headers = XLSX.utils.sheet_to_json(worksheet, { header: 1 })[0];
+  
 
   const table = document.createElement("table");
   const thead = document.createElement("thead");
@@ -608,9 +609,27 @@ async function loadSummaryFor(routeFileName) {
   const wb = XLSX.read(new Uint8Array(await r.arrayBuffer()), { type: "array" });
 const ws = wb.Sheets[wb.SheetNames[0]];
 
-const rows = XLSX.utils.sheet_to_json(ws);
+// Read entire sheet as grid
+const raw = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-showRouteSummary(rows, ws);
+// Build clean headers from row 1 + row 2
+const headers = raw[0].map((_, i) => {
+  const top = raw[0][i] || "";
+  const bottom = raw[1][i] || "";
+  return (bottom || top || `Column ${i + 1}`).toString().trim();
+});
+
+// Convert data starting at row 3
+const rows = raw.slice(2).map(r => {
+  const obj = {};
+  headers.forEach((h, i) => {
+    obj[h] = r[i] ?? "";
+  });
+  return obj;
+});
+
+showRouteSummary(rows, headers);
+
 
 // 🔽 FORCE the panel open when a summary exists
 const panel = document.getElementById("bottomSummary");

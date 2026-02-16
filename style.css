@@ -804,3 +804,19 @@ header p {
   }
 }
 
+@media (max-width: 900px) {
+
+  .mini-btn,
+  .primary-btn,
+  #routeCheckboxes label,
+  #dayCheckboxes label {
+    min-height: 44px;      /* Apple/Google touch standard */
+    font-size: 15px;
+  }
+
+  input[type="checkbox"] {
+    transform: scale(1.3);
+    margin-right: 8px;
+  }
+}
+

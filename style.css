@@ -604,12 +604,11 @@ header p {
 /* =========================================================
    RESPONSIVE BOTTOM ROUTE SUMMARY (SIDEBAR-AWARE)
    ========================================================= */
-
 #bottomSummary {
   position: fixed;
   bottom: 0;
 
-  /* Align with left sidebar when open */
+  /* Desktop sidebar offset */
   left: 320px;
   right: 0;
 
@@ -621,11 +620,19 @@ header p {
   flex-direction: column;
 
   z-index: 400;
+
+  /* Smooth movement when sidebar toggles */
+  transition:
+    height 0.2s ease,
+    left 0.25s ease,
+    width 0.25s ease;
+}
+
 /* ===== MOBILE FIX FOR ROUTE SUMMARY POSITION ===== */
 @media (max-width: 900px) {
 
   #bottomSummary {
-    left: 0 !important;      /* remove desktop sidebar offset */
+    left: 0;              /* remove desktop offset */
     right: 0;
     bottom: 0;
 
@@ -638,17 +645,10 @@ header p {
     z-index: 1200;
   }
 
-  /* Ensure selection panel sits above summary cleanly */
+  /* Keep selection panel above summary */
   #selectionBox {
     bottom: calc(75vh + 12px);
   }
-}
-
-  /* Smooth movement when sidebar toggles */
-  transition:
-    height 0.2s ease,
-    left 0.25s ease,
-    width 0.25s ease;
 }
 
 /* ===== When LEFT SIDEBAR is collapsed ===== */

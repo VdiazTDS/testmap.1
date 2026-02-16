@@ -794,6 +794,24 @@ if (mobileMenuBtn && sidebar && overlay) {
     mobileMenuBtn.textContent = "☰";
   });
 }
+// ===== MOBILE SELECTION TOGGLE =====
+const mobileSelBtn = document.getElementById("mobileSelectionBtn");
+const selectionBox = document.getElementById("selectionBox");
+
+if (mobileSelBtn && selectionBox) {
+
+  mobileSelBtn.addEventListener("click", () => {
+    selectionBox.classList.toggle("show");
+  });
+
+  // keep count synced
+  const originalUpdate = updateSelectionCount;
+  updateSelectionCount = function () {
+    originalUpdate();
+    mobileSelBtn.textContent =
+      "Selected: " + document.getElementById("selectionCount").textContent;
+  };
+}
 
 
   // ===== RESIZABLE BOTTOM SUMMARY PANEL =====

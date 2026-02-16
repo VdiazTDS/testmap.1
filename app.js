@@ -354,7 +354,75 @@ function updateStats() {
     list.appendChild(li);
   });
 }
+  // ===== BUILD ROUTE + DAY LAYER CHECKBOXES =====
+function buildRouteDayLayerControls() {
+  const container = document.getElementById("routeDayLayers");
+  if (!container) return;
 
+  container.innerHTML = "";
+
+  Object.entries(routeDayGroups).forEach(([key, group]) => {
+    const [route, day] = key.split("|");
+    const sym = symbolMap[key];
+
+    const item = document.createElement("div");
+    item.className = "route-day-item";
+
+    // LEFT SIDE
+    const left = document.createElement("div");
+    left.className = "route-day-left";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = true;
+
+    const label = document.createElement("span");
+    label.textContent = `Route ${route} — ${dayName(day)}`;
+
+    left.appendChild(checkbox);
+    left.appendChild(label);
+
+    // RIGHT SIDE SYMBOL
+    const icon = document.createElement("span");
+    icon.className = "route-day-symbol";
+
+    if (sym.shape === "circle") {
+      icon.style.background = sym.color;
+      icon.style.borderRadius = "50%";
+    }
+
+    if (sym.shape === "square") {
+      icon.style.background = sym.color;
+    }
+
+    if (sym.shape === "triangle") {
+      icon.style.width = "0";
+      icon.style.height = "0";
+      icon.style.borderLeft = "6px solid transparent";
+      icon.style.borderRight = "6px solid transparent";
+      icon.style.borderBottom = `12px solid ${sym.color}`;
+    }
+
+    if (sym.shape === "diamond") {
+      icon.style.background = sym.color;
+      icon.style.transform = "rotate(45deg)";
+    }
+
+    // TOGGLE VISIBILITY
+    checkbox.addEventListener("change", () => {
+      group.layers.forEach(layer => {
+        checkbox.checked ? layer.addTo(map) : map.removeLayer(layer);
+      });
+
+      updateStats();
+      updateSelectionCount();
+    });
+
+    item.appendChild(left);
+    item.appendChild(icon);
+    container.appendChild(item);
+  });
+}
 
 // ================= PROCESS ROUTE EXCEL =================
 function processExcelBuffer(buffer) {
@@ -965,75 +1033,7 @@ map.on("zoomend", () => {
 });
 
   
-  // ===== BUILD ROUTE + DAY LAYER CHECKBOXES =====
-function buildRouteDayLayerControls() {
-  const container = document.getElementById("routeDayLayers");
-  if (!container) return;
 
-  container.innerHTML = "";
-
-  Object.entries(routeDayGroups).forEach(([key, group]) => {
-    const [route, day] = key.split("|");
-    const sym = symbolMap[key];
-
-    const item = document.createElement("div");
-    item.className = "route-day-item";
-
-    // LEFT SIDE
-    const left = document.createElement("div");
-    left.className = "route-day-left";
-
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = true;
-
-    const label = document.createElement("span");
-    label.textContent = `Route ${route} — ${dayName(day)}`;
-
-    left.appendChild(checkbox);
-    left.appendChild(label);
-
-    // RIGHT SIDE SYMBOL
-    const icon = document.createElement("span");
-    icon.className = "route-day-symbol";
-
-    if (sym.shape === "circle") {
-      icon.style.background = sym.color;
-      icon.style.borderRadius = "50%";
-    }
-
-    if (sym.shape === "square") {
-      icon.style.background = sym.color;
-    }
-
-    if (sym.shape === "triangle") {
-      icon.style.width = "0";
-      icon.style.height = "0";
-      icon.style.borderLeft = "6px solid transparent";
-      icon.style.borderRight = "6px solid transparent";
-      icon.style.borderBottom = `12px solid ${sym.color}`;
-    }
-
-    if (sym.shape === "diamond") {
-      icon.style.background = sym.color;
-      icon.style.transform = "rotate(45deg)";
-    }
-
-    // TOGGLE VISIBILITY
-    checkbox.addEventListener("change", () => {
-      group.layers.forEach(layer => {
-        checkbox.checked ? layer.addTo(map) : map.removeLayer(layer);
-      });
-
-      updateStats();
-      updateSelectionCount();
-    });
-
-    item.appendChild(left);
-    item.appendChild(icon);
-    container.appendChild(item);
-  });
-}
 
 
 

@@ -393,9 +393,14 @@ function processExcelBuffer(buffer) {
     globalBounds.extend([lat, lon]);
   });
 
-  buildRouteCheckboxes([...routeSet]);
-  applyFilters();
-  map.fitBounds(globalBounds);
+buildRouteCheckboxes([...routeSet]);
+
+// 🔴 THIS LINE IS REQUIRED
+buildRouteDayLayerControls();
+
+applyFilters();
+map.fitBounds(globalBounds);
+
 }
 
 

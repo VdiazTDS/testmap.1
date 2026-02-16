@@ -960,7 +960,69 @@ map.on("zoomend", () => {
 });
 
   
-  // ===== INITIAL DATA LOAD =====
+  function buildRouteDayLayerControls(data, markerMap) {
+  const container = document.getElementById("routeDayLayers");
+  container.innerHTML = "";
+
+  // Unique Route+Day combos
+  const combos = [...new Set(data.map(d => `${d.Route} | ${d.Day}`))];
+
+  combos.forEach(combo => {
+    const [route, day] = combo.split(" | ");
+
+    const item = document.createElement("div");
+    item.className = "route-day-item";
+
+    // LEFT: checkbox + text
+    const left = document.createElement("div");
+    left.className = "route-day-left";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = true;
+
+    const label = document.createElement("span");
+    label.textContent = `${route} — ${day}`;
+
+    left.appendChild(checkbox);
+    left.appendChild(label);
+
+    // RIGHT: symbol preview
+    const symbol = document.createElement("canvas");
+    symbol.className = "route-day-symbol";
+    symbol.width = 14;
+    symbol.height = 14;
+
+    const ctx = symbol.getContext("2d");
+
+    // Use first marker style from this combo
+    const marker = markerMap.find(m => m.route === route && m.day === day);
+    if (marker) {
+      ctx.fillStyle = marker.color;
+      ctx.beginPath();
+      ctx.arc(7, 7, 6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Toggle visibility
+    checkbox.addEventListener("change", () => {
+      markerMap
+        .filter(m => m.route === route && m.day === day)
+        .forEach(m => {
+          if (checkbox.checked) {
+            m.layer.addTo(map);
+          } else {
+            map.removeLayer(m.layer);
+          }
+        });
+    });
+
+    item.appendChild(left);
+    item.appendChild(symbol);
+    container.appendChild(item);
+  });
+}
+
 
 
 

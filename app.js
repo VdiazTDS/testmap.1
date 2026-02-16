@@ -960,20 +960,21 @@ map.on("zoomend", () => {
 });
 
   
-  function buildRouteDayLayerControls(data, markerMap) {
+  // ===== BUILD ROUTE + DAY LAYER CHECKBOXES =====
+function buildRouteDayLayerControls() {
   const container = document.getElementById("routeDayLayers");
+  if (!container) return;
+
   container.innerHTML = "";
 
-  // Unique Route+Day combos
-  const combos = [...new Set(data.map(d => `${d.Route} | ${d.Day}`))];
-
-  combos.forEach(combo => {
-    const [route, day] = combo.split(" | ");
+  Object.entries(routeDayGroups).forEach(([key, group]) => {
+    const [route, day] = key.split("|");
+    const sym = symbolMap[key];
 
     const item = document.createElement("div");
     item.className = "route-day-item";
 
-    // LEFT: checkbox + text
+    // LEFT SIDE
     const left = document.createElement("div");
     left.className = "route-day-left";
 
@@ -982,46 +983,53 @@ map.on("zoomend", () => {
     checkbox.checked = true;
 
     const label = document.createElement("span");
-    label.textContent = `${route} — ${day}`;
+    label.textContent = `Route ${route} — ${dayName(day)}`;
 
     left.appendChild(checkbox);
     left.appendChild(label);
 
-    // RIGHT: symbol preview
-    const symbol = document.createElement("canvas");
-    symbol.className = "route-day-symbol";
-    symbol.width = 14;
-    symbol.height = 14;
+    // RIGHT SIDE SYMBOL
+    const icon = document.createElement("span");
+    icon.className = "route-day-symbol";
 
-    const ctx = symbol.getContext("2d");
-
-    // Use first marker style from this combo
-    const marker = markerMap.find(m => m.route === route && m.day === day);
-    if (marker) {
-      ctx.fillStyle = marker.color;
-      ctx.beginPath();
-      ctx.arc(7, 7, 6, 0, Math.PI * 2);
-      ctx.fill();
+    if (sym.shape === "circle") {
+      icon.style.background = sym.color;
+      icon.style.borderRadius = "50%";
     }
 
-    // Toggle visibility
+    if (sym.shape === "square") {
+      icon.style.background = sym.color;
+    }
+
+    if (sym.shape === "triangle") {
+      icon.style.width = "0";
+      icon.style.height = "0";
+      icon.style.borderLeft = "6px solid transparent";
+      icon.style.borderRight = "6px solid transparent";
+      icon.style.borderBottom = `12px solid ${sym.color}`;
+    }
+
+    if (sym.shape === "diamond") {
+      icon.style.background = sym.color;
+      icon.style.transform = "rotate(45deg)";
+    }
+
+    // TOGGLE VISIBILITY
     checkbox.addEventListener("change", () => {
-      markerMap
-        .filter(m => m.route === route && m.day === day)
-        .forEach(m => {
-          if (checkbox.checked) {
-            m.layer.addTo(map);
-          } else {
-            map.removeLayer(m.layer);
-          }
-        });
+      group.layers.forEach(layer => {
+        checkbox.checked ? layer.addTo(map) : map.removeLayer(layer);
+      });
+
+      updateStats();
+      updateSelectionCount();
     });
 
     item.appendChild(left);
-    item.appendChild(symbol);
+    item.appendChild(icon);
     container.appendChild(item);
   });
 }
+
 
 
 

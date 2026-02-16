@@ -482,7 +482,11 @@ header p {
   text-align: center;
   font-weight: 600;
   color: #fff;
+
+  position: relative;
+  left: -100px;   /* ← adjust this value to taste */
 }
+
 
 /* Keep collapse arrow left and clear of Leaflet watermark */
 .collapse-btn {

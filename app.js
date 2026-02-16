@@ -912,6 +912,53 @@ if (resetBtn) {
 
 
 
+// ===== AUTO-RESIZE MARKERS ON ZOOM =====
+map.on("zoomend", () => {
+  const newSize = getMarkerPixelSize();
+
+  Object.values(routeDayGroups).forEach(group => {
+    group.layers.forEach(layer => {
+      const base = layer._base;
+      if (!base) return;
+
+      // ---- CIRCLE ----
+      if (layer.setRadius) {
+        layer.setRadius(newSize);
+        return;
+      }
+
+      const { lat, lon, symbol } = base;
+
+      const scale = 40075016.686 / Math.pow(2, map.getZoom() + 8);
+      const dLat = newSize * scale / 111320;
+      const dLng = dLat / Math.cos(lat * Math.PI / 180);
+
+      // ---- SQUARE ----
+      if (symbol.shape === "square") {
+        layer.setBounds([[lat - dLat, lon - dLng], [lat + dLat, lon + dLng]]);
+      }
+
+      // ---- TRIANGLE ----
+      if (symbol.shape === "triangle") {
+        layer.setLatLngs([
+          [lat + dLat, lon],
+          [lat - dLat, lon - dLng],
+          [lat - dLat, lon + dLng]
+        ]);
+      }
+
+      // ---- DIAMOND ----
+      if (symbol.shape === "diamond") {
+        layer.setLatLngs([
+          [lat + dLat, lon],
+          [lat, lon + dLng],
+          [lat - dLat, lon],
+          [lat, lon - dLng]
+        ]);
+      }
+    });
+  });
+});
 
   
   // ===== INITIAL DATA LOAD =====

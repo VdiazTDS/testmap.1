@@ -796,7 +796,7 @@ if (mobileMenuBtn && sidebar && overlay) {
 }
 // ===== MOBILE SELECTION TOGGLE =====
 const mobileSelBtn = document.getElementById("mobileSelectionBtn");
-const selectionBox = document.getElementById("selectionBox");
+
 
 if (mobileSelBtn && selectionBox) {
 

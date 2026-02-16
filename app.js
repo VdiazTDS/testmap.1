@@ -167,26 +167,41 @@ function getSymbol(key) {
   return symbolMap[key];
 }
 
+//=====
+function getMarkerPixelSize() {
+  const z = map.getZoom();
+
+  if (z <= 5) return 2;
+  if (z <= 8) return 3;
+  if (z <= 11) return 4;
+  if (z <= 14) return 6;
+  return 8;
+}
+
+
+
 
 // Create marker with correct shape
 function createMarker(lat, lon, symbol) {
-  const size = 6; // pixel size that stays visible at all zoom levels
+  const size = getMarkerPixelSize();
 
   // ===== CIRCLE =====
   if (symbol.shape === "circle") {
-    return L.circleMarker([lat, lon], {
+    const marker = L.circleMarker([lat, lon], {
       radius: size,
       color: symbol.color,
       fillColor: symbol.color,
       fillOpacity: 0.95,
       renderer: canvasRenderer
     });
+
+    marker._base = { lat, lon, symbol };
+    return marker;
   }
 
-  // Helper to convert pixel size → lat/lng offset
   function pixelOffset() {
     const zoom = map.getZoom();
-    const scale = 40075016.686 / Math.pow(2, zoom + 8); // meters per pixel
+    const scale = 40075016.686 / Math.pow(2, zoom + 8);
     const latOffset = size * scale / 111320;
     const lngOffset = latOffset / Math.cos(lat * Math.PI / 180);
     return [latOffset, lngOffset];
@@ -194,31 +209,21 @@ function createMarker(lat, lon, symbol) {
 
   const [dLat, dLng] = pixelOffset();
 
-  // ===== SQUARE =====
+  let shape;
+
   if (symbol.shape === "square") {
-    return L.rectangle(
-      [
-        [lat - dLat, lon - dLng],
-        [lat + dLat, lon + dLng]
-      ],
-      {
-        color: symbol.color,
-        fillColor: symbol.color,
-        fillOpacity: 0.95,
-        weight: 1,
-        renderer: canvasRenderer
-      }
-    );
+    shape = L.rectangle([[lat - dLat, lon - dLng], [lat + dLat, lon + dLng]], {
+      color: symbol.color,
+      fillColor: symbol.color,
+      fillOpacity: 0.95,
+      weight: 1,
+      renderer: canvasRenderer
+    });
   }
 
-  // ===== TRIANGLE =====
   if (symbol.shape === "triangle") {
-    return L.polygon(
-      [
-        [lat + dLat, lon],
-        [lat - dLat, lon - dLng],
-        [lat - dLat, lon + dLng]
-      ],
+    shape = L.polygon(
+      [[lat + dLat, lon], [lat - dLat, lon - dLng], [lat - dLat, lon + dLng]],
       {
         color: symbol.color,
         fillColor: symbol.color,
@@ -229,15 +234,9 @@ function createMarker(lat, lon, symbol) {
     );
   }
 
-  // ===== DIAMOND =====
   if (symbol.shape === "diamond") {
-    return L.polygon(
-      [
-        [lat + dLat, lon],
-        [lat, lon + dLng],
-        [lat - dLat, lon],
-        [lat, lon - dLng]
-      ],
+    shape = L.polygon(
+      [[lat + dLat, lon], [lat, lon + dLng], [lat - dLat, lon], [lat, lon - dLng]],
       {
         color: symbol.color,
         fillColor: symbol.color,
@@ -247,6 +246,9 @@ function createMarker(lat, lon, symbol) {
       }
     );
   }
+
+  shape._base = { lat, lon, symbol };
+  return shape;
 }
 
 

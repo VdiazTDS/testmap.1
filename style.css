@@ -1,1 +1,805 @@
+/* ================= GLOBAL ================= */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  background: #121212;
+  color: #eee;
+}
 
+
+/* ================= HEADER ================= */
+header {
+  text-align: center;
+  padding: 10px;
+  border-bottom: 1px solid #333;
+}
+
+header h1 {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+}
+
+header p {
+  margin: 2px 0 5px;
+  font-size: 14px;
+  color: #bbb;
+}
+
+
+/* ================= LAYOUT ================= */
+.app-container {
+  display: flex;
+  height: calc(100vh - 70px);
+}
+
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+  width: 320px;
+  background: #1a1a1a;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  border-right: 1px solid #333;
+}
+
+
+/* ================= UPLOAD BOX ================= */
+#dropZone {
+  background: #1e1e1e;
+  border: 2px dashed #555;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+#dropZone:hover {
+  border-color: #42a5f5;
+  background: #222;
+}
+
+
+/* ================= FILTER BLOCKS ================= */
+.filter-group {
+  background: #1e1e1e;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+
+/* ================= VERTICAL CHECKBOX LISTS ================= */
+#routeCheckboxes,
+#dayCheckboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+#routeCheckboxes label,
+#dayCheckboxes label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+
+/* ================= BUTTONS ================= */
+.mini-btn {
+  background: #333;
+  color: #eee;
+  border: none;
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.mini-btn:hover {
+  background: #42a5f5;
+  color: #000;
+}
+
+
+
+#resetMapBtn:hover {
+  background: #64b5f6;
+}
+
+
+/* ================= SAVED FILES LIST ================= */
+#savedFiles {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  font-size: 13px;
+}
+
+#savedFiles li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+#savedFiles button {
+  background: #333;
+  color: #eee;
+  border: none;
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+#savedFiles button:hover {
+  background: #42a5f5;
+  color: #000;
+}
+
+
+/* ================= STATS ================= */
+#statsList {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  font-size: 13px;
+}
+
+
+/* ================= MAP ================= */
+.map-container {
+  flex: 1;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== Modern mobile menu button ===== */
+#mobileMenuBtn {
+  display: none;
+  margin-top: 6px;
+
+  background: transparent;
+  border: 1px solid #444;
+  color: #eee;
+
+  border-radius: 8px;
+  padding: 6px 10px;
+
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+#mobileMenuBtn:hover {
+  background: #222;
+  border-color: #666;
+}
+
+/* When sidebar is open → show active state */
+#mobileMenuBtn.active {
+  background: #42a5f5;
+  border-color: #42a5f5;
+  color: #000;
+}
+
+
+/* Tablet & phone */
+@media (max-width: 900px) {
+  .app-container {
+    flex-direction: column;
+    height: calc(100vh - 90px);
+  }
+
+  .sidebar {
+    width: 100%;
+    max-height: 50vh;
+    border-right: none;
+    border-bottom: 1px solid #333;
+    display: none; /* hidden until menu tapped */
+  }
+
+  .sidebar.open {
+    display: flex;
+  }
+
+  .map-container {
+    flex: 1;
+  }
+
+  #mobileMenuBtn {
+    display: inline-block;
+  }
+
+  /* Bigger touch targets */
+  .mini-btn,
+  #resetMapBtn,
+  #savedFiles button {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  #routeCheckboxes,
+  #dayCheckboxes {
+    max-height: 140px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 18px;
+  }
+
+  header p {
+    font-size: 12px;
+  }
+
+  .sidebar {
+    max-height: 60vh;
+  }
+}
+
+.sidebar-toggle {
+  position: fixed;            /* stay in same place on screen */
+  top: 50%;
+  left: 320px;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 72px;
+
+  background: #2a2a2a;
+  color: #eee;
+  border: 1px solid #444;
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+
+  z-index: 2000;              /* ABOVE Leaflet map */
+  touch-action: manipulation; /* allow taps */
+}
+
+.sidebar-toggle:hover {
+  background: #42a5f5;
+  color: #000;
+}
+
+/* Move to screen edge when collapsed */
+.app-container.collapsed .sidebar-toggle {
+  left: 0;
+}
+
+/* Rotate arrow when sidebar is collapsed */
+.app-container.collapsed .sidebar-toggle {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+
+
+
+/* Collapse sidebar */
+.app-container.collapsed .sidebar {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  border-right: none;
+}
+
+.app-container.collapsed .map-container {
+  flex: 1;
+}
+
+
+/* Smooth animation */
+.sidebar {
+  transition: width 0.25s ease, padding 0.25s ease;
+}
+
+
+/* Collapsed state */
+.app-container.collapsed .sidebar {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  border-right: none;
+}
+
+.app-container.collapsed .map-container {
+  flex: 1;
+}
+
+/* ===== Prevent double menu buttons ===== */
+
+/* Hide floating toggle on mobile */
+@media (max-width: 900px) {
+  .sidebar-toggle {
+    display: none !important;
+  }
+}
+
+/* Hide top mobile menu on desktop */
+@media (min-width: 901px) {
+  #mobileMenuBtn {
+    display: none !important;
+  }
+}
+
+/* ===== ROUTE SUMMARY PANEL ===== */
+.summary-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 420px;
+  height: 100%;
+  background: #111;
+  border-left: 1px solid #333;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.summary-panel.hidden {
+  display: none;
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #333;
+  background: #1a1a1a;
+}
+
+.summary-header button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.summary-content {
+  padding: 10px;
+  overflow: auto;
+  font-size: 13px;
+}
+
+/* TABLE STYLE */
+.summary-content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.summary-content th,
+.summary-content td {
+  padding: 6px;
+  border-bottom: 1px solid #333;
+  text-align: left;
+}
+
+.summary-content th {
+  background: #1e1e1e;
+}
+
+/* ===== BOTTOM SUMMARY PANEL (FINAL CLEAN VERSION) ===== */
+#bottomSummary {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 250px;
+  background: #1e1e1e;
+  border-top: 2px solid #333;
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+}
+
+
+
+
+/* CONTENT AREA */
+.bottom-summary-content {
+  flex: 1;
+  overflow: auto;
+  padding: 10px;
+}
+
+/* COLLAPSED STATE — shrink only */
+#bottomSummary.collapsed {
+  height: 40px;
+}
+
+/* Hide table when collapsed */
+#bottomSummary.collapsed .bottom-summary-content {
+  display: none;
+}
+
+/* TABLE STYLE */
+.bottom-summary-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.bottom-summary-content th,
+.bottom-summary-content td {
+  border: 1px solid #444;
+  padding: 6px;
+  text-align: left;
+}
+
+.bottom-summary-content th {
+  background: #333;
+}
+
+
+
+
+
+/* toggle button */
+.bottom-summary-header button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* scrollable content */
+.bottom-summary-content {
+  flex: 1;
+  overflow: auto;
+  padding: 10px;
+}
+
+/* summary table styling */
+.bottom-summary-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.bottom-summary-content th,
+.bottom-summary-content td {
+  border: 1px solid #444;
+  padding: 6px;
+  text-align: left;
+}
+
+.bottom-summary-content th {
+  background: #333;
+}
+
+
+/* ===== DRAGGABLE BOTTOM SUMMARY ===== */
+.bottom-summary {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 250px;
+  background: #1e1e1e;
+  border-top: 2px solid #333;
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+}
+
+
+
+.bottom-summary-content {
+  overflow: auto;
+  flex: 1;
+  padding: 10px;
+}
+/* ===== Bottom summary header layout ===== */
+
+/* Title */
+.summary-title {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  color: #fff;
+}
+
+
+/* ===== Modern action button ===== */
+/* ===== Modern primary action button ===== */
+
+
+/* Hover */
+.modern-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.45);
+  filter: brightness(1.08);
+}
+
+/* Click */
+.modern-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  filter: brightness(0.95);
+}
+
+/* Collapse arrow button */
+
+/* ===== FINAL HEADER LAYOUT FIX ===== */
+
+
+/* Keep title perfectly centered */
+.summary-title {
+  text-align: center;
+}
+
+/* Move collapse arrow left so Leaflet watermark never covers it */
+.collapse-btn {
+  margin-right: 170px;  /* ← key spacing from watermark */
+}
+
+
+
+
+
+
+
+
+/* ===== Primary app button style (shared) ===== */
+.primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  background: #42a5f5;          /* same blue as Reset Map */
+  color: #000;
+
+  border: none;
+  border-radius: 8px;
+
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
+
+/* Hover */
+.primary-btn:hover {
+  background: #64b5f6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.45);
+}
+
+/* Click */
+.primary-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.35);
+}
+
+
+/* ===== FINAL HEADER LAYOUT ===== */
+/* ===== FINAL BOTTOM SUMMARY HEADER ===== */
+.bottom-summary-header {
+  height: 40px;
+  background: #2a2a2a;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 16px;
+  border-bottom: 1px solid #444;
+}
+
+/* Center title while buttons stay left */
+.summary-title {
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* Ensure arrow never jumps right */
+.collapse-btn {
+  order: 2;        /* keeps it left */
+}
+
+
+/* Center title */
+.summary-title {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* Keep collapse arrow left and clear of Leaflet watermark */
+.collapse-btn {
+  margin-left: 6px;
+}
+
+
+/* ===== RIGHT SIDEBAR ===== */
+
+/* ===== RIGHT SIDEBAR CONTAINER ===== */
+/* RIGHT SIDEBAR CONTAINER */
+#selectionBox {
+  position: absolute;
+  right: 0;
+  top: 120px;              /* adjust if needed */
+  width: 220px;
+  background: #1e1e1e;
+  border-left: 1px solid #333;
+  padding: 12px 16px;
+  transition: transform 0.25s ease;
+  z-index: 500;
+}
+
+/* COLLAPSED STATE */
+#selectionBox.collapsed {
+  transform: translateX(100%);
+}
+
+/* TOGGLE BUTTON */
+.sidebar-toggle-right {
+  position: absolute;
+  left: -28px;             /* 👈 keeps it glued to sidebar edge */
+  top: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px 0 0 6px;
+  border: 1px solid #333;
+  background: #2b7cff;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ===== RIGHT SIDEBAR ===== */
+
+/* Container */
+#selectionBox {
+  position: absolute;
+  right: 0;
+  top: 120px;
+  width: 220px;
+
+  background: #1e1e1e;
+  border-left: 1px solid #333;
+
+  padding: 12px 16px;
+
+  transition: transform 0.25s ease;
+  z-index: 500;
+}
+
+/* Collapsed state — slide fully off screen */
+#selectionBox.collapsed {
+  transform: translateX(100%);
+}
+
+/* Toggle button (attached to sidebar edge) */
+.sidebar-toggle-right {
+  position: absolute;
+  left: -28px;          /* keeps it glued to sidebar */
+  top: 12px;
+
+  width: 28px;
+  height: 28px;
+
+  border-radius: 6px 0 0 6px;
+  border: 1px solid #333;
+
+  background: #2b7cff;
+  color: #fff;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 600;
+}
+
+/* When sidebar is collapsed, keep toggle visible at screen edge */
+#selectionBox.collapsed .sidebar-toggle-right {
+  left: -28px;
+}
+
+
+/* ===== RESIZE HINT BAR ===== */
+.resize-hint {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  font-size: 11px;
+  color: #888;
+  background: #1e1e1e;
+
+  padding: 2px 8px;
+  border-radius: 6px;
+
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* Thin grab line like native apps */
+.bottom-summary-header::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 40px;
+  height: 4px;
+  border-radius: 3px;
+  background: #555;
+}
+
+/* Cursor change = huge UX signal */
+.bottom-summary-header {
+  cursor: ns-resize;
+  position: relative;
+}
+
+/* Route list layout */
+.route-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 13px;
+  margin: 2px 0;
+}
+
+/* Small symbol preview */
+.route-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}

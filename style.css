@@ -888,13 +888,16 @@ header {
   background: #42a5f5;
   color: #000;
   border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 16px;
+  border-radius: 6px;
+
+  padding: 4px 10px;   /* smaller height + width */
+  font-size: 13px;     /* smaller text */
   font-weight: 600;
+
   cursor: pointer;
   z-index: 5000;
 }
+
 
 #hardRefreshBtn:hover {
   background: #64b5f6;

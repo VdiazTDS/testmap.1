@@ -627,10 +627,14 @@ const raw = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
 // Build clean headers from row 1 + row 2
 const headers = raw[0].map((_, i) => {
-  const top = raw[0][i] || "";
-  const bottom = raw[1][i] || "";
-  return (bottom || top || `Column ${i + 1}`).toString().trim();
+  const top = (raw[0][i] || "").toString().trim();
+  const bottom = (raw[1][i] || "").toString().trim();
+
+  const combined = `${top} ${bottom}`.trim();
+
+  return combined || `Column ${i + 1}`;
 });
+
 
 // Convert data starting at row 3
 const rows = raw.slice(2).map(r => {

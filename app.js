@@ -1180,7 +1180,7 @@ if (locateBtn) {
   locateBtn.addEventListener("click", () => {
     if (!tracking) {
       startLiveTracking();
-      locateBtn.textContent = "Stop Tracking";
+      locateBtn.textContent = "Stop";
       tracking = true;
     } else {
       if (watchId !== null) {
@@ -1188,7 +1188,7 @@ if (locateBtn) {
         watchId = null;
       }
 
-      locateBtn.textContent = "Center on Me";
+      locateBtn.textContent = "Locate";
       tracking = false;
     }
   });

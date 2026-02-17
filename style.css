@@ -878,10 +878,11 @@ header {
 /* ===== HEADER BUTTON LAYOUT ===== */
 .header-buttons {
   display: flex;
-  gap: 8px;
+  gap: 14px;   /* more space between Refresh & Menu */
   justify-content: center;
   margin-top: 6px;
 }
+
 
 /* ===== HARD REFRESH BUTTON (VISIBLE EVERYWHERE) ===== */
 #hardRefreshBtn {

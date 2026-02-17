@@ -923,7 +923,7 @@ header {
 }
 
 /* Floating GPS button */
-#locateBtn {
+#locateMeBtn {
   position: fixed;
   bottom: 500px;          /* sits above bottom panel */
   right: 15px;

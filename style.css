@@ -849,4 +849,22 @@ header p {
 header {
   padding-top: calc(10px + env(safe-area-inset-top));
 }
+/* ===== MOBILE SAFE AREA (prevents notch overlap) ===== */
+header {
+  padding-top: max(10px, env(safe-area-inset-top));
+}
+
+/* Keep menu button always tappable */
+#mobileMenuBtn {
+  position: relative;
+  z-index: 1001;
+  margin-top: 4px;
+}
+
+/* Prevent header from being hidden while scrolling */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
 

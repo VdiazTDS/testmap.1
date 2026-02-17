@@ -1083,6 +1083,9 @@ map.on("zoomend", () => {
 });
 
   
+document.getElementById("hardRefreshBtn").addEventListener("click", () => {
+  window.location.reload(true);
+});
 
 
 

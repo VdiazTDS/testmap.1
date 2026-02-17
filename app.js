@@ -61,8 +61,8 @@ function locateUser() {
 }
 // ===== FLOATING "CENTER ON ME" BUTTON =====
 let watchId = null;
-let userMarker = null;
 let userCircle = null;
+
 function startLiveTracking() {
   if (!navigator.geolocation) {
     alert("Geolocation is not supported on this device.");
@@ -82,19 +82,10 @@ function startLiveTracking() {
 
       const latlng = [lat, lng];
 
-      // Move map smoothly zoom like nav apps
-      map.setView(latlng, Math.max(map.getZoom(), 16), { animate: true });
+      // Smooth follow
+      map.flyTo(latlng, Math.max(map.getZoom(), 16), { duration: 1.2 });
 
-
-
-      // Create or update marker
-      if (!userMarker) {
-        userMarker = L.marker(latlng).addTo(map);
-      } else {
-        userMarker.setLatLng(latlng);
-      }
-
-      // Create or update accuracy circle
+      // ✅ KEEP the blue accuracy circle
       if (!userCircle) {
         userCircle = L.circle(latlng, { radius: accuracy }).addTo(map);
       } else {

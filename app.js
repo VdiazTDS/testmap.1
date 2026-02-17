@@ -625,24 +625,46 @@ const ws = wb.Sheets[wb.SheetNames[0]];
 // Read entire sheet as grid
 const raw = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-// Build clean headers from row 1 + row 2
-const headers = raw[0].map((_, i) => {
-  const top = (raw[0][i] || "").toString().trim();
-  const bottom = (raw[1][i] || "").toString().trim();
+// ===== AUTO-DETECT HEADER ROW COUNT =====
+const row1 = raw[0] || [];
+const row2 = raw[1] || [];
 
-  const combined = `${top} ${bottom}`.trim();
+// Check if row 2 actually contains header text
+const row2HasText = row2.some(cell => String(cell || "").trim() !== "");
 
-  return combined || `Column ${i + 1}`;
-});
+// Decide header strategy
+let headers;
+let dataStartIndex;
 
-// Convert data starting at row 3
-const rows = raw.slice(2).map(r => {
+if (row2HasText) {
+  // ===== TWO-ROW HEADER → COMBINE =====
+  headers = row1.map((_, i) => {
+    const top = String(row1[i] || "").trim();
+    const bottom = String(row2[i] || "").trim();
+    const combined = `${top} ${bottom}`.trim();
+    return combined || `Column ${i + 1}`;
+  });
+
+  dataStartIndex = 2;
+
+} else {
+  // ===== SINGLE-ROW HEADER =====
+  headers = row1.map((h, i) =>
+    String(h || `Column ${i + 1}`).trim()
+  );
+
+  dataStartIndex = 1;
+}
+
+// ===== BUILD DATA ROWS =====
+const rows = raw.slice(dataStartIndex).map(r => {
   const obj = {};
   headers.forEach((h, i) => {
     obj[h] = r[i] ?? "";
   });
   return obj;
 });
+
 
 
 showRouteSummary(rows, headers);

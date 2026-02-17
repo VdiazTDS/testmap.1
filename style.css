@@ -907,3 +907,12 @@ header {
     cursor: pointer;
   }
 }
+#hardRefreshBtn {
+  background: #42a5f5;
+  color: #000;
+  border: none;
+}
+
+#hardRefreshBtn:hover {
+  background: #64b5f6;
+}

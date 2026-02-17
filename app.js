@@ -37,15 +37,16 @@ if (hardRefreshBtn) {
       }
     }
 
-    // Clear cache storage
+    // Clear cache storage if supported
     if ("caches" in window) {
       caches.keys().then(names => names.forEach(n => caches.delete(n)));
     }
 
-    // True hard reload
+    // True hard reload (no cache)
     window.location.href = window.location.pathname + "?v=" + Date.now();
   });
 }
+
 
 //======
 
@@ -1097,9 +1098,6 @@ map.on("zoomend", () => {
 });
 
   
-document.getElementById("hardRefreshBtn").addEventListener("click", () => {
-  window.location.reload(true);
-});
 
 
 

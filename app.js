@@ -61,7 +61,7 @@ function locateUser() {
 }
 // ===== FLOATING "CENTER ON ME" BUTTON =====
 let watchId = null;
-let userMarker = null;
+let userCircle = null;
 
 function startLiveTracking() {
   if (!navigator.geolocation) {
@@ -69,7 +69,7 @@ function startLiveTracking() {
     return;
   }
 
-  // Stop previous tracking if already running
+  // Stop previous tracking
   if (watchId !== null) {
     navigator.geolocation.clearWatch(watchId);
   }
@@ -78,17 +78,25 @@ function startLiveTracking() {
     (pos) => {
       const lat = pos.coords.latitude;
       const lng = pos.coords.longitude;
+      const accuracy = pos.coords.accuracy;
 
       const latlng = [lat, lng];
 
       // Smooth follow
       map.flyTo(latlng, Math.max(map.getZoom(), 16), { duration: 1.2 });
 
-      // ✅ Marker pin only
-      if (!userMarker) {
-        userMarker = L.marker(latlng).addTo(map);
+      // ✅ Accuracy circle only
+      if (!userCircle) {
+        userCircle = L.circle(latlng, {
+          radius: accuracy,
+          color: "#2a93ff",
+          fillColor: "#2a93ff",
+          fillOpacity: 0.2,
+          weight: 2,
+        }).addTo(map);
       } else {
-        userMarker.setLatLng(latlng);
+        userCircle.setLatLng(latlng);
+        userCircle.setRadius(accuracy);
       }
     },
     (err) => {
@@ -102,6 +110,7 @@ function startLiveTracking() {
     }
   );
 }
+
 
 
 

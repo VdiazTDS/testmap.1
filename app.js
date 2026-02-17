@@ -14,50 +14,38 @@ const BUCKET = "excel-files";
 document.addEventListener("DOMContentLoaded", () => {
   initApp();
   
-
-let refreshArmed = false;
-
-hardRefreshBtn.addEventListener("click", () => {
-
-  // Only protect on mobile screens
-  if (window.innerWidth <= 900) {
-
-    if (!refreshArmed) {
-      refreshArmed = true;
-      hardRefreshBtn.textContent = "Tap again to refresh";
-
-      setTimeout(() => {
-        refreshArmed = false;
-        hardRefreshBtn.textContent = "Refresh";
-      }, 2000);
-
-      return; // stop first accidental tap
-    }
-  }
-
-  // REAL hard refresh (no cache)
-  window.location.reload(true);
-});
-
-  // ===== HARD REFRESH BUTTON (NO CACHE) =====
+// ===== HARD REFRESH BUTTON (SAFE + NO CACHE) =====
 const hardRefreshBtn = document.getElementById("hardRefreshBtn");
 
 if (hardRefreshBtn) {
+  let refreshArmed = false;
+
   hardRefreshBtn.addEventListener("click", () => {
 
-    // Clear browser cache storage if supported
-    if ("caches" in window) {
-      caches.keys().then(names => {
-        names.forEach(name => caches.delete(name));
-      });
+    // Mobile double-tap protection
+    if (window.innerWidth <= 900) {
+      if (!refreshArmed) {
+        refreshArmed = true;
+        hardRefreshBtn.textContent = "Tap again to refresh";
+
+        setTimeout(() => {
+          refreshArmed = false;
+          hardRefreshBtn.textContent = "Refresh";
+        }, 2000);
+
+        return;
+      }
     }
 
-    // Force reload with unique timestamp (bypasses cache)
+    // Clear cache storage
+    if ("caches" in window) {
+      caches.keys().then(names => names.forEach(n => caches.delete(n)));
+    }
+
+    // True hard reload
     window.location.href = window.location.pathname + "?v=" + Date.now();
   });
 }
-
-});
 
 //======
 

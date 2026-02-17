@@ -890,7 +890,7 @@ header {
   border: none;
   border-radius: 6px;
 
-  padding: 4px 10px;   /* smaller height + width */
+  padding: 2px 10px;   /* smaller height + width */
   font-size: 13px;     /* smaller text */
   font-weight: 600;
 

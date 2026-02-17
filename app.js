@@ -54,18 +54,65 @@ function locateUser() {
     {
       enableHighAccuracy: true,
       timeout: 10000,
+
       maximumAge: 30000
     }
   );
 }
 // ===== FLOATING "CENTER ON ME" BUTTON =====
-const locateBtn = document.getElementById("locateBtn");
+let watchId = null;
+let userMarker = null;
+let userCircle = null;
+function startLiveTracking() {
+  if (!navigator.geolocation) {
+    alert("Geolocation is not supported on this device.");
+    return;
+  }
 
-if (locateBtn) {
-  locateBtn.addEventListener("click", () => {
-    locateUser();
-  });
+  // Stop previous tracking if already running
+  if (watchId !== null) {
+    navigator.geolocation.clearWatch(watchId);
+  }
+
+  watchId = navigator.geolocation.watchPosition(
+    (pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const accuracy = pos.coords.accuracy;
+
+      const latlng = [lat, lng];
+
+      // Move map smoothly zoom like nav apps
+      map.panTo(latlng);
+
+
+      // Create or update marker
+      if (!userMarker) {
+        userMarker = L.marker(latlng).addTo(map);
+      } else {
+        userMarker.setLatLng(latlng);
+      }
+
+      // Create or update accuracy circle
+      if (!userCircle) {
+        userCircle = L.circle(latlng, { radius: accuracy }).addTo(map);
+      } else {
+        userCircle.setLatLng(latlng);
+        userCircle.setRadius(accuracy);
+      }
+    },
+    (err) => {
+      console.error("GPS error:", err);
+      alert("Unable to get your location.");
+    },
+    {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 10000,
+    }
+  );
 }
+
 
 // ===== HARD REFRESH BUTTON (SAFE + NO CACHE) =====
 const hardRefreshBtn = document.getElementById("hardRefreshBtn");
@@ -1098,6 +1145,28 @@ if (resetBtn) {
 }
 
 
+// ===== LIVE GPS BUTTON =====
+const locateBtn = document.getElementById("locateMeBtn");
+
+if (locateBtn) {
+  let tracking = false;
+
+  locateBtn.addEventListener("click", () => {
+    if (!tracking) {
+      startLiveTracking();
+      locateBtn.textContent = "Stop Tracking";
+      tracking = true;
+    } else {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+
+      locateBtn.textContent = "Center on Me";
+      tracking = false;
+    }
+  });
+}
 
 
   

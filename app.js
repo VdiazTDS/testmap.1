@@ -83,7 +83,8 @@ function startLiveTracking() {
       const latlng = [lat, lng];
 
       // Move map smoothly zoom like nav apps
-      map.panTo(latlng);
+      map.setView(latlng, Math.max(map.getZoom(), 16), { animate: true });
+
 
 
       // Create or update marker

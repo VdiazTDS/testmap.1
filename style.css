@@ -925,7 +925,7 @@ header {
 /* Floating GPS button */
 #locateBtn {
   position: fixed;
-  bottom: 650px;          /* sits above bottom panel */
+  bottom: 500px;          /* sits above bottom panel */
   right: 15px;
   z-index: 1000;
 

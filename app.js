@@ -837,6 +837,26 @@ function toggleSummary() {
   // flip arrow direction
   btn.textContent = panel.classList.contains("collapsed") ? "▲" : "▼";
 }
+// ===== PLACE LOCATE BUTTON BASED ON SCREEN SIZE =====
+function placeLocateButton() {
+  const btn = document.getElementById("locateMeBtn");
+  const desktopContainer = document.getElementById("desktopLocateContainer");
+  const headerContainer = document.querySelector(".mobile-header-buttons");
+
+  if (!btn) return;
+
+  if (window.innerWidth > 900) {
+    // Desktop → move into right sidebar
+    if (desktopContainer && btn.parentElement !== desktopContainer) {
+      desktopContainer.appendChild(btn);
+    }
+  } else {
+    // Mobile → move into header
+    if (headerContainer && btn.parentElement !== headerContainer) {
+      headerContainer.appendChild(btn);
+    }
+  }
+}
 
 function initApp() {
 
@@ -1223,6 +1243,9 @@ map.on("zoomend", () => {
 });
 
   
+// Position Locate button correctly for desktop/mobile
+placeLocateButton();
+window.addEventListener("resize", placeLocateButton);
 
 
 

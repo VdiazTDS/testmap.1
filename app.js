@@ -625,45 +625,56 @@ const ws = wb.Sheets[wb.SheetNames[0]];
 // Read entire sheet as grid
 const raw = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-// ===== AUTO-DETECT HEADER ROW COUNT =====
-const row1 = raw[0] || [];
-const row2 = raw[1] || [];
+// ===== FIND FIRST NON-EMPTY ROW =====
+let startRow = raw.findIndex(r =>
+  r && r.some(cell => String(cell || "").trim() !== "")
+);
 
-// Check if row 2 actually contains header text
-const row2HasText = row2.some(cell => String(cell || "").trim() !== "");
-
-// Decide header strategy
-let headers;
-let dataStartIndex;
-
-if (row2HasText) {
-  // ===== TWO-ROW HEADER → COMBINE =====
-  headers = row1.map((_, i) => {
-    const top = String(row1[i] || "").trim();
-    const bottom = String(row2[i] || "").trim();
-    const combined = `${top} ${bottom}`.trim();
-    return combined || `Column ${i + 1}`;
-  });
-
-  dataStartIndex = 2;
-
-} else {
-  // ===== SINGLE-ROW HEADER =====
-  headers = row1.map((h, i) =>
-    String(h || `Column ${i + 1}`).trim()
-  );
-
-  dataStartIndex = 1;
+if (startRow === -1) {
+  showRouteSummary([], []);
+  return;
 }
 
-// ===== BUILD DATA ROWS =====
+// ===== DETECT MULTI-ROW HEADERS (supports 1–3+) =====
+let headerRows = [raw[startRow]];
+let nextRow = raw[startRow + 1];
+let thirdRow = raw[startRow + 2];
+
+function looksLikeHeader(row) {
+  if (!row) return false;
+
+  const filled = row.filter(c => String(c || "").trim() !== "").length;
+  const numeric = row.filter(c => !isNaN(parseFloat(c))).length;
+
+  return filled > 0 && numeric < filled / 2;
+}
+
+if (looksLikeHeader(nextRow)) headerRows.push(nextRow);
+if (looksLikeHeader(thirdRow)) headerRows.push(thirdRow);
+
+// ===== BUILD SAFE COLUMN NAMES =====
+const columnCount = Math.max(...headerRows.map(r => r.length));
+
+const headers = Array.from({ length: columnCount }, (_, col) => {
+  const parts = headerRows
+    .map(r => String(r[col] || "").trim())
+    .filter(Boolean);
+
+  return parts.join(" ") || `Column ${col + 1}`;
+});
+
+// ===== DATA STARTS AFTER HEADER =====
+const dataStartIndex = startRow + headerRows.length;
+
+// ===== BUILD ROW OBJECTS =====
 const rows = raw.slice(dataStartIndex).map(r => {
   const obj = {};
   headers.forEach((h, i) => {
-    obj[h] = r[i] ?? "";
+    obj[h] = r?.[i] ?? "";
   });
   return obj;
 });
+
 
 
 

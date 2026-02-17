@@ -635,7 +635,6 @@ const headers = raw[0].map((_, i) => {
   return combined || `Column ${i + 1}`;
 });
 
-
 // Convert data starting at row 3
 const rows = raw.slice(2).map(r => {
   const obj = {};
@@ -644,6 +643,7 @@ const rows = raw.slice(2).map(r => {
   });
   return obj;
 });
+
 
 showRouteSummary(rows, headers);
 

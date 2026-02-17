@@ -748,38 +748,51 @@ header p {
 }
 
 /* ===== MOBILE SIDEBAR AS SLIDE-OVER DRAWER ===== */
-@media (max-width: 900px) {
+/* ===== MOBILE SIDEBAR FIX ===== */
+@media (max-width: 768px) {
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 2000; /* ABOVE sidebar */
+  }
 
   .sidebar {
     position: fixed;
-    top: 70px;
-    left: 0;
-    bottom: 0;
-    width: 85%;
-    max-width: 340px;
-
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-
-    z-index: 2000;
+    top: 60px; /* sits BELOW header */
+    left: -280px;
+    width: 280px;
+    height: calc(100vh - 60px);
+    background: #1e1e1e;
+    transition: left 0.25s ease;
+    z-index: 1500; /* BELOW header */
   }
 
   .sidebar.open {
-    transform: translateX(0);
+    left: 0;
   }
 
-  /* Dark overlay behind drawer */
+  #mobileMenuBtn {
+    position: relative;
+    z-index: 2100; /* ALWAYS above everything */
+  }
+
   .mobile-overlay {
     position: fixed;
-    inset: 70px 0 0 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 1500;
-    display: none;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1400; /* BELOW sidebar */
   }
 
   .mobile-overlay.show {
-    display: block;
+    opacity: 1;
+    pointer-events: auto;
   }
+}
+
 }
 
 @media (max-width: 900px) {

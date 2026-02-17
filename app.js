@@ -11,8 +11,7 @@ const BUCKET = "excel-files";
 
 //======
 
-baseMaps.streets.addTo(map);
-locateUser();
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -864,6 +863,9 @@ dropZone.addEventListener("drop", e => {
 });
 
 
+// ===== INITIAL MAP LAYER + USER LOCATION =====
+baseMaps.streets.addTo(map);
+locateUser();
 
 
   

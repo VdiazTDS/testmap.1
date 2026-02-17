@@ -757,6 +757,30 @@ header p {
     z-index: 3000;
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   }
+/* 👇 PASTE THIS DIRECTLY UNDER #mobileSelectionBtn */
+#locateMeBtn {
+  position: fixed;
+  right: 14px;
+  bottom: 150px; /* sits above Selected Stops button */
+
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+
+  border: none;
+  background: #42a5f5;
+  color: #000;
+
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 3000;
+}
+
+
+  
 }
 
 /* ===== Fix menu button hidden by iPhone notch ===== */

@@ -727,8 +727,10 @@ if (selectionBox && toggleSelectionBtn) {
 // Clear selection button (ALWAYS ACTIVE)
 if (clearBtn) {
   clearBtn.onclick = () => {
+    // Remove polygon
     drawnLayer.clearLayers();
 
+    // Restore original marker colors
     Object.entries(routeDayGroups).forEach(([key, group]) => {
       const sym = symbolMap[key];
       group.layers.forEach(marker => {
@@ -736,9 +738,11 @@ if (clearBtn) {
       });
     });
 
-    document.getElementById("selectionCount").textContent = 0;
+    // 🔥 Force counter refresh everywhere (desktop + mobile)
+    updateSelectionCount();
   };
 }
+
 
 
 

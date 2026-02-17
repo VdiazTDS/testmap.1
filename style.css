@@ -801,7 +801,7 @@ header {
     transform: translateX(-100%);
     transition: transform 0.25s ease;
 
-    z-index: 2000;
+    z-index: 900;
   }
 
   .sidebar.open {
@@ -815,7 +815,7 @@ header {
     background: rgba(0,0,0,0.45);
 
     display: none;
-    z-index: 1500;
+    z-index: 800;
   }
 
   .mobile-overlay.show {

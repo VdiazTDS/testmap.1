@@ -13,7 +13,7 @@ const BUCKET = "excel-files";
 
 document.addEventListener("DOMContentLoaded", () => {
   initApp();
-  const hardRefreshBtn = document.getElementById("hardRefreshBtn");
+  
 
 let refreshArmed = false;
 

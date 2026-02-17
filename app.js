@@ -77,6 +77,8 @@ function locateUser() {
 // ===== FLOATING "CENTER ON ME" BUTTON =====
 let watchId = null;
 let userCircle = null;
+let userMarker = null; // ← ADD THIS
+
 
 function startLiveTracking() {
   if (!navigator.geolocation) {
@@ -100,19 +102,28 @@ function startLiveTracking() {
       // Smooth follow
       map.flyTo(latlng, Math.max(map.getZoom(), 16), { duration: 1.2 });
 
-      // ✅ Accuracy circle only
-      if (!userCircle) {
-        userCircle = L.circle(latlng, {
-          radius: accuracy,
-          color: "#2a93ff",
-          fillColor: "#2a93ff",
-          fillOpacity: 0.2,
-          weight: 2,
-        }).addTo(map);
-      } else {
-        userCircle.setLatLng(latlng);
-        userCircle.setRadius(accuracy);
-      }
+      // ===== Moving marker =====
+if (!userMarker) {
+  userMarker = L.marker(latlng).addTo(map);
+} else {
+  userMarker.setLatLng(latlng);
+}
+
+// ===== Accuracy circle =====
+if (!userCircle) {
+  userCircle = L.circle(latlng, {
+    radius: accuracy,
+    color: "#2a93ff",
+    fillColor: "#2a93ff",
+    fillOpacity: 0.2,
+    weight: 2,
+  }).addTo(map);
+} else {
+  userCircle.setLatLng(latlng);
+  userCircle.setRadius(accuracy);
+}
+
+      
     },
     (err) => {
       console.error("GPS error:", err);

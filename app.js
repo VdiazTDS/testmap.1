@@ -34,17 +34,32 @@ function locateUser() {
       // Center map on user
       map.setView([lat, lon], 14);
 
-      // Add blue location marker
-      L.circleMarker([lat, lon], {
-        radius: 8,
-        color: "#2b7cff",
-        fillColor: "#2b7cff",
-        fillOpacity: 0.9,
-        weight: 2
-      })
-        .addTo(map)
-        .bindPopup("You are here")
-        .openPopup();
+     function locateUser() {
+  if (!navigator.geolocation) {
+    console.warn("Geolocation not supported");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+
+      // Center map on user ONLY (no marker, no popup)
+      map.setView([lat, lon], 14);
+    },
+    err => {
+      console.warn("Location permission denied or unavailable");
+      map.setView([39.5, -98.35], 4);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 30000
+    }
+  );
+}
+
     },
     err => {
       console.warn("Location permission denied or unavailable");

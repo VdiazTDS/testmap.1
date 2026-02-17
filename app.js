@@ -58,6 +58,14 @@ function locateUser() {
     }
   );
 }
+// ===== FLOATING "CENTER ON ME" BUTTON =====
+const locateBtn = document.getElementById("locateBtn");
+
+if (locateBtn) {
+  locateBtn.addEventListener("click", () => {
+    locateUser();
+  });
+}
 
 // ===== HARD REFRESH BUTTON (SAFE + NO CACHE) =====
 const hardRefreshBtn = document.getElementById("hardRefreshBtn");

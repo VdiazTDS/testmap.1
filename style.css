@@ -749,51 +749,6 @@ header p {
 
 /* ===== MOBILE SIDEBAR AS SLIDE-OVER DRAWER ===== */
 /* ===== MOBILE SIDEBAR FIX ===== */
-@media (max-width: 768px) {
-
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 2000; /* ABOVE sidebar */
-  }
-
-  .sidebar {
-    position: fixed;
-    top: 60px; /* sits BELOW header */
-    left: -280px;
-    width: 280px;
-    height: calc(100vh - 60px);
-    background: #1e1e1e;
-    transition: left 0.25s ease;
-    z-index: 1500; /* BELOW header */
-  }
-
-  .sidebar.open {
-    left: 0;
-  }
-
-  #mobileMenuBtn {
-    position: relative;
-    z-index: 2100; /* ALWAYS above everything */
-  }
-
-  .mobile-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-    z-index: 1400; /* BELOW sidebar */
-  }
-
-  .mobile-overlay.show {
-    opacity: 1;
-    pointer-events: auto;
-  }
-}
-
-}
 
 @media (max-width: 900px) {
 

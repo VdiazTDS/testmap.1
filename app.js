@@ -33,23 +33,19 @@ function locateUser() {
 
       // Center map on user
       map.setView([lat, lon], 14);
-
-    
-
     },
     err => {
       console.warn("Location permission denied or unavailable");
-      // fallback view (USA)
       map.setView([39.5, -98.35], 4);
     },
     {
       enableHighAccuracy: true,
       timeout: 10000,
-
       maximumAge: 30000
     }
   );
 }
+
 // ===== FLOATING "CENTER ON ME" BUTTON =====
 let watchId = null;
 let userCircle = null;
@@ -922,7 +918,7 @@ dropZone.addEventListener("drop", e => {
 
 // ===== INITIAL MAP LAYER + USER LOCATION =====
 baseMaps.streets.addTo(map);
-User();
+
 
 
   

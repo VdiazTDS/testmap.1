@@ -11,12 +11,14 @@ const BUCKET = "excel-files";
 
 //======
 
+baseMaps.streets.addTo(map);
+locateUser();
+
+
 document.addEventListener("DOMContentLoaded", () => {
   initApp();
   });
 
-baseMaps.streets.addTo(map);
-locateUser();
 
 // ===== USER GEOLOCATION =====
 function locateUser() {

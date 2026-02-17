@@ -34,7 +34,7 @@ function locateUser() {
       // Center map on user
       map.setView([lat, lon], 14);
 
-     function locateUser() {
+     function User() {
   if (!navigator.geolocation) {
     console.warn("Geolocation not supported");
     return;
@@ -946,7 +946,7 @@ dropZone.addEventListener("drop", e => {
 
 // ===== INITIAL MAP LAYER + USER LOCATION =====
 baseMaps.streets.addTo(map);
-locateUser();
+User();
 
 
   
@@ -1181,6 +1181,7 @@ if (locateBtn) {
     if (!tracking) {
       startLiveTracking();
       locateBtn.textContent = "Stop";
+      locateBtn.classList.add("tracking");   // 🔴 turns button red
       tracking = true;
     } else {
       if (watchId !== null) {
@@ -1189,6 +1190,7 @@ if (locateBtn) {
       }
 
       locateBtn.textContent = "Locate";
+      locateBtn.classList.remove("tracking"); // 🔵 back to blue
       tracking = false;
     }
   });

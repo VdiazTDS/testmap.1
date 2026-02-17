@@ -34,31 +34,7 @@ function locateUser() {
       // Center map on user
       map.setView([lat, lon], 14);
 
-     function User() {
-  if (!navigator.geolocation) {
-    console.warn("Geolocation not supported");
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
-
-      // Center map on user ONLY (no marker, no popup)
-      map.setView([lat, lon], 14);
-    },
-    err => {
-      console.warn("Location permission denied or unavailable");
-      map.setView([39.5, -98.35], 4);
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 30000
-    }
-  );
-}
+    
 
     },
     err => {

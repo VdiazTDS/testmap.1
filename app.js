@@ -14,6 +14,50 @@ const BUCKET = "excel-files";
 document.addEventListener("DOMContentLoaded", () => {
   initApp();
   });
+
+baseMaps.streets.addTo(map);
+locateUser();
+
+// ===== USER GEOLOCATION =====
+function locateUser() {
+  if (!navigator.geolocation) {
+    console.warn("Geolocation not supported");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+
+      // Center map on user
+      map.setView([lat, lon], 14);
+
+      // Add blue location marker
+      L.circleMarker([lat, lon], {
+        radius: 8,
+        color: "#2b7cff",
+        fillColor: "#2b7cff",
+        fillOpacity: 0.9,
+        weight: 2
+      })
+        .addTo(map)
+        .bindPopup("You are here")
+        .openPopup();
+    },
+    err => {
+      console.warn("Location permission denied or unavailable");
+      // fallback view (USA)
+      map.setView([39.5, -98.35], 4);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 30000
+    }
+  );
+}
+
 // ===== HARD REFRESH BUTTON (SAFE + NO CACHE) =====
 const hardRefreshBtn = document.getElementById("hardRefreshBtn");
 

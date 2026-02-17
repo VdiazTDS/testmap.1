@@ -1007,3 +1007,34 @@ header {
     display: none;
   }
 }
+
+
+/* =====================================================
+   GLOBAL FLOATING LOCATE BUTTON (ALL DEVICES)
+   ===================================================== */
+#locateMeBtn {
+  position: fixed;
+  right: 14px;
+  bottom: 140px;
+
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+
+  border: none;
+  background: #42a5f5;
+  color: #000;
+
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  z-index: 9999;   /* ABOVE EVERYTHING */
+}
+
+/* Red while tracking */
+#locateMeBtn.tracking {
+  background: #e74c3c;
+}

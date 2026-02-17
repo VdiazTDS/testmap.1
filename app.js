@@ -13,6 +13,32 @@ const BUCKET = "excel-files";
 
 document.addEventListener("DOMContentLoaded", () => {
   initApp();
+  const hardRefreshBtn = document.getElementById("hardRefreshBtn");
+
+let refreshArmed = false;
+
+hardRefreshBtn.addEventListener("click", () => {
+
+  // Only protect on mobile screens
+  if (window.innerWidth <= 900) {
+
+    if (!refreshArmed) {
+      refreshArmed = true;
+      hardRefreshBtn.textContent = "Tap again to refresh";
+
+      setTimeout(() => {
+        refreshArmed = false;
+        hardRefreshBtn.textContent = "Refresh";
+      }, 2000);
+
+      return; // stop first accidental tap
+    }
+  }
+
+  // REAL hard refresh (no cache)
+  window.location.reload(true);
+});
+
   // ===== HARD REFRESH BUTTON (NO CACHE) =====
 const hardRefreshBtn = document.getElementById("hardRefreshBtn");
 

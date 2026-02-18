@@ -298,6 +298,45 @@ function updateSelectionCount() {
   });
 
   document.getElementById("selectionCount").textContent = count;
+
+  // ===== COMPLETE SELECTED STOPS =====
+function completeSelectedStops() {
+  const polygon = drawnLayer.getLayers()[0];
+  if (!polygon) return;
+
+  Object.entries(routeDayGroups).forEach(([key, group]) => {
+    group.layers.forEach(layer => {
+      const base = layer._base;
+      if (!base) return;
+
+      const latlng = L.latLng(base.lat, base.lon);
+
+      // Only complete stops INSIDE polygon AND visible
+      if (polygon.getBounds().contains(latlng) && map.hasLayer(layer)) {
+
+        // Remove from original layer
+        map.removeLayer(layer);
+
+        // ===== Create DELIVERED marker style =====
+        const deliveredMarker = L.circleMarker([base.lat, base.lon], {
+          radius: 10,
+          color: "#00ff00",
+          fillColor: "#00ff00",
+          fillOpacity: 1,
+          weight: 3
+        }).bindPopup("✅ Delivered");
+
+        deliveredLayer.addLayer(deliveredMarker);
+      }
+    });
+  });
+
+  // Clear selection polygon after completion
+  drawnLayer.clearLayers();
+  updateSelectionCount();
+}
+
+  
 }
 
 // ===== WHEN POLYGON IS DRAWN =====
@@ -323,6 +362,9 @@ const shapes = ["circle","square","triangle","diamond"];
 
 const symbolMap = {};        // stores symbol for each route/day combo
 const routeDayGroups = {};   // stores map markers grouped by route/day
+// ===== DELIVERED STOPS LAYER =====
+let deliveredLayer = L.layerGroup().addTo(map);
+
 let symbolIndex = 0;
 let globalBounds = L.latLngBounds(); // used to zoom map to all points
 
@@ -973,6 +1015,14 @@ if (clearBtn) {
   clearBtn.onclick = () => {
     // Remove polygon
     drawnLayer.clearLayers();
+
+    
+// ===== COMPLETE STOPS BUTTON =====
+const completeBtn = document.getElementById("completeStopsBtn");
+
+if (completeBtn) {
+  completeBtn.onclick = completeSelectedStops;
+}
 
     // Restore original marker colors
     Object.entries(routeDayGroups).forEach(([key, group]) => {

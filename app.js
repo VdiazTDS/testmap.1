@@ -126,22 +126,27 @@ let currentHeading = 0;
 
 function createHeadingIcon(angle) {
   return L.divIcon({
-    className: "heading-icon",
+    className: "heading-icon-modern",
     html: `
       <div style="
-        width: 0;
-        height: 0;
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        border-bottom: 18px solid #42a5f5;
         transform: rotate(${angle}deg);
-        transition: transform 0.15s linear;
-      "></div>
+        transition: transform 0.12s linear;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      ">
+        <svg width="36" height="36" viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="14" fill="rgba(66,165,245,0.15)" />
+          <circle cx="18" cy="18" r="10" fill="#ffffff" />
+          <path d="M18 6 L24 22 L18 19 L12 22 Z" fill="#42a5f5"/>
+        </svg>
+      </div>
     `,
-    iconSize: [20, 20],
-    iconAnchor: [10, 10]
+    iconSize: [36, 36],
+    iconAnchor: [18, 18]
   });
 }
+
 
 
 

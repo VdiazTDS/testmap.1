@@ -482,6 +482,25 @@ document.getElementById("daysAll").onclick    = () => setCheckboxGroup("dayCheck
 document.getElementById("daysNone").onclick   = () => setCheckboxGroup("dayCheckboxes", false);
 
 
+
+// ===== Route + Day ALL / NONE =====
+document.getElementById("routeDayAll").onclick  = () => {
+  document.querySelectorAll("#routeDayLayers input[type='checkbox']")
+    .forEach(cb => {
+      cb.checked = true;
+      cb.dispatchEvent(new Event("change"));
+    });
+};
+
+document.getElementById("routeDayNone").onclick = () => {
+  document.querySelectorAll("#routeDayLayers input[type='checkbox']")
+    .forEach(cb => {
+      cb.checked = false;
+      cb.dispatchEvent(new Event("change"));
+    });
+};
+
+
 // ================= APPLY MAP FILTERS =================
 function applyFilters() {
   const routes = [...document.querySelectorAll("#routeCheckboxes input:checked")].map(i => i.value);

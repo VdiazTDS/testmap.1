@@ -49,7 +49,7 @@ function locateUser() {
 // ===== FLOATING "CENTER ON ME" BUTTON =====
 let watchId = null;
 let userCircle = null;
-let userMarker = null; // ← ADD THIS
+
 
 
 function startLiveTracking() {
@@ -87,12 +87,7 @@ watchId = navigator.geolocation.watchPosition(
     // Smooth follow
     map.flyTo(latlng, Math.max(map.getZoom(), 16), { duration: 1.2 });
 
-    // ===== Moving marker =====
-    if (!userMarker) {
-      userMarker = L.marker(latlng).addTo(map);
-    } else {
-      userMarker.setLatLng(latlng);
-    }
+   
 
     // ===== Accuracy circle =====
     if (!userCircle) {

@@ -1003,6 +1003,18 @@ const selectionBox = document.getElementById("selectionBox");
 const toggleSelectionBtn = document.getElementById("toggleSelectionBtn");
 const clearBtn = document.getElementById("clearSelectionBtn");
 
+// ===== COMPLETE STOPS BUTTON =====
+const completeBtn = document.getElementById("completeStopsBtn");
+
+if (completeBtn) {
+  completeBtn.onclick = completeSelectedStops;
+}
+    const completeBtnMobile = document.getElementById("completeStopsBtnMobile");
+if (completeBtnMobile) {
+  completeBtnMobile.onclick = completeSelectedStops;
+}
+
+  
 // Toggle sidebar open/closed
 if (selectionBox && toggleSelectionBtn) {
   toggleSelectionBtn.onclick = () => {
@@ -1018,16 +1030,6 @@ if (clearBtn) {
     drawnLayer.clearLayers();
 
     
-// ===== COMPLETE STOPS BUTTON =====
-const completeBtn = document.getElementById("completeStopsBtn");
-
-if (completeBtn) {
-  completeBtn.onclick = completeSelectedStops;
-}
-    const completeBtnMobile = document.getElementById("completeStopsBtnMobile");
-if (completeBtnMobile) {
-  completeBtnMobile.onclick = completeSelectedStops;
-}
 
 
     // Restore original marker colors

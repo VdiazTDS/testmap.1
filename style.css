@@ -1080,17 +1080,43 @@ header {
 }
 
 
+/* ===============================
+   FORCE MOBILE COMPLETE BUTTON
+   =============================== */
 
-
-
-
-
-
+/* Hide mobile button on desktop */
 #completeStopsBtnMobile {
-  position: fixed !important;
-  bottom: 80px !important;
-  right: 20px !important;
-  z-index: 999999 !important;
-  background: red !important;
+  display: none;
 }
+
+/* Show it clearly in the header on phones */
+@media (max-width: 900px) {
+
+  #completeStopsBtnMobile {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    height: 42px;
+    padding: 0 14px;
+
+    background: #42a5f5;
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+
+    z-index: 6000; /* above overlays */
+  }
+
+  /* Hide the desktop sidebar version */
+  #completeStopsBtn {
+    display: none !important;
+  }
+}
+
+
+
+
+
 

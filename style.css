@@ -1050,3 +1050,22 @@ header {
     display: inline-block;
   }
 }
+
+/* ===== MOBILE HEADER BUTTON FIX ===== */
+#completeStopsBtnMobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  #completeStopsBtnMobile {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hide desktop Complete button on mobile */
+  #completeStopsBtn {
+    display: none !important;
+  }
+}
+

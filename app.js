@@ -1028,6 +1028,12 @@ if (mobileSelBtn && selectionBox) {
     const savedHeight = localStorage.getItem("summaryHeight");
     if (savedHeight) panel.style.height = savedHeight + "px";
 
+    // ===== FORCE MOBILE TO START COLLAPSED =====
+if (window.innerWidth <= 900) {
+  panel.classList.add("collapsed");
+  panel.style.height = "40px";
+}
+
     // Drag resize
     header.addEventListener("mousedown", e => {
       isDragging = true;
@@ -1066,19 +1072,21 @@ if (toggleBtn) {
   toggleBtn.onclick = () => {
     const isCollapsed = panel.classList.toggle("collapsed");
 
-    if (isCollapsed) {
-      // Save current height before collapsing
-      localStorage.setItem("summaryHeight", panel.offsetHeight);
+   if (isCollapsed) {
+  localStorage.setItem("summaryHeight", panel.offsetHeight);
+  panel.style.height = "40px";
+  toggleBtn.textContent = "▲";
+} else {
+  let restored = localStorage.getItem("summaryHeight");
 
-      panel.style.height = "40px";
-      toggleBtn.textContent = "▲";
-    } else {
-      // Restore saved height OR default
-      const restored = localStorage.getItem("summaryHeight");
+  if (!restored || restored <= 60) {
+    restored = window.innerWidth <= 900 ? 300 : 250;
+  }
 
-      panel.style.height = (restored && restored > 60 ? restored : 250) + "px";
-      toggleBtn.textContent = "▼";
-    }
+  panel.style.height = restored + "px";
+  toggleBtn.textContent = "▼";
+}
+
   };
 }
 

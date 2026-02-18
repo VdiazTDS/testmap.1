@@ -1003,7 +1003,7 @@ function placeLocateButton() {
 }
 
 
-function initApp() {
+function initApp() { //begining of initApp=================================================================
 
 // ===== RIGHT SIDEBAR TOGGLE =====
 
@@ -1433,6 +1433,11 @@ placeLocateButton();
 window.addEventListener("resize", placeLocateButton);
 
 
+function completeStops() {
+  console.log("Complete Stops clicked");
+
+  // TODO: your real completion logic here
+}
 
 
 

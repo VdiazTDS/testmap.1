@@ -1327,6 +1327,15 @@ if (resetBtn) {
   });
 }
 
+const completeDesktop = document.getElementById("completeStopsBtn");
+const completeMobile = document.getElementById("completeStopsBtnMobile");
+
+function handleCompleteStops() {
+  // MOVE your existing "complete stops" logic into this function
+}
+
+if (completeDesktop) completeDesktop.addEventListener("click", handleCompleteStops);
+if (completeMobile) completeMobile.addEventListener("click", handleCompleteStops);
 
 // ===== LIVE GPS BUTTON =====
 const locateBtn = document.getElementById("locateMeBtn");

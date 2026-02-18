@@ -364,6 +364,8 @@ const shapes = ["circle","square","triangle","diamond"];
 
 const symbolMap = {};        // stores symbol for each route/day combo
 const routeDayGroups = {};   // stores map markers grouped by route/day
+
+
 // ===== DELIVERED STOPS LAYER =====
 let deliveredLayer = L.layerGroup().addTo(map);
 

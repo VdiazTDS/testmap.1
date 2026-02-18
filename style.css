@@ -926,11 +926,6 @@ header {
 }
 
 
-/* Press animation */
-#locateMeBtn:active {
-  transform: scale(0.95);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-}
 
 /* Tracking state (optional but recommended) */
 #locateMeBtn.tracking {
@@ -955,40 +950,6 @@ header {
 }
 
 
-
-/* ===== KEEP LOCATE BUTTON VISIBLE ON MOBILE ===== */
-@media (max-width: 900px) {
-
-  /* Floating GPS button */
-  #locateMeBtn {
-    position: fixed;
-    right: 14px;
-    bottom: 150px; /* above summary + selection button */
-
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    padding: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 22px;
-    z-index: 4000;
-  }
-
-  /* Hide duplicate button inside hidden panel */
-  #selectionBox #locateMeBtn {
-    display: none;
-  }
-}
-
-
-#desktopLocateContainer #locateMeBtn {
-  width: 100%;
-  margin-top: 8px;
-}
 
 
 /* ===== FINAL MOBILE LOCATE BUTTON ===== */
@@ -1033,5 +994,58 @@ header {
   /* Hide the sidebar version on mobile */
   #selectionBox #locateMeBtn {
     display: none;
+  }
+}
+
+/* =====================================================
+   LOCATE BUTTON — FINAL CLEAN VERSION
+   ===================================================== */
+
+/* Desktop version (inside right sidebar) */
+#desktopLocateContainer #locateMeBtn {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Mobile header layout */
+.mobile-header-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* Modern mobile locate button */
+@media (max-width: 900px) {
+
+  #locateMeBtn {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+
+    border-radius: 12px;
+    border: none;
+
+    font-size: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #42a5f5;
+    color: #000;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    transition: all 0.2s ease;
+  }
+
+  #locateMeBtn:active {
+    transform: scale(0.92);
+  }
+
+  #locateMeBtn.tracking {
+    background: #e74c3c;
+    box-shadow: 0 0 14px rgba(231,76,60,0.7);
   }
 }

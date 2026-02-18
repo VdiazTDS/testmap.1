@@ -68,61 +68,57 @@ startHeadingTracking();
 
 watchId = navigator.geolocation.watchPosition(
   (pos) => {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    const accuracy = pos.coords.accuracy;
 
+    const latlng = [lat, lng];
 
-    (pos) => {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-      const accuracy = pos.coords.accuracy;
-
-      const latlng = [lat, lng];
-      // ===== Heading Arrow =====
-if (!headingMarker) {
-  headingMarker = L.marker(latlng, {
-    icon: createHeadingIcon(currentHeading),
-    interactive: false
-  }).addTo(map);
-} else {
-  headingMarker.setLatLng(latlng);
-}
-
-
-      // Smooth follow
-      map.flyTo(latlng, Math.max(map.getZoom(), 16), { duration: 1.2 });
-
-      // ===== Moving marker =====
-if (!userMarker) {
-  userMarker = L.marker(latlng).addTo(map);
-} else {
-  userMarker.setLatLng(latlng);
-}
-
-// ===== Accuracy circle =====
-if (!userCircle) {
-  userCircle = L.circle(latlng, {
-    radius: accuracy,
-    color: "#2a93ff",
-    fillColor: "#2a93ff",
-    fillOpacity: 0.2,
-    weight: 2,
-  }).addTo(map);
-} else {
-  userCircle.setLatLng(latlng);
-  userCircle.setRadius(accuracy);
-}
-
-      
-    },
-    (err) => {
-      console.error("GPS error:", err);
-      alert("Unable to get your location.");
-    },
-    {
-      enableHighAccuracy: true,
-      maximumAge: 0,
-      timeout: 10000,
+    // ===== Heading Arrow =====
+    if (!headingMarker) {
+      headingMarker = L.marker(latlng, {
+        icon: createHeadingIcon(currentHeading),
+        interactive: false
+      }).addTo(map);
+    } else {
+      headingMarker.setLatLng(latlng);
     }
-  );
+
+    // Smooth follow
+    map.flyTo(latlng, Math.max(map.getZoom(), 16), { duration: 1.2 });
+
+    // ===== Moving marker =====
+    if (!userMarker) {
+      userMarker = L.marker(latlng).addTo(map);
+    } else {
+      userMarker.setLatLng(latlng);
+    }
+
+    // ===== Accuracy circle =====
+    if (!userCircle) {
+      userCircle = L.circle(latlng, {
+        radius: accuracy,
+        color: "#2a93ff",
+        fillColor: "#2a93ff",
+        fillOpacity: 0.2,
+        weight: 2,
+      }).addTo(map);
+    } else {
+      userCircle.setLatLng(latlng);
+      userCircle.setRadius(accuracy);
+    }
+  },
+  (err) => {
+    console.error("GPS error:", err);
+    alert("Unable to get your location.");
+  },
+  {
+    enableHighAccuracy: true,
+    maximumAge: 0,
+    timeout: 10000,
+  }
+);
+
 }
 //===direction user is facing
 let headingMarker = null;

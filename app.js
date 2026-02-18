@@ -1017,11 +1017,11 @@ const completeBtnDesktop = document.getElementById("completeStopsBtn");
 const completeBtnMobile  = document.getElementById("completeStopsBtnMobile");
 
 if (completeBtnDesktop) {
-  completeBtnDesktop.addEventListener("click", completeStops);
+  completeBtnDesktop.addEventListener("click", completeSelectedStops);
 }
 
 if (completeBtnMobile) {
-  completeBtnMobile.addEventListener("click", completeStops);
+  completeBtnMobile.addEventListener("click", completeSelectedStops);
 }
 
   

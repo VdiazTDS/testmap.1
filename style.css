@@ -1005,4 +1005,15 @@ header {
     background: #e74c3c;
     box-shadow: 0 0 14px rgba(231,76,60,0.7);
   }
+  @media (max-width: 900px) {
+  .bottom-summary {
+    height: 60px !important;
+  }
+
+  .bottom-summary.collapsed {
+    height: 60px !important;
+  }
+}
+  
+
 }

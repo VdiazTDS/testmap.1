@@ -16,6 +16,9 @@ const BUCKET = "excel-files";
 
 document.addEventListener("DOMContentLoaded", () => {
   initApp();
+
+
+  
   });
 /* ⭐ Ensures mobile buttons move AFTER full page load */
 
@@ -1005,7 +1008,7 @@ function placeLocateButton() {
 }
 
 
-function initApp() {
+function () {
 
 // ===== RIGHT SIDEBAR TOGGLE =====
 

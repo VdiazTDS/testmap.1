@@ -703,12 +703,16 @@ function showRouteSummary(rows, headers)
   tableBox.appendChild(table);
 
 // AUTO-OPEN + FORCE VISIBLE HEIGHT
-panel.classList.remove("collapsed");
+const isMobile = window.innerWidth <= 900;
 
-const savedHeight = localStorage.getItem("summaryHeight");
-panel.style.height = (savedHeight && savedHeight > 60 ? savedHeight : 250) + "px";
+if (!isMobile) {
+  panel.classList.remove("collapsed");
 
-btn.textContent = "▼";
+  const savedHeight = localStorage.getItem("summaryHeight");
+  panel.style.height = (savedHeight && savedHeight > 60 ? savedHeight : 250) + "px";
+
+  btn.textContent = "▼";
+}
 
 }
 
@@ -816,10 +820,13 @@ showRouteSummary(rows, headers);
 const panel = document.getElementById("bottomSummary");
 const btn = document.getElementById("summaryToggleBtn");
 
-if (panel && btn) {
+const isMobile = window.innerWidth <= 900;
+
+if (panel && btn && !isMobile) {
   panel.classList.remove("collapsed");
   btn.textContent = "▼";
 }
+
 
 
 }

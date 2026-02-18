@@ -1020,6 +1020,9 @@ if (completeBtn) {
 }
    
 
+if (completeBtnMobile) {
+  completeBtnMobile.addEventListener("click", completeStops);
+}
   
 // Toggle sidebar open/closed
 if (selectionBox && toggleSelectionBtn) {

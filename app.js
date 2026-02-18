@@ -1018,6 +1018,12 @@ const completeBtn = document.getElementById("completeStopsBtn");
 if (completeBtn) {
   completeBtn.onclick = completeSelectedStops;
 }
+// ===== MOBILE COMPLETE BUTTON =====
+const completeMobileBtn = document.getElementById("completeStopsBtnMobile");
+
+if (completeMobileBtn) {
+  completeMobileBtn.onclick = completeSelectedStops;
+}
    
 
   

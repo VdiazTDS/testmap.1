@@ -1013,16 +1013,17 @@ const toggleSelectionBtn = document.getElementById("toggleSelectionBtn");
 const clearBtn = document.getElementById("clearSelectionBtn");
 
 // ===== COMPLETE STOPS BUTTON =====
-const completeBtn = document.getElementById("completeStopsBtn");
+const completeBtnDesktop = document.getElementById("completeStopsBtn");
+const completeBtnMobile  = document.getElementById("completeStopsBtnMobile");
 
-if (completeBtn) {
-  completeBtn.onclick = completeSelectedStops;
+if (completeBtnDesktop) {
+  completeBtnDesktop.addEventListener("click", completeStops);
 }
-   
 
 if (completeBtnMobile) {
   completeBtnMobile.addEventListener("click", completeStops);
 }
+
   
 // Toggle sidebar open/closed
 if (selectionBox && toggleSelectionBtn) {

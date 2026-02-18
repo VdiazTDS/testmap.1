@@ -1432,6 +1432,18 @@ window.addEventListener("resize", placeLocateButton);
 
 
 
+// ===== DELIVERED LAYER TOGGLE =====
+const deliveredToggle = document.getElementById("toggleDelivered");
+
+if (deliveredToggle) {
+  deliveredToggle.onchange = () => {
+    if (deliveredToggle.checked) {
+      deliveredLayer.addTo(map);
+    } else {
+      map.removeLayer(deliveredLayer);
+    }
+  };
+}
 
 
 

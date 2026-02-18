@@ -56,7 +56,7 @@ let userCircle = null;
 
 
 
-startLiveTracking() {
+function startLiveTracking() {
   if (!navigator.geolocation) {
     alert("Geolocation is not supported on this device.");
     return;
@@ -79,7 +79,7 @@ watchId = navigator.geolocation.watchPosition(
     const latlng = [lat, lng];
 
     // ===== Heading Arrow =====
-    if (!headingMarker) {
+    if (!headingMarker
       headingMarker = L.marker(latlng, {
         icon: createHeadingIcon(currentHeading),
         interactive: false
@@ -94,7 +94,7 @@ watchId = navigator.geolocation.watchPosition(
    
 
     // ===== Accuracy circle =====
-    if (!userCircle) {
+    if (!userCircle
       userCircle = L.circle(latlng, {
         radius: accuracy,
         color: "#2a93ff",
@@ -125,7 +125,7 @@ watchId = navigator.geolocation.watchPosition(
 let headingMarker = null;
 let currentHeading = 0;
 
-createHeadingIcon(angle) {
+function createHeadingIcon(angle) {
   return L.divIcon({
     className: "heading-icon-modern",
     html: `
@@ -152,7 +152,7 @@ createHeadingIcon(angle) {
 
 
 
-startHeadingTracking() {
+function startHeadingTracking() {
   if (typeof DeviceOrientationEvent !== "undefined") {
 
     if (typeof DeviceOrientationEvent.requestPermission === "function") {
@@ -173,7 +173,7 @@ startHeadingTracking() {
 
 
 
-updateHeading(event) {
+function updateHeading(event) {
   if (event.alpha === null) return;
 
   currentHeading = 360 - event.alpha; // Convert to compass style
@@ -229,7 +229,7 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // ================= FILE NAME MATCHING =================
 // Makes route files and route summary files match even if
 // spacing, punctuation, or "RouteSummary" text is different.
-normalizeName(name) {
+function normalizeName(name) {
   return name
     .toLowerCase()
     .replace(".xlsx", "")
@@ -279,7 +279,7 @@ const drawControl = new L.Control.Draw({
 map.addControl(drawControl);
 
 // ===== SELECTION COUNT (GLOBAL & CORRECT) =====
-updateSelectionCount() {
+function updateSelectionCount() {
   const polygon = drawnLayer.getLayers()[0];
   let count = 0;
 
@@ -309,7 +309,7 @@ updateSelectionCount() {
 
 
 // ===== COMPLETE SELECTED STOPS =====
-completeSelectedStops() {
+function completeSelectedStops() {
   const polygon = drawnLayer.getLayers()[0];
   if (!polygon) return;
 
@@ -377,13 +377,13 @@ let globalBounds = L.latLngBounds(); // used to zoom map to all points
 
 
 // Convert day number → day name
-dayName(n) {
+function dayName(n) {
   return ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"][n-1];
 }
 
 
 // Assign a unique color/shape to each route/day
-getSymbol(key) {
+function getSymbol(key) {
   if (!symbolMap[key]) {
     symbolMap[key] = {
       color: colors[symbolIndex % colors.length],
@@ -395,7 +395,7 @@ getSymbol(key) {
 }
 
 //=====
-getMarkerPixelSize() {
+function getMarkerPixelSize() {
   const z = map.getZoom();
 
   if (z <= 5) return 2;
@@ -481,7 +481,7 @@ createMarker(lat, lon, symbol) {
 
 
 // ================= FILTER CHECKBOX UI =================
-buildRouteCheckboxes(routes) {
+function buildRouteCheckboxes(routes) {
   const c = document.getElementById("routeCheckboxes");
   c.innerHTML = "";
 
@@ -505,7 +505,7 @@ buildRouteCheckboxes(routes) {
 
 
 
-buildDayCheckboxes() {
+function buildDayCheckboxes() {
   const c = document.getElementById("dayCheckboxes");
   c.innerHTML = "";
 

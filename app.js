@@ -300,13 +300,8 @@ function updateSelectionCount() {
   });
 
   document.getElementById("selectionCount").textContent = count;
-
- 
-
-  // Clear selection polygon after completion
-  drawnLayer.clearLayers();
-  updateSelectionCount();
 }
+
 
 
 // ===== COMPLETE SELECTED STOPS =====

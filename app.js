@@ -115,6 +115,14 @@ watchId = navigator.geolocation.watchPosition(
 );
 
 }
+
+// ===== COMPLETE STOPS BUTTONS =====
+const completeBtn = document.getElementById("completeStopsBtn");
+const completeBtnMobile = document.getElementById("completeStopsBtnMobile");
+
+if (completeBtn) completeBtn.onclick = completeSelectedStops;
+if (completeBtnMobile) completeBtnMobile.onclick = completeSelectedStops;
+
 //===direction user is facing
 let headingMarker = null;
 let currentHeading = 0;

@@ -116,12 +116,6 @@ watchId = navigator.geolocation.watchPosition(
 
 }
 
-// ===== COMPLETE STOPS BUTTONS =====
-const completeBtn = document.getElementById("completeStopsBtn");
-const completeBtnMobile = document.getElementById("completeStopsBtnMobile");
-
-if (completeBtn) completeBtn.onclick = completeSelectedStops;
-if (completeBtnMobile) completeBtnMobile.onclick = completeSelectedStops;
 
 //===direction user is facing
 let headingMarker = null;
@@ -307,7 +301,15 @@ function updateSelectionCount() {
 
   document.getElementById("selectionCount").textContent = count;
 
-  // ===== COMPLETE SELECTED STOPS =====
+ 
+
+  // Clear selection polygon after completion
+  drawnLayer.clearLayers();
+  updateSelectionCount();
+}
+
+
+// ===== COMPLETE SELECTED STOPS =====
 function completeSelectedStops() {
   const polygon = drawnLayer.getLayers()[0];
   if (!polygon) return;
@@ -319,13 +321,9 @@ function completeSelectedStops() {
 
       const latlng = L.latLng(base.lat, base.lon);
 
-      // Only complete stops INSIDE polygon AND visible
       if (polygon.getBounds().contains(latlng) && map.hasLayer(layer)) {
-
-        // Remove from original layer
         map.removeLayer(layer);
 
-        // ===== Create DELIVERED marker style =====
         const deliveredMarker = L.circleMarker([base.lat, base.lon], {
           radius: 10,
           color: "#00ff00",
@@ -339,10 +337,10 @@ function completeSelectedStops() {
     });
   });
 
-  // Clear selection polygon after completion
   drawnLayer.clearLayers();
   updateSelectionCount();
 }
+
 
   
 }
@@ -1031,6 +1029,11 @@ const completeBtn = document.getElementById("completeStopsBtn");
 if (completeBtn) {
   completeBtn.onclick = completeSelectedStops;
 }
+    const completeBtnMobile = document.getElementById("completeStopsBtnMobile");
+if (completeBtnMobile) {
+  completeBtnMobile.onclick = completeSelectedStops;
+}
+
 
     // Restore original marker colors
     Object.entries(routeDayGroups).forEach(([key, group]) => {

@@ -703,16 +703,18 @@ function showRouteSummary(rows, headers)
   tableBox.appendChild(table);
 
 // AUTO-OPEN + FORCE VISIBLE HEIGHT
-const isMobile = window.innerWidth <= 900;
+const savedHeight = localStorage.getItem("summaryHeight");
 
-if (!isMobile) {
+// Always prepare a usable expanded height
+const defaultHeight = window.innerWidth <= 900 ? 300 : 250;
+panel.style.height = (savedHeight && savedHeight > 60 ? savedHeight : defaultHeight) + "px";
+
+// Only auto-open on desktop
+if (window.innerWidth > 900) {
   panel.classList.remove("collapsed");
-
-  const savedHeight = localStorage.getItem("summaryHeight");
-  panel.style.height = (savedHeight && savedHeight > 60 ? savedHeight : 250) + "px";
-
   btn.textContent = "▼";
 }
+
 
 }
 

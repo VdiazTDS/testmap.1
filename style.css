@@ -952,50 +952,7 @@ header {
 
 
 
-/* ===== FINAL MOBILE LOCATE BUTTON ===== */
-@media (max-width: 900px) {
 
-  #locateMeBtn {
-    position: fixed;
-    right: 14px;
-    bottom: 150px;
-
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-
-    border: none;
-    background: #42a5f5;
-    color: #000;
-
-    font-size: 22px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    z-index: 5000;
-
-    box-shadow: 0 6px 16px rgba(0,0,0,0.45);
-    transition: all 0.2s ease;
-  }
-
-  /* Red while tracking */
-  #locateMeBtn.tracking {
-    background: #e74c3c;
-    box-shadow: 0 0 14px rgba(231,76,60,0.7);
-  }
-
-  /* Press effect */
-  #locateMeBtn:active {
-    transform: scale(0.92);
-  }
-
-  /* Hide the sidebar version on mobile */
-  #selectionBox #locateMeBtn {
-    display: none;
-  }
-}
 
 /* =====================================================
    LOCATE BUTTON — FINAL CLEAN VERSION

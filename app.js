@@ -843,20 +843,18 @@ function placeLocateButton() {
   const desktopContainer = document.getElementById("desktopLocateContainer");
   const headerContainer = document.querySelector(".mobile-header-buttons");
 
-  if (!btn) return;
+  if (!btn || !desktopContainer || !headerContainer) return;
 
-  if (window.innerWidth > 900) {
-    // Desktop → move into right sidebar
-    if (desktopContainer && btn.parentElement !== desktopContainer) {
-      desktopContainer.appendChild(btn);
-    }
+  if (window.innerWidth <= 900) {
+    headerContainer.appendChild(btn);   // 📱 mobile → header
   } else {
-    // Mobile → move into header
-    if (headerContainer && btn.parentElement !== headerContainer) {
-      headerContainer.appendChild(btn);
-    }
+    desktopContainer.appendChild(btn);  // 🖥 desktop → right sidebar
   }
 }
+
+window.addEventListener("resize", placeLocateButton);
+window.addEventListener("load", placeLocateButton);
+
 
 function initApp() {
 

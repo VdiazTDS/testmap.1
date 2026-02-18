@@ -1170,7 +1170,7 @@ if (locateBtn) {
   locateBtn.addEventListener("click", () => {
     if (!tracking) {
       startLiveTracking();
-      locateBtn.textContent = "Stop";
+      locateBtn.textContent = "■";
       locateBtn.classList.add("tracking");   // 🔴 turns button red
       tracking = true;
     } else {
@@ -1179,7 +1179,7 @@ if (locateBtn) {
         watchId = null;
       }
 
-      locateBtn.textContent = "Locate";
+      locateBtn.textContent = "📍";
       locateBtn.classList.remove("tracking"); // 🔵 back to blue
       tracking = false;
     }

@@ -63,8 +63,12 @@ function startLiveTracking() {
     navigator.geolocation.clearWatch(watchId);
   }
 
-  watchId = navigator.geolocation.watchPosition(
-    startHeadingTracking();
+// Start compass tracking first
+startHeadingTracking();
+
+watchId = navigator.geolocation.watchPosition(
+  (pos) => {
+
 
     (pos) => {
       const lat = pos.coords.latitude;

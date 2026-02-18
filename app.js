@@ -16,12 +16,9 @@ const BUCKET = "excel-files";
 
 document.addEventListener("DOMContentLoaded", () => {
   initApp();
-
-
-  
   });
 /* ⭐ Ensures mobile buttons move AFTER full page load */
-
+window.addEventListener("load", placeLocateButton);
 
 // ===== USER GEOLOCATION =====
 function locateUser() {
@@ -79,7 +76,7 @@ watchId = navigator.geolocation.watchPosition(
     const latlng = [lat, lng];
 
     // ===== Heading Arrow =====
-    if (!headingMarker
+    if (!headingMarker) {
       headingMarker = L.marker(latlng, {
         icon: createHeadingIcon(currentHeading),
         interactive: false
@@ -94,7 +91,7 @@ watchId = navigator.geolocation.watchPosition(
    
 
     // ===== Accuracy circle =====
-    if (!userCircle
+    if (!userCircle) {
       userCircle = L.circle(latlng, {
         radius: accuracy,
         color: "#2a93ff",
@@ -278,7 +275,7 @@ const drawControl = new L.Control.Draw({
 
 map.addControl(drawControl);
 
-// ===== SELECTION COUNT (GLOBAL & CORRECT) =====
+// ===== SELECTION COUNT FUNCTION (GLOBAL & CORRECT) =====
 function updateSelectionCount() {
   const polygon = drawnLayer.getLayers()[0];
   let count = 0;
@@ -367,8 +364,6 @@ const shapes = ["circle","square","triangle","diamond"];
 
 const symbolMap = {};        // stores symbol for each route/day combo
 const routeDayGroups = {};   // stores map markers grouped by route/day
-
-
 // ===== DELIVERED STOPS LAYER =====
 let deliveredLayer = L.layerGroup().addTo(map);
 
@@ -409,7 +404,7 @@ function getMarkerPixelSize() {
 
 
 // Create marker with correct shape
-createMarker(lat, lon, symbol) {
+function createMarker(lat, lon, symbol) {
   const size = getMarkerPixelSize();
 
   // ===== CIRCLE =====
@@ -426,7 +421,7 @@ createMarker(lat, lon, symbol) {
     return marker;
   }
 
-  pixelOffset() {
+  function pixelOffset() {
     const zoom = map.getZoom();
     const scale = 40075016.686 / Math.pow(2, zoom + 8);
     const latOffset = size * scale / 111320;
@@ -520,7 +515,7 @@ buildDayCheckboxes();
 
 
 // Select/Deselect all checkboxes
-setCheckboxGroup(containerId, checked) {
+function setCheckboxGroup(containerId, checked) {
   document.querySelectorAll(`#${containerId} input`).forEach(b => (b.checked = checked));
   applyFilters();
 }
@@ -551,7 +546,7 @@ document.getElementById("routeDayNone").onclick = () => {
 
 
 // ================= APPLY MAP FILTERS =================
-applyFilters() {
+function applyFilters() {
   const routes = [...document.querySelectorAll("#routeCheckboxes input:checked")].map(i => i.value);
   const days   = [...document.querySelectorAll("#dayCheckboxes input:checked")].map(i => i.value);
 
@@ -566,7 +561,7 @@ applyFilters() {
 
 
 // ================= ROUTE STATISTICS =================
-updateStats() {
+function updateStats() {
   const list = document.getElementById("statsList");
   list.innerHTML = "";
 
@@ -1023,12 +1018,6 @@ const completeBtn = document.getElementById("completeStopsBtn");
 if (completeBtn) {
   completeBtn.onclick = completeSelectedStops;
 }
-// ===== MOBILE COMPLETE BUTTON =====
-const completeMobileBtn = document.getElementById("completeStopsBtnMobile");
-
-if (completeMobileBtn) {
-  completeMobileBtn.onclick = completeSelectedStops;
-}
    
 
   
@@ -1432,18 +1421,6 @@ window.addEventListener("resize", placeLocateButton);
 
 
 
-// ===== DELIVERED LAYER TOGGLE =====
-const deliveredToggle = document.getElementById("toggleDelivered");
-
-if (deliveredToggle) {
-  deliveredToggle.onchange = () => {
-    if (deliveredToggle.checked) {
-      deliveredLayer.addTo(map);
-    } else {
-      map.removeLayer(deliveredLayer);
-    }
-  };
-}
 
 
 

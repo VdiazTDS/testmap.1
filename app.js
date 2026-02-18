@@ -1017,10 +1017,7 @@ const completeBtn = document.getElementById("completeStopsBtn");
 if (completeBtn) {
   completeBtn.onclick = completeSelectedStops;
 }
-    const completeBtnMobile = document.getElementById("completeStopsBtnMobile");
-if (completeBtnMobile) {
-  completeBtnMobile.onclick = completeSelectedStops;
-}
+   
 
   
 // Toggle sidebar open/closed

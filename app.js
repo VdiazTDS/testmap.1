@@ -17,7 +17,8 @@ const BUCKET = "excel-files";
 document.addEventListener("DOMContentLoaded", () => {
   initApp();
   });
-
+/* ⭐ Ensures mobile buttons move AFTER full page load */
+window.addEventListener("load", placeLocateButton);
 
 // ===== USER GEOLOCATION =====
 function locateUser() {

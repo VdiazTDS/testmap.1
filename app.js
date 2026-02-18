@@ -343,7 +343,7 @@ function completeSelectedStops() {
 
 
   
-}
+
 
 // ===== WHEN POLYGON IS DRAWN =====
 map.on(L.Draw.Event.CREATED, e => {

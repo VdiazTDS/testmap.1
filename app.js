@@ -64,12 +64,24 @@ function startLiveTracking() {
   }
 
   watchId = navigator.geolocation.watchPosition(
+    startHeadingTracking();
+
     (pos) => {
       const lat = pos.coords.latitude;
       const lng = pos.coords.longitude;
       const accuracy = pos.coords.accuracy;
 
       const latlng = [lat, lng];
+      // ===== Heading Arrow =====
+if (!headingMarker) {
+  headingMarker = L.marker(latlng, {
+    icon: createHeadingIcon(currentHeading),
+    interactive: false
+  }).addTo(map);
+} else {
+  headingMarker.setLatLng(latlng);
+}
+
 
       // Smooth follow
       map.flyTo(latlng, Math.max(map.getZoom(), 16), { duration: 1.2 });
@@ -108,7 +120,62 @@ if (!userCircle) {
     }
   );
 }
+//===direction user is facing
+let headingMarker = null;
+let currentHeading = 0;
 
+function createHeadingIcon(angle) {
+  return L.divIcon({
+    className: "heading-icon",
+    html: `
+      <div style="
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 18px solid #42a5f5;
+        transform: rotate(${angle}deg);
+        transition: transform 0.15s linear;
+      "></div>
+    `,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+  });
+}
+
+
+
+
+function startHeadingTracking() {
+  if (typeof DeviceOrientationEvent !== "undefined") {
+
+    if (typeof DeviceOrientationEvent.requestPermission === "function") {
+      DeviceOrientationEvent.requestPermission()
+        .then(permissionState => {
+          if (permissionState === "granted") {
+            window.addEventListener("deviceorientation", updateHeading);
+          }
+        })
+        .catch(console.error);
+    } else {
+      window.addEventListener("deviceorientation", updateHeading);
+    }
+
+  }
+}
+
+
+
+
+function updateHeading(event) {
+  if (event.alpha === null) return;
+
+  currentHeading = 360 - event.alpha; // Convert to compass style
+
+  if (headingMarker) {
+    headingMarker.setIcon(createHeadingIcon(currentHeading));
+  }
+}
 
 
 
@@ -1195,6 +1262,13 @@ if (locateBtn) {
         navigator.geolocation.clearWatch(watchId);
         watchId = null;
       }
+      if (headingMarker) {
+  map.removeLayer(headingMarker);
+  headingMarker = null;
+}
+
+window.removeEventListener("deviceorientation", updateHeading);
+
 
       locateBtn.textContent = "📍";
       locateBtn.classList.remove("tracking"); // 🔵 back to blue

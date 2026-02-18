@@ -56,7 +56,7 @@ let userCircle = null;
 
 
 
-function startLiveTracking() {
+startLiveTracking() {
   if (!navigator.geolocation) {
     alert("Geolocation is not supported on this device.");
     return;
@@ -125,7 +125,7 @@ watchId = navigator.geolocation.watchPosition(
 let headingMarker = null;
 let currentHeading = 0;
 
-function createHeadingIcon(angle) {
+createHeadingIcon(angle) {
   return L.divIcon({
     className: "heading-icon-modern",
     html: `
@@ -152,7 +152,7 @@ function createHeadingIcon(angle) {
 
 
 
-function startHeadingTracking() {
+startHeadingTracking() {
   if (typeof DeviceOrientationEvent !== "undefined") {
 
     if (typeof DeviceOrientationEvent.requestPermission === "function") {
@@ -173,7 +173,7 @@ function startHeadingTracking() {
 
 
 
-function updateHeading(event) {
+updateHeading(event) {
   if (event.alpha === null) return;
 
   currentHeading = 360 - event.alpha; // Convert to compass style
@@ -229,7 +229,7 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // ================= FILE NAME MATCHING =================
 // Makes route files and route summary files match even if
 // spacing, punctuation, or "RouteSummary" text is different.
-function normalizeName(name) {
+normalizeName(name) {
   return name
     .toLowerCase()
     .replace(".xlsx", "")
@@ -278,8 +278,8 @@ const drawControl = new L.Control.Draw({
 
 map.addControl(drawControl);
 
-// ===== SELECTION COUNT FUNCTION (GLOBAL & CORRECT) =====
-function updateSelectionCount() {
+// ===== SELECTION COUNT (GLOBAL & CORRECT) =====
+updateSelectionCount() {
   const polygon = drawnLayer.getLayers()[0];
   let count = 0;
 
@@ -309,7 +309,7 @@ function updateSelectionCount() {
 
 
 // ===== COMPLETE SELECTED STOPS =====
-function completeSelectedStops() {
+completeSelectedStops() {
   const polygon = drawnLayer.getLayers()[0];
   if (!polygon) return;
 
@@ -377,13 +377,13 @@ let globalBounds = L.latLngBounds(); // used to zoom map to all points
 
 
 // Convert day number → day name
-function dayName(n) {
+dayName(n) {
   return ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"][n-1];
 }
 
 
 // Assign a unique color/shape to each route/day
-function getSymbol(key) {
+getSymbol(key) {
   if (!symbolMap[key]) {
     symbolMap[key] = {
       color: colors[symbolIndex % colors.length],
@@ -395,7 +395,7 @@ function getSymbol(key) {
 }
 
 //=====
-function getMarkerPixelSize() {
+getMarkerPixelSize() {
   const z = map.getZoom();
 
   if (z <= 5) return 2;
@@ -409,7 +409,7 @@ function getMarkerPixelSize() {
 
 
 // Create marker with correct shape
-function createMarker(lat, lon, symbol) {
+createMarker(lat, lon, symbol) {
   const size = getMarkerPixelSize();
 
   // ===== CIRCLE =====
@@ -426,7 +426,7 @@ function createMarker(lat, lon, symbol) {
     return marker;
   }
 
-  function pixelOffset() {
+  pixelOffset() {
     const zoom = map.getZoom();
     const scale = 40075016.686 / Math.pow(2, zoom + 8);
     const latOffset = size * scale / 111320;
@@ -481,7 +481,7 @@ function createMarker(lat, lon, symbol) {
 
 
 // ================= FILTER CHECKBOX UI =================
-function buildRouteCheckboxes(routes) {
+buildRouteCheckboxes(routes) {
   const c = document.getElementById("routeCheckboxes");
   c.innerHTML = "";
 
@@ -505,7 +505,7 @@ function buildRouteCheckboxes(routes) {
 
 
 
-function buildDayCheckboxes() {
+buildDayCheckboxes() {
   const c = document.getElementById("dayCheckboxes");
   c.innerHTML = "";
 
@@ -520,7 +520,7 @@ buildDayCheckboxes();
 
 
 // Select/Deselect all checkboxes
-function setCheckboxGroup(containerId, checked) {
+setCheckboxGroup(containerId, checked) {
   document.querySelectorAll(`#${containerId} input`).forEach(b => (b.checked = checked));
   applyFilters();
 }
@@ -551,7 +551,7 @@ document.getElementById("routeDayNone").onclick = () => {
 
 
 // ================= APPLY MAP FILTERS =================
-function applyFilters() {
+applyFilters() {
   const routes = [...document.querySelectorAll("#routeCheckboxes input:checked")].map(i => i.value);
   const days   = [...document.querySelectorAll("#dayCheckboxes input:checked")].map(i => i.value);
 
@@ -566,7 +566,7 @@ function applyFilters() {
 
 
 // ================= ROUTE STATISTICS =================
-function updateStats() {
+updateStats() {
   const list = document.getElementById("statsList");
   list.innerHTML = "";
 
@@ -1008,7 +1008,7 @@ function placeLocateButton() {
 }
 
 
-function InitApp() {
+function initApp() {
 
 // ===== RIGHT SIDEBAR TOGGLE =====
 

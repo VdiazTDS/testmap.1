@@ -1030,3 +1030,23 @@ header {
   will-change: transform;
 }
 
+/* ===== MOBILE COMPLETE BUTTON ===== */
+
+/* Hide mobile button on desktop */
+#completeStopsBtnMobile {
+  display: none;
+}
+
+/* On small screens */
+@media (max-width: 768px) {
+
+  /* Hide sidebar version */
+  #completeStopsBtn {
+    display: none;
+  }
+
+  /* Show header version */
+  #completeStopsBtnMobile {
+    display: inline-block;
+  }
+}

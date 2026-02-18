@@ -1012,3 +1012,21 @@ header {
   
 
 }
+
+
+/* =====================================================
+   MODERN HEADING ARROW (GPS DIRECTION INDICATOR)
+   ===================================================== */
+
+.heading-icon-modern {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 6px rgba(66,165,245,0.6));
+}
+
+/* Smooth rotation container */
+.heading-icon-modern > div {
+  will-change: transform;
+}
+

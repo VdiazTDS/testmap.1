@@ -1008,7 +1008,7 @@ function placeLocateButton() {
 }
 
 
-function () {
+function InitApp() {
 
 // ===== RIGHT SIDEBAR TOGGLE =====
 

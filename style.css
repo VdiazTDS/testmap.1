@@ -1069,3 +1069,12 @@ header {
   }
 }
 
+/* Ensure mobile header button order */
+@media (max-width: 900px) {
+
+  #hardRefreshBtn { order: 1; }
+  #mobileMenuBtn { order: 2; }
+  #locateMeBtn { order: 3; }
+  #completeStopsBtnMobile { order: 4; }
+
+}

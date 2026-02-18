@@ -977,21 +977,29 @@ function toggleSummary() {
 }
 // ===== PLACE LOCATE BUTTON BASED ON SCREEN SIZE =====
 function placeLocateButton() {
-  const btn = document.getElementById("locateMeBtn");
-  const desktopContainer = document.getElementById("desktopLocateContainer");
+  const locateBtn = document.getElementById("locateMeBtn");
+  const completeBtn = document.getElementById("completeStopsBtn");
   const headerContainer = document.querySelector(".mobile-header-buttons");
+  const desktopContainer = document.getElementById("desktopLocateContainer");
 
-  if (!btn || !desktopContainer || !headerContainer) return;
+  if (!locateBtn || !completeBtn || !headerContainer || !desktopContainer) return;
 
   if (window.innerWidth <= 900) {
-    headerContainer.appendChild(btn);   // 📱 mobile → header
+    // 📱 MOBILE → move both into header
+    headerContainer.appendChild(locateBtn);
+    headerContainer.appendChild(completeBtn);
+
+    // icon-only look on mobile
+    completeBtn.textContent = "✔";
   } else {
-    desktopContainer.appendChild(btn);  // 🖥 desktop → right sidebar
+    // 🖥 DESKTOP → move both into sidebar
+    desktopContainer.appendChild(locateBtn);
+    desktopContainer.appendChild(completeBtn);
+
+    // restore desktop text
+    completeBtn.textContent = "Complete Stops";
   }
 }
-
-window.addEventListener("resize", placeLocateButton);
-window.addEventListener("load", placeLocateButton);
 
 
 function initApp() {

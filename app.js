@@ -1509,6 +1509,8 @@ async function completeStops() {
     alert("Failed to save to cloud.");
     return;
   }
+// 🔥 remove selection polygon after completion
+drawnLayer.clearLayers();
 
   alert(`${completedCount} stop(s) marked Delivered and saved.`);
 }

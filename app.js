@@ -1472,7 +1472,13 @@ async function completeStops() {
         marker._rowRef.del_status = "Delivered";
 
         // visual feedback
-        marker.setStyle?.({ color: "green", fillColor: "green" });
+        marker.setStyle?.({
+  color: "#00E676",
+  fillColor: "#00E676",
+  fillOpacity: 1,
+  opacity: 1
+});
+
 
         completedCount++;
       }

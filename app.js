@@ -808,7 +808,9 @@ data.forEach(file => {
 async function uploadFile(file) {
   if (!file) return;
 
-  const { error } = await sb.storage.from(BUCKET).upload(file.name, file, { upsert: true });
+  const { error } = await sb.storage
+    .from(BUCKET)
+    .upload(file.name, file, { upsert: true });
 
   if (error) {
     console.error("UPLOAD ERROR:", error);
@@ -816,7 +818,12 @@ async function uploadFile(file) {
     return;
   }
 
+  // ✅ remember which file is currently open
+  window._currentFilePath = file.name;
+
+  // load Excel into the map
   processExcelBuffer(await file.arrayBuffer());
+
   listFiles();
 }
 
@@ -1369,15 +1376,6 @@ if (resetBtn) {
   });
 }
 
-const completeDesktop = document.getElementById("completeStopsBtn");
-const completeMobile = document.getElementById("completeStopsBtnMobile");
-
-function handleCompleteStops() {
-  // MOVE your existing "complete stops" logic into this function
-}
-
-if (completeDesktop) completeDesktop.addEventListener("click", handleCompleteStops);
-if (completeMobile) completeMobile.addEventListener("click", handleCompleteStops);
 
 // ===== LIVE GPS BUTTON =====
 const locateBtn = document.getElementById("locateMeBtn");

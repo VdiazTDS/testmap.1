@@ -653,6 +653,8 @@ function processExcelBuffer(buffer) {
   // Read rows as objects
   let rows = XLSX.utils.sheet_to_json(ws);
 
+
+  allRows = rows;
   // --------------------------------------------------
   // Ensure del_status column exists on every row
   // --------------------------------------------------

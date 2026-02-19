@@ -1518,6 +1518,9 @@ async function completeStops() {
   }
 
   const polygonLayer = drawnLayer.getLayers()[0];
+  console.log("POLYGON LAYER:", polygonLayer);
+console.log("ROUTE GROUPS:", routeDayGroups);
+
   if (!polygonLayer) {
     alert("No stops selected.");
     return;
@@ -1547,6 +1550,8 @@ async function completeStops() {
     group.layers.forEach(marker => {
       const base = marker._base;
       if (!base || !map.hasLayer(marker)) return;
+
+      console.log("Checking marker:", base);
 
       const point = { lat: base.lat, lng: base.lon };
 

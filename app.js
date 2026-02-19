@@ -753,12 +753,16 @@ data.forEach(file => {
     openBtn.textContent = "Open Map";
 
     openBtn.onclick = async () => {
-      const { data } = sb.storage.from(BUCKET).getPublicUrl(routeName);
-      const r = await fetch(data.publicUrl);
-      processExcelBuffer(await r.arrayBuffer());
+  const { data } = sb.storage.from(BUCKET).getPublicUrl(routeName);
+  const r = await fetch(data.publicUrl);
 
-      loadSummaryFor(routeName);
-    };
+  // ⭐ STORE CURRENT CLOUD FILE PATH (REQUIRED FOR SAVE)
+  window._currentFilePath = routeName;
+
+  processExcelBuffer(await r.arrayBuffer());
+  loadSummaryFor(routeName);
+};
+
 
     li.appendChild(openBtn);
 

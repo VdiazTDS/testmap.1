@@ -584,12 +584,12 @@ function updateStats() {
 }
   // ===== BUILD ROUTE + DAY LAYER CHECKBOXES =====
 function buildRouteDayLayerControls() {
-  const container = document.getElementById("routeDayControls");
+  const routeDayContainer = document.getElementById("routeDayLayers");
   const deliveredContainer = document.getElementById("deliveredControls");
 
-  if (!container || !deliveredContainer) return;
+  if (!routeDayContainer || !deliveredContainer) return;
 
-  container.innerHTML = "";
+  routeDayContainer.innerHTML = "";
   deliveredContainer.innerHTML = "";
 
   Object.entries(routeDayGroups).forEach(([key, group]) => {
@@ -617,14 +617,14 @@ function buildRouteDayLayerControls() {
     wrapper.appendChild(checkbox);
     wrapper.appendChild(label);
 
+    // 🔥 Separate Delivered from normal Route+Day
     if (type === "Delivered") {
       deliveredContainer.appendChild(wrapper);
     } else {
-      container.appendChild(wrapper);
+      routeDayContainer.appendChild(wrapper);
     }
   });
 }
-
 
 // ================= PROCESS ROUTE EXCEL =================
 function processExcelBuffer(buffer) {

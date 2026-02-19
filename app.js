@@ -1459,20 +1459,43 @@ async function completeStops() {
     group.layers.forEach(marker => {
       const pos = marker.getLatLng();
 
-      if (bounds.contains(pos) && marker._rowRef) {
-        marker._rowRef.del_status = "Delivered";
+     if (bounds.contains(pos) && marker._rowRef) {
 
-        // visual feedback
-        marker.setStyle?.({
-  color: "#00E676",
-  fillColor: "#00E676",
-  fillOpacity: 1,
-  opacity: 1
-});
+  const row = marker._rowRef;
+  const oldKey = Object.keys(routeDayGroups).find(k =>
+    routeDayGroups[k].layers.includes(marker)
+  );
 
+  // mark delivered in Excel data
+  row.del_status = "Delivered";
 
-        completedCount++;
-      }
+  // remove marker from old group
+  if (oldKey) {
+    routeDayGroups[oldKey].layers =
+      routeDayGroups[oldKey].layers.filter(l => l !== marker);
+  }
+
+  // create Delivered group key
+  const deliveredKey = `${row.NEWROUTE}|Delivered`;
+
+  if (!routeDayGroups[deliveredKey]) {
+    routeDayGroups[deliveredKey] = { layers: [] };
+  }
+
+  // recolor marker bright green
+  marker.setStyle?.({
+    color: "#00FF00",
+    fillColor: "#00FF00",
+    fillOpacity: 1,
+    opacity: 1
+  });
+
+  // add marker to Delivered group
+  routeDayGroups[deliveredKey].layers.push(marker);
+
+  completedCount++;
+}
+
     });
   });
 
@@ -1508,6 +1531,7 @@ async function completeStops() {
   }
 // 🔥 remove selection polygon after completion
 drawnLayer.clearLayers();
+buildRouteDayLayerControls(); // 🔥 refresh Delivered + Route/Day UI
 
   alert(`${completedCount} stop(s) marked Delivered and saved.`);
 }

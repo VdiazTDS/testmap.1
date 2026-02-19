@@ -1535,28 +1535,29 @@ console.log("ROUTE GROUPS:", routeDayGroups);
   const newSheet = XLSX.utils.json_to_sheet(window._currentRows);
   window._currentWorkbook.Sheets[window._currentWorkbook.SheetNames[0]] = newSheet;
 
-  // --- convert workbook ---
-  const wbArray = XLSX.write(window._currentWorkbook, {
-    bookType: "xlsx",
-    type: "array"
-  });
+// --- convert workbook ---
+const wbArray = XLSX.write(window._currentWorkbook, {
+  bookType: window._currentFilePath.endsWith(".xlsm") ? "xlsm" : "xlsx",
+  type: "array"
+});
 
-  // --- upload back to Supabase ---
-  const { error } = await sb.storage
-    .from(BUCKET)
-    .upload(window._currentFilePath, wbArray, {
-      upsert: true,
-      contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    });
+// --- convert to Blob (REQUIRED) ---
+const blob = new Blob([wbArray], {
+  type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+});
 
-  if (error) {
-    console.error(error);
-    alert("Failed to save completion to cloud.");
-    return;
-  }
+// --- upload back to Supabase ---
+const { error } = await sb.storage
+  .from(BUCKET)
+  .upload(window._currentFilePath, blob, { upsert: true });
 
-  alert(`${completedCount} stop(s) marked Delivered and saved.`);
+if (error) {
+  console.error(error);
+  alert("Failed to save completion to cloud.");
+  return;
 }
+
+alert(`${completedCount} stop(s) marked Delivered and saved.`);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

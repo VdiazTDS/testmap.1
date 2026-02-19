@@ -8,6 +8,10 @@ window.addEventListener("error", e => {
 const SUPABASE_URL = "https://lffazhbwvorwxineklsy.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Lfh2zlIiTSMB0U-Fe5o6Jg_mJ1qkznh";
 const BUCKET = "excel-files";
+// ===== CURRENT EXCEL STATE =====
+window._currentRows = null;
+window._currentWorkbook = null;
+window._currentFilePath = null;
 
 //======
 
@@ -653,25 +657,11 @@ function processExcelBuffer(buffer) {
   const wb = XLSX.read(new Uint8Array(buffer), { type: "array" });
   const ws = wb.Sheets[wb.SheetNames[0]];
 
-  // Read rows as objects
-  let rows = XLSX.utils.sheet_to_json(ws);
-  
-// ✅ store globally so completeStops() can rewrite & upload
-window._currentWorkbook = wb;
-window._currentRows = rows;
+  const rows = XLSX.utils.sheet_to_json(ws);
 
-
-  allRows = rows;
-  // --------------------------------------------------
-  // Ensure del_status column exists on every row
-  // --------------------------------------------------
-  rows = rows.map(r => ({
-    LATITUDE: r.LATITUDE,
-    LONGITUDE: r.LONGITUDE,
-    NEWROUTE: r.NEWROUTE,
-    NEWDAY: r.NEWDAY,
-    del_status: r.del_status || ""   // create column if missing
-  }));
+  // store globally for saving later
+  window._currentRows = rows;
+  window._currentWorkbook = wb;
 
   // Clear previous map data
   Object.values(routeDayGroups).forEach(g => g.layers.forEach(l => map.removeLayer(l)));
@@ -682,9 +672,6 @@ window._currentRows = rows;
 
   const routeSet = new Set();
 
-  // --------------------------------------------------
-  // Create markers
-  // --------------------------------------------------
   rows.forEach(row => {
     const lat = Number(row.LATITUDE);
     const lon = Number(row.LONGITUDE);
@@ -698,33 +685,25 @@ window._currentRows = rows;
 
     if (!routeDayGroups[key]) routeDayGroups[key] = { layers: [] };
 
-    const m = createMarker(lat, lon, symbol)
+    const marker = createMarker(lat, lon, symbol)
       .bindPopup(`Route ${route}<br>${dayName(day)}`)
       .addTo(map);
 
-    // store reference to row so we can update del_status later
-    m._rowRef = row;
+    // 🔥 CRITICAL: link marker to Excel row
+    marker._rowRef = row;
 
-    routeDayGroups[key].layers.push(m);
+    routeDayGroups[key].layers.push(marker);
     routeSet.add(route);
     globalBounds.extend([lat, lon]);
   });
 
   buildRouteCheckboxes([...routeSet]);
-
-  // REQUIRED
   buildRouteDayLayerControls();
-
   applyFilters();
-  map.fitBounds(globalBounds);
 
-  // --------------------------------------------------
-  // Save workbook + rows globally so we can update Excel later
-  // --------------------------------------------------
-  window._currentWorkbook = wb;
-  window._currentWorksheet = ws;
-  window._currentRows = rows;
+  if (globalBounds.isValid()) map.fitBounds(globalBounds);
 }
+
 
 
 // ================= LIST FILES FROM CLOUD =================
@@ -818,12 +797,10 @@ async function uploadFile(file) {
     return;
   }
 
-  // ✅ remember which file is currently open
+  // remember current cloud file
   window._currentFilePath = file.name;
 
-  // load Excel into the map
   processExcelBuffer(await file.arrayBuffer());
-
   listFiles();
 }
 
@@ -1473,103 +1450,69 @@ window.addEventListener("resize", placeLocateButton);
 // ================= COMPLETE STOPS + SAVE TO CLOUD =================
 async function completeStops() {
   if (!window._currentRows || !window._currentWorkbook || !window._currentFilePath) {
-    alert("No cloud Excel file loaded.");
+    alert("No Excel file loaded.");
     return;
   }
 
-  const polygonLayer = drawnLayer.getLayers()[0];
-  console.log("POLYGON LAYER:", polygonLayer);
-console.log("ROUTE GROUPS:", routeDayGroups);
-
-  if (!polygonLayer) {
-    alert("No stops selected.");
+  const polygon = drawnLayer.getLayers()[0];
+  if (!polygon) {
+    alert("Draw a selection first.");
     return;
   }
 
-  const polygon = polygonLayer.getLatLngs()[0]; // true polygon shape
   let completedCount = 0;
+  const bounds = polygon.getBounds();
 
-  // --- helper: point inside polygon ---
-  function pointInPolygon(point, vs) {
-    let inside = false;
-    for (let i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-      const xi = vs[i].lat, yi = vs[i].lng;
-      const xj = vs[j].lat, yj = vs[j].lng;
-
-      const intersect =
-        yi > point.lng !== yj > point.lng &&
-        point.lat < ((xj - xi) * (point.lng - yi)) / (yj - yi) + xi;
-
-      if (intersect) inside = !inside;
-    }
-    return inside;
-  }
-
-  // --- find selected markers ---
+  // find markers inside polygon
   Object.values(routeDayGroups).forEach(group => {
     group.layers.forEach(marker => {
-      const base = marker._base;
-      if (!base || !map.hasLayer(marker)) return;
+      const pos = marker.getLatLng();
 
-      console.log("Checking marker:", base);
+      if (bounds.contains(pos) && marker._rowRef) {
+        marker._rowRef.del_status = "Delivered";
 
-      const point = { lat: base.lat, lng: base.lon };
-
-      if (pointInPolygon(point, polygon)) {
-        if (marker._rowRef) {
-          marker._rowRef.del_status = "Delivered";
-        }
+        // visual feedback
+        marker.setStyle?.({ color: "green", fillColor: "green" });
 
         completedCount++;
-
-        // turn marker green immediately
-        marker.setStyle?.({ color: "#00ff00", fillColor: "#00ff00" });
       }
     });
   });
 
   if (completedCount === 0) {
-    alert("No stops selected.");
+    alert("No stops inside selection.");
     return;
   }
 
-  // --- rewrite worksheet ---
+  // rewrite worksheet from updated rows
   const newSheet = XLSX.utils.json_to_sheet(window._currentRows);
   window._currentWorkbook.Sheets[window._currentWorkbook.SheetNames[0]] = newSheet;
 
-// --- detect correct Excel type from original file ---
-const isXlsm = window._currentFilePath.toLowerCase().endsWith(".xlsm");
+  // preserve correct Excel format
+  const bookType = window._currentFilePath.toLowerCase().endsWith(".xlsm") ? "xlsm" : "xlsx";
 
-// --- write workbook in matching format ---
-const wbArray = XLSX.write(window._currentWorkbook, {
-  bookType: isXlsm ? "xlsm" : "xlsx",
-  type: "array"
-});
-
-// --- create Blob with correct MIME ---
-const blob = new Blob([wbArray], {
-  type: isXlsm
-    ? "application/vnd.ms-excel.sheet.macroEnabled.12"
-    : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-});
-
-// --- upload and OVERWRITE existing file ---
-const { error } = await sb.storage
-  .from(BUCKET)
-  .upload(window._currentFilePath, blob, {
-    upsert: true,
-    contentType: blob.type
+  const wbArray = XLSX.write(window._currentWorkbook, {
+    bookType,
+    type: "array"
   });
 
-if (error) {
-  console.error(error);
-  alert("Failed to save completion to cloud.");
-  return;
+  // upload back to Supabase (overwrite)
+  const { error } = await sb.storage
+    .from(BUCKET)
+    .upload(window._currentFilePath, wbArray, {
+      upsert: true,
+      contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+
+  if (error) {
+    console.error(error);
+    alert("Failed to save to cloud.");
+    return;
+  }
+
+  alert(`${completedCount} stop(s) marked Delivered and saved.`);
 }
 
-alert(`${completedCount} stop(s) marked Delivered and saved.`);
-
-}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

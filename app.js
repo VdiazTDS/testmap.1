@@ -1573,10 +1573,6 @@ async function completeStops() {
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // 4️⃣ Optional: clear selection after save
-  selectedMarkers.length = 0;
-  updateSelectionUI?.();
-}
 
 // ================= COMPLETE BUTTON EVENTS =================
 document.getElementById("completeStopsBtn")

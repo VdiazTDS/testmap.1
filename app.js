@@ -673,15 +673,16 @@ if (status === "delivered") {
     // 🔥 CRITICAL: link marker to Excel row
     marker._rowRef = row;
 
-   // ✅ Bright green delivered styling
-  if (row.del_status === "Delivered") {
-    marker.setStyle?.({
-      color: "#00FF00",
-      fillColor: "#00FF00",
-      fillOpacity: 1,
-      opacity: 1
-    });
-  }
+  // ✅ Bright green delivered styling (SAFE + NORMALIZED)
+if (status === "delivered") {
+  marker.setStyle?.({
+    color: "#00FF00",
+    fillColor: "#00FF00",
+    fillOpacity: 1,
+    opacity: 1
+  });
+}
+
     
     routeDayGroups[key].layers.push(marker);
     routeSet.add(route);
@@ -1532,7 +1533,7 @@ async function completeStops() {
 // 🔥 remove selection polygon after completion
 drawnLayer.clearLayers();
   // Save current checkbox states
-document.querySelectorAll("#routeDayControls input[type='checkbox']")
+document.querySelectorAll("#routeDayLayers input[type='checkbox']")
   .forEach(cb => {
     const key = cb.dataset.key;
     if (key) layerVisibilityState[key] = cb.checked;

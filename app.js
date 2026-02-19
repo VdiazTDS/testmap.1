@@ -1513,33 +1513,42 @@ async function completeStops() {
     return;
   }
 
-  // 1️⃣ Update selected markers → mark Delivered
+  if (!selectedMarkers.length) {
+    alert("No stops selected.");
+    return;
+  }
+
+  // 1️⃣ Mark selected rows as Delivered
   selectedMarkers.forEach(m => {
     if (m._rowRef) {
       m._rowRef.del_status = "Delivered";
     }
   });
 
-  // 2️⃣ Rebuild Excel from updated rows
-  const ws = XLSX.utils.json_to_sheet(currentRows);
+  // 2️⃣ Rebuild Excel from UPDATED rows
+  const ws = XLSX.utils.json_to_sheet(allRows);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Routes");
 
-  // 3️⃣ Convert workbook → binary array
   const wbArray = XLSX.write(wb, { bookType: "xlsx", type: "array" });
 
-  // ⭐ 4️⃣ UPLOAD BACK TO CLOUD (PASTE HERE)
+  // 3️⃣ OVERWRITE the existing file in cloud storage
   const { error } = await supabase.storage
     .from(BUCKET)
     .upload(window._currentFilePath, wbArray, { upsert: true });
 
   if (error) {
     console.error("Upload failed:", error);
-    alert("Failed to save updates.");
+    alert("Failed to save completed stops.");
     return;
   }
 
-  console.log("Stops saved to cloud successfully");
+  console.log("Stops saved successfully.");
+  alert("Stops marked Delivered and saved.");
+
+  // 4️⃣ Optional: clear selection after save
+  selectedMarkers.length = 0;
+  updateSelectionUI?.();
 }
 
 // ================= COMPLETE BUTTON EVENTS =================

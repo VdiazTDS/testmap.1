@@ -651,11 +651,16 @@ function processExcelBuffer(buffer) {
 
     let key;
 
-if (row.del_status === "Delivered") {
+const status = String(row.del_status || "")
+  .trim()
+  .toLowerCase();
+
+if (status === "delivered") {
   key = `${route}|Delivered`;
 } else {
   key = `${route}|${day}`;
 }
+
 
     const symbol = getSymbol(key);
 

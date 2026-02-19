@@ -1535,21 +1535,29 @@ console.log("ROUTE GROUPS:", routeDayGroups);
   const newSheet = XLSX.utils.json_to_sheet(window._currentRows);
   window._currentWorkbook.Sheets[window._currentWorkbook.SheetNames[0]] = newSheet;
 
-// --- convert workbook ---
+// --- detect correct Excel type from original file ---
+const isXlsm = window._currentFilePath.toLowerCase().endsWith(".xlsm");
+
+// --- write workbook in matching format ---
 const wbArray = XLSX.write(window._currentWorkbook, {
-  bookType: window._currentFilePath.endsWith(".xlsm") ? "xlsm" : "xlsx",
+  bookType: isXlsm ? "xlsm" : "xlsx",
   type: "array"
 });
 
-// --- convert to Blob (REQUIRED) ---
+// --- create Blob with correct MIME ---
 const blob = new Blob([wbArray], {
-  type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  type: isXlsm
+    ? "application/vnd.ms-excel.sheet.macroEnabled.12"
+    : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 });
 
-// --- upload back to Supabase ---
+// --- upload and OVERWRITE existing file ---
 const { error } = await sb.storage
   .from(BUCKET)
-  .upload(window._currentFilePath, blob, { upsert: true });
+  .upload(window._currentFilePath, blob, {
+    upsert: true,
+    contentType: blob.type
+  });
 
 if (error) {
   console.error(error);
@@ -1558,6 +1566,7 @@ if (error) {
 }
 
 alert(`${completedCount} stop(s) marked Delivered and saved.`);
+
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

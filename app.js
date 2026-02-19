@@ -1453,14 +1453,16 @@ async function completeStops() {
   }
 
   let completedCount = 0;
-  const bounds = polygon.getBounds();
+  if (leafletPip.pointInLayer(pos, polygon).length > 0 && marker._rowRef) {
+
 
   // find markers inside polygon
   Object.values(routeDayGroups).forEach(group => {
     group.layers.forEach(marker => {
       const pos = marker.getLatLng();
 
-     if (bounds.contains(pos) && marker._rowRef) {
+     if (leafletPip.pointInLayer(pos, polygon).length > 0 && marker._rowRef) {
+
 
   const row = marker._rowRef;
   const oldKey = Object.keys(routeDayGroups).find(k =>

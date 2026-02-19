@@ -1500,11 +1500,55 @@ placeLocateButton();
 window.addEventListener("resize", placeLocateButton);
 
 
-function completeStops() {
-  console.log("Complete Stops clicked");
+// ================= COMPLETE STOPS + SAVE TO CLOUD =================
+async function completeStops() {
+  if (!window._currentRows || !window._currentWorkbook || !window._currentFilePath) {
+    alert("No cloud Excel file loaded.");
+    return;
+  }
 
-  // TODO: your real completion logic here
+  const selected = selectedMarkers || [];
+
+  if (selected.length === 0) {
+    alert("No stops selected.");
+    return;
+  }
+
+  // Update del_status
+  selected.forEach(marker => {
+    if (marker._rowRef) {
+      marker._rowRef.del_status = "Delivered";
+    }
+  });
+
+  // Rewrite worksheet
+  const newSheet = XLSX.utils.json_to_sheet(window._currentRows);
+  window._currentWorkbook.Sheets[window._currentWorkbook.SheetNames[0]] = newSheet;
+
+  // Convert workbook to binary
+  const wbArray = XLSX.write(window._currentWorkbook, {
+    bookType: "xlsx",
+    type: "array"
+  });
+
+  // Upload back to cloud storage (overwrite original)
+  const { error } = await supabase.storage
+    .from("excel-files")
+    .upload(window._currentFilePath, wbArray, {
+      upsert: true,
+      contentType:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+
+  if (error) {
+    console.error(error);
+    alert("Failed to save completion to cloud.");
+    return;
+  }
+
+  alert(`${selected.length} stop(s) marked Delivered and saved.`);
 }
+
 
 // ================= COMPLETE BUTTON EVENTS =================
 document.getElementById("completeStopsBtn")

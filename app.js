@@ -1436,11 +1436,11 @@ window.addEventListener("resize", placeLocateButton);
 
 }
 
+function completeStops() {
+  console.log("Complete Stops clicked");
 
-  // Position Locate button correctly for desktop/mobile
-  placeLocateButton();
-  window.addEventListener("resize", placeLocateButton);
+  // TODO: your real completion logic here
+}
 
-  // Load saved cloud files
   listFiles();
 }

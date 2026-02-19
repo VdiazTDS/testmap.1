@@ -584,73 +584,47 @@ function updateStats() {
 }
   // ===== BUILD ROUTE + DAY LAYER CHECKBOXES =====
 function buildRouteDayLayerControls() {
-  const container = document.getElementById("routeDayLayers");
-  if (!container) return;
+  const container = document.getElementById("routeDayControls");
+  const deliveredContainer = document.getElementById("deliveredControls");
+
+  if (!container || !deliveredContainer) return;
 
   container.innerHTML = "";
+  deliveredContainer.innerHTML = "";
 
   Object.entries(routeDayGroups).forEach(([key, group]) => {
-    const [route, day] = key.split("|");
-    const sym = symbolMap[key];
+    const [route, type] = key.split("|");
 
-    const item = document.createElement("div");
-    item.className = "route-day-item";
-
-    // LEFT SIDE
-    const left = document.createElement("div");
-    left.className = "route-day-left";
+    const wrapper = document.createElement("div");
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = true;
 
-    const label = document.createElement("span");
-    label.textContent = `Route ${route} — ${dayName(day)}`;
-
-    left.appendChild(checkbox);
-    left.appendChild(label);
-
-    // RIGHT SIDE SYMBOL
-    const icon = document.createElement("span");
-    icon.className = "route-day-symbol";
-
-    if (sym.shape === "circle") {
-      icon.style.background = sym.color;
-      icon.style.borderRadius = "50%";
-    }
-
-    if (sym.shape === "square") {
-      icon.style.background = sym.color;
-    }
-
-    if (sym.shape === "triangle") {
-      icon.style.width = "0";
-      icon.style.height = "0";
-      icon.style.borderLeft = "6px solid transparent";
-      icon.style.borderRight = "6px solid transparent";
-      icon.style.borderBottom = `12px solid ${sym.color}`;
-    }
-
-    if (sym.shape === "diamond") {
-      icon.style.background = sym.color;
-      icon.style.transform = "rotate(45deg)";
-    }
-
-    // TOGGLE VISIBILITY
     checkbox.addEventListener("change", () => {
       group.layers.forEach(layer => {
-        checkbox.checked ? layer.addTo(map) : map.removeLayer(layer);
+        if (checkbox.checked) {
+          map.addLayer(layer);
+        } else {
+          map.removeLayer(layer);
+        }
       });
-
-      updateStats();
-      updateSelectionCount();
     });
 
-    item.appendChild(left);
-    item.appendChild(icon);
-    container.appendChild(item);
+    const label = document.createElement("label");
+    label.textContent = `Route ${route} - ${type}`;
+
+    wrapper.appendChild(checkbox);
+    wrapper.appendChild(label);
+
+    if (type === "Delivered") {
+      deliveredContainer.appendChild(wrapper);
+    } else {
+      container.appendChild(wrapper);
+    }
   });
 }
+
 
 // ================= PROCESS ROUTE EXCEL =================
 function processExcelBuffer(buffer) {
@@ -680,7 +654,14 @@ function processExcelBuffer(buffer) {
 
     if (!lat || !lon || !route || !day) return;
 
-    const key = `${route}|${day}`;
+    let key;
+
+if (row.del_status === "Delivered") {
+  key = `${route}|Delivered`;
+} else {
+  key = `${route}|${day}`;
+}
+
     const symbol = getSymbol(key);
 
     if (!routeDayGroups[key]) routeDayGroups[key] = { layers: [] };
@@ -692,6 +673,16 @@ function processExcelBuffer(buffer) {
     // 🔥 CRITICAL: link marker to Excel row
     marker._rowRef = row;
 
+   // ✅ Bright green delivered styling
+  if (row.del_status === "Delivered") {
+    marker.setStyle?.({
+      color: "#00FF00",
+      fillColor: "#00FF00",
+      fillOpacity: 1,
+      opacity: 1
+    });
+  }
+    
     routeDayGroups[key].layers.push(marker);
     routeSet.add(route);
     globalBounds.extend([lat, lon]);

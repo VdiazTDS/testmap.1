@@ -1437,7 +1437,10 @@ window.addEventListener("resize", placeLocateButton);
 }
 
 
+  // Position Locate button correctly for desktop/mobile
+  placeLocateButton();
+  window.addEventListener("resize", placeLocateButton);
 
-  
+  // Load saved cloud files
   listFiles();
 }

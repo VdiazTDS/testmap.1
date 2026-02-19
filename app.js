@@ -648,7 +648,21 @@ function buildRouteDayLayerControls() {
 // ================= PROCESS ROUTE EXCEL =================
 function processExcelBuffer(buffer) {
   const wb = XLSX.read(new Uint8Array(buffer), { type: "array" });
-  const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+  const ws = wb.Sheets[wb.SheetNames[0]];
+
+  // Read rows as objects
+  let rows = XLSX.utils.sheet_to_json(ws);
+
+  // --------------------------------------------------
+  // Ensure del_status column exists on every row
+  // --------------------------------------------------
+  rows = rows.map(r => ({
+    LATITUDE: r.LATITUDE,
+    LONGITUDE: r.LONGITUDE,
+    NEWROUTE: r.NEWROUTE,
+    NEWDAY: r.NEWDAY,
+    del_status: r.del_status || ""   // create column if missing
+  }));
 
   // Clear previous map data
   Object.values(routeDayGroups).forEach(g => g.layers.forEach(l => map.removeLayer(l)));
@@ -659,7 +673,9 @@ function processExcelBuffer(buffer) {
 
   const routeSet = new Set();
 
+  // --------------------------------------------------
   // Create markers
+  // --------------------------------------------------
   rows.forEach(row => {
     const lat = Number(row.LATITUDE);
     const lon = Number(row.LONGITUDE);
@@ -677,19 +693,28 @@ function processExcelBuffer(buffer) {
       .bindPopup(`Route ${route}<br>${dayName(day)}`)
       .addTo(map);
 
+    // store reference to row so we can update del_status later
+    m._rowRef = row;
+
     routeDayGroups[key].layers.push(m);
     routeSet.add(route);
     globalBounds.extend([lat, lon]);
   });
 
-buildRouteCheckboxes([...routeSet]);
+  buildRouteCheckboxes([...routeSet]);
 
-// 🔴 THIS LINE IS REQUIRED
-buildRouteDayLayerControls();
+  // REQUIRED
+  buildRouteDayLayerControls();
 
-applyFilters();
-map.fitBounds(globalBounds);
+  applyFilters();
+  map.fitBounds(globalBounds);
 
+  // --------------------------------------------------
+  // Save workbook + rows globally so we can update Excel later
+  // --------------------------------------------------
+  window._currentWorkbook = wb;
+  window._currentWorksheet = ws;
+  window._currentRows = rows;
 }
 
 

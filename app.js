@@ -1038,37 +1038,6 @@ function placeLocateButton() {
 // ================= COMPLETE STOPS =================
 
 
-  // Get selected markers
-  const selected = selectedMarkers || [];
-
-  if (selected.length === 0) {
-    alert("No stops selected.");
-    return;
-  }
-
-  // -----------------------------------------
-  // Update del_status in referenced rows
-  // -----------------------------------------
-  selected.forEach(marker => {
-    if (marker._rowRef) {
-      marker._rowRef.del_status = "Delivered";
-    }
-  });
-
-  // -----------------------------------------
-  // Rewrite worksheet with updated rows
-  // -----------------------------------------
-  const newSheet = XLSX.utils.json_to_sheet(window._currentRows);
-  window._currentWorkbook.Sheets[window._currentWorkbook.SheetNames[0]] = newSheet;
-
-  // -----------------------------------------
-  // Download updated Excel file
-  // -----------------------------------------
-  XLSX.writeFile(window._currentWorkbook, "updated_routes.xlsx");
-
-  alert(`${selected.length} stop(s) marked as Delivered.`);
-}
-
 
 
 

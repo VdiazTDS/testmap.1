@@ -1510,35 +1510,55 @@ window.addEventListener("resize", placeLocateButton);
 
 
 // ================= COMPLETE STOPS + SAVE TO CLOUD =================
+// ================= COMPLETE STOPS + SAVE TO CLOUD =================
 async function completeStops() {
   if (!window._currentRows || !window._currentWorkbook || !window._currentFilePath) {
     alert("No cloud Excel file loaded.");
     return;
   }
 
-  const polygon = drawnLayer.getLayers()[0];
-  if (!polygon) {
+  const polygonLayer = drawnLayer.getLayers()[0];
+  if (!polygonLayer) {
     alert("No stops selected.");
     return;
   }
 
+  const polygon = polygonLayer.getLatLngs()[0]; // true polygon shape
   let completedCount = 0;
 
-  // Find markers inside polygon
-  Object.entries(routeDayGroups).forEach(([key, group]) => {
+  // --- helper: point inside polygon ---
+  function pointInPolygon(point, vs) {
+    let inside = false;
+    for (let i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+      const xi = vs[i].lat, yi = vs[i].lng;
+      const xj = vs[j].lat, yj = vs[j].lng;
+
+      const intersect =
+        yi > point.lng !== yj > point.lng &&
+        point.lat < ((xj - xi) * (point.lng - yi)) / (yj - yi) + xi;
+
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }
+
+  // --- find selected markers ---
+  Object.values(routeDayGroups).forEach(group => {
     group.layers.forEach(marker => {
       const base = marker._base;
-      if (!base) return;
+      if (!base || !map.hasLayer(marker)) return;
 
-      const latlng = L.latLng(base.lat, base.lon);
+      const point = { lat: base.lat, lng: base.lon };
 
-      if (polygon.getBounds().contains(latlng)) {
-        // ✅ Update Excel row
+      if (pointInPolygon(point, polygon)) {
         if (marker._rowRef) {
           marker._rowRef.del_status = "Delivered";
         }
 
         completedCount++;
+
+        // turn marker green immediately
+        marker.setStyle?.({ color: "#00ff00", fillColor: "#00ff00" });
       }
     });
   });
@@ -1548,17 +1568,17 @@ async function completeStops() {
     return;
   }
 
-  // Rewrite worksheet
+  // --- rewrite worksheet ---
   const newSheet = XLSX.utils.json_to_sheet(window._currentRows);
   window._currentWorkbook.Sheets[window._currentWorkbook.SheetNames[0]] = newSheet;
 
-  // Convert workbook to binary
+  // --- convert workbook ---
   const wbArray = XLSX.write(window._currentWorkbook, {
     bookType: "xlsx",
     type: "array"
   });
 
-  // Upload back to Supabase (overwrite original)
+  // --- upload back to Supabase ---
   const { error } = await sb.storage
     .from(BUCKET)
     .upload(window._currentFilePath, wbArray, {
@@ -1574,6 +1594,7 @@ async function completeStops() {
 
   alert(`${completedCount} stop(s) marked Delivered and saved.`);
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

@@ -1436,12 +1436,6 @@ window.addEventListener("resize", placeLocateButton);
 
 }
 
-function completeStops() {
-  console.log("Complete Stops clicked");
-
-  // TODO: your real completion logic here
-}
-
 
 
   

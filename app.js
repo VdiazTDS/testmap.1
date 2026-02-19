@@ -277,34 +277,35 @@ map.addControl(drawControl);
 
 // ===== SELECTION COUNT FUNCTION (GLOBAL & CORRECT) =====
 function updateSelectionCount() {
-  const polygon = drawnLayer.getLayers()[0];
-  let count = 0;
+const polygon = drawnLayer.getLayers()[0];
+let count = 0;
 
- Object.entries(routeDayGroups).forEach(([key, group]) => {
-  group.layers.forEach(marker => {
-    const base = marker._base;
-    if (!base) return;
+Object.entries(routeDayGroups).forEach(([key, group]) => {
+ group.layers.forEach(marker => {
+   const base = marker._base;
+   if (!base) return;
 
-    const latlng = L.latLng(base.lat, base.lon);
+   const latlng = L.latLng(base.lat, base.lon);
 
-    if (
-      polygon &&
-      polygon.getBounds().contains(latlng) &&
-      map.hasLayer(marker)
-    ) {
-      if (marker._rowRef) {
-        marker._rowRef.del_status = "Delivered";
-      }
+   if (
+     polygon &&
+     polygon.getBounds().contains(latlng) &&
+     map.hasLayer(marker)
+   ) {
+     // highlight selected marker
+     marker.setStyle?.({ color: "#ffff00", fillColor: "#ffff00" });
 
-      completedCount++;
-    }
-  });
+     count++; // ✅ only counting here
+   } else {
+     // restore original color
+     const sym = symbolMap[key];
+     marker.setStyle?.({ color: sym.color, fillColor: sym.color });
+   }
+ });
 });
 
-
-  document.getElementById("selectionCount").textContent = count;
+document.getElementById("selectionCount").textContent = count;
 }
-
 
 
 // ===== COMPLETE SELECTED STOPS =====

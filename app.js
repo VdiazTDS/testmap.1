@@ -302,9 +302,6 @@ function updateSelectionCount() {
 });
 
 
-    });
-  });
-
   document.getElementById("selectionCount").textContent = count;
 }
 

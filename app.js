@@ -280,23 +280,28 @@ function updateSelectionCount() {
   const polygon = drawnLayer.getLayers()[0];
   let count = 0;
 
-  Object.entries(routeDayGroups).forEach(([key, group]) => {
-    const sym = symbolMap[key];
+ Object.entries(routeDayGroups).forEach(([key, group]) => {
+  group.layers.forEach(marker => {
+    const base = marker._base;
+    if (!base) return;
 
-    group.layers.forEach(layer => {
-      const base = layer._base;
-      if (!base) return;
+    const latlng = L.latLng(base.lat, base.lon);
 
-      const latlng = L.latLng(base.lat, base.lon);
-
-      // Reset original color
-      layer.setStyle?.({ color: sym.color, fillColor: sym.color });
-
-      // Highlight if inside polygon
-      if (polygon && polygon.getBounds().contains(latlng) && map.hasLayer(layer)) {
-        layer.setStyle?.({ color: "#ffff00", fillColor: "#ffff00" });
-        count++;
+    if (
+      polygon &&
+      polygon.getBounds().contains(latlng) &&
+      map.hasLayer(marker)
+    ) {
+      if (marker._rowRef) {
+        marker._rowRef.del_status = "Delivered";
       }
+
+      completedCount++;
+    }
+  });
+});
+
+
     });
   });
 

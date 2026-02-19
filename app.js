@@ -1508,45 +1508,70 @@ window.addEventListener("resize", placeLocateButton);
 
 // ================= COMPLETE STOPS + SAVE TO CLOUD =================
 async function completeStops() {
-  console.log("Complete Stops clicked");
-
-  if (!window._currentFilePath) {
-    alert("No file open.");
+  if (!window._currentRows || !window._currentWorkbook || !window._currentFilePath) {
+    alert("No cloud Excel file loaded.");
     return;
   }
 
-  if (!selectedMarkers.length) {
+  const polygon = drawnLayer.getLayers()[0];
+  if (!polygon) {
     alert("No stops selected.");
     return;
   }
 
-  // 1️⃣ Mark selected rows as Delivered
-  selectedMarkers.forEach(m => {
-    if (m._rowRef) {
-      m._rowRef.del_status = "Delivered";
-    }
+  let completedCount = 0;
+
+  // Find markers inside polygon
+  Object.entries(routeDayGroups).forEach(([key, group]) => {
+    group.layers.forEach(marker => {
+      const base = marker._base;
+      if (!base) return;
+
+      const latlng = L.latLng(base.lat, base.lon);
+
+      if (polygon.getBounds().contains(latlng)) {
+        // ✅ Update Excel row
+        if (marker._rowRef) {
+          marker._rowRef.del_status = "Delivered";
+        }
+
+        completedCount++;
+      }
+    });
   });
 
-  // 2️⃣ Rebuild Excel from UPDATED rows
-  const ws = XLSX.utils.json_to_sheet(allRows);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Routes");
-
-  const wbArray = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-
-  // 3️⃣ OVERWRITE the existing file in cloud storage
-  const { error } = await supabase.storage
-    .from(BUCKET)
-    .upload(window._currentFilePath, wbArray, { upsert: true });
-
-  if (error) {
-    console.error("Upload failed:", error);
-    alert("Failed to save completed stops.");
+  if (completedCount === 0) {
+    alert("No stops selected.");
     return;
   }
 
-  console.log("Stops saved successfully.");
-  alert("Stops marked Delivered and saved.");
+  // Rewrite worksheet
+  const newSheet = XLSX.utils.json_to_sheet(window._currentRows);
+  window._currentWorkbook.Sheets[window._currentWorkbook.SheetNames[0]] = newSheet;
+
+  // Convert workbook to binary
+  const wbArray = XLSX.write(window._currentWorkbook, {
+    bookType: "xlsx",
+    type: "array"
+  });
+
+  // Upload back to Supabase (overwrite original)
+  const { error } = await sb.storage
+    .from(BUCKET)
+    .upload(window._currentFilePath, wbArray, {
+      upsert: true,
+      contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+
+  if (error) {
+    console.error(error);
+    alert("Failed to save completion to cloud.");
+    return;
+  }
+
+  alert(`${completedCount} stop(s) marked Delivered and saved.`);
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // 4️⃣ Optional: clear selection after save
   selectedMarkers.length = 0;

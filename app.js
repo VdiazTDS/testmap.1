@@ -2,6 +2,7 @@ window.addEventListener("error", e => {
   console.error("JS ERROR:", e.message, "at line", e.lineno);
 });
 
+let layerVisibilityState = {};
 
 // ================= SUPABASE CONFIG =================
 // Connection info for cloud file storage
@@ -568,18 +569,42 @@ function buildRouteDayLayerControls() {
     const wrapper = document.createElement("div");
 
     const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = true;
+checkbox.type = "checkbox";
 
-    checkbox.addEventListener("change", () => {
-      group.layers.forEach(layer => {
-        if (checkbox.checked) {
-          map.addLayer(layer);
-        } else {
-          map.removeLayer(layer);
-        }
-      });
-    });
+    checkbox.dataset.key = key;
+    
+// Restore previous state if it exists
+if (layerVisibilityState.hasOwnProperty(key)) {
+  checkbox.checked = layerVisibilityState[key];
+} else {
+  checkbox.checked = true; // default first time
+}
+
+// Apply visibility immediately
+routeDayGroups[key].layers.forEach(marker => {
+  if (checkbox.checked) {
+    map.addLayer(marker);
+  } else {
+    map.removeLayer(marker);
+  }
+});
+
+// When user toggles checkbox
+checkbox.addEventListener("change", () => {
+
+  layerVisibilityState[key] = checkbox.checked;
+
+  routeDayGroups[key].layers.forEach(marker => {
+    if (checkbox.checked) {
+      map.addLayer(marker);
+    } else {
+      map.removeLayer(marker);
+    }
+  });
+
+});
+
+   
 
     const label = document.createElement("label");
     label.textContent = `Route ${route} - ${type}`;
@@ -1501,6 +1526,19 @@ async function completeStops() {
   }
 // 🔥 remove selection polygon after completion
 drawnLayer.clearLayers();
+  // Save current checkbox states
+document.querySelectorAll("#routeDayControls input[type='checkbox']")
+  .forEach(cb => {
+    const key = cb.dataset.key;
+    if (key) layerVisibilityState[key] = cb.checked;
+  });
+
+document.querySelectorAll("#deliveredControls input[type='checkbox']")
+  .forEach(cb => {
+    const key = cb.dataset.key;
+    if (key) layerVisibilityState[key] = cb.checked;
+  });
+
 buildRouteDayLayerControls(); // 🔥 refresh Delivered + Route/Day UI
 
   alert(`${completedCount} stop(s) marked Delivered and saved.`);

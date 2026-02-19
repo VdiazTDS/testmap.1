@@ -1453,7 +1453,7 @@ async function completeStops() {
   }
 
   let completedCount = 0;
-  if (leafletPip.pointInLayer(pos, polygon).length > 0 && marker._rowRef) {
+ 
 
 
   // find markers inside polygon

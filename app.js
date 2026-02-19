@@ -1036,11 +1036,7 @@ function placeLocateButton() {
   }
 }
 // ================= COMPLETE STOPS =================
-function completeStops() {
-  if (!window._currentRows || !window._currentWorkbook) {
-    alert("No Excel data loaded.");
-    return;
-  }
+
 
   // Get selected markers
   const selected = selectedMarkers || [];
@@ -1092,13 +1088,6 @@ const clearBtn = document.getElementById("clearSelectionBtn");
 const completeBtnDesktop = document.getElementById("completeStopsBtn");
 const completeBtnMobile  = document.getElementById("completeStopsBtnMobile");
 
-if (completeBtnDesktop) {
-  completeBtnDesktop.addEventListener("click", completeSelectedStops);
-}
-
-if (completeBtnMobile) {
-  completeBtnMobile.addEventListener("click", completeSelectedStops);
-}
 
   
 // Toggle sidebar open/closed

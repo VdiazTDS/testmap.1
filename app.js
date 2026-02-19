@@ -1506,53 +1506,41 @@ window.addEventListener("resize", placeLocateButton);
 
 // ================= COMPLETE STOPS + SAVE TO CLOUD =================
 async function completeStops() {
-  if (!window._currentRows || !window._currentWorkbook || !window._currentFilePath) {
-    alert("No cloud Excel file loaded.");
+  console.log("Complete Stops clicked");
+
+  if (!window._currentFilePath) {
+    alert("No file open.");
     return;
   }
 
-  const selected = selectedMarkers || [];
-
-  if (selected.length === 0) {
-    alert("No stops selected.");
-    return;
-  }
-
-  // Update del_status
-  selected.forEach(marker => {
-    if (marker._rowRef) {
-      marker._rowRef.del_status = "Delivered";
+  // 1️⃣ Update selected markers → mark Delivered
+  selectedMarkers.forEach(m => {
+    if (m._rowRef) {
+      m._rowRef.del_status = "Delivered";
     }
   });
 
-  // Rewrite worksheet
-  const newSheet = XLSX.utils.json_to_sheet(window._currentRows);
-  window._currentWorkbook.Sheets[window._currentWorkbook.SheetNames[0]] = newSheet;
+  // 2️⃣ Rebuild Excel from updated rows
+  const ws = XLSX.utils.json_to_sheet(currentRows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Routes");
 
-  // Convert workbook to binary
-  const wbArray = XLSX.write(window._currentWorkbook, {
-    bookType: "xlsx",
-    type: "array"
-  });
+  // 3️⃣ Convert workbook → binary array
+  const wbArray = XLSX.write(wb, { bookType: "xlsx", type: "array" });
 
-  // Upload back to cloud storage (overwrite original)
+  // ⭐ 4️⃣ UPLOAD BACK TO CLOUD (PASTE HERE)
   const { error } = await supabase.storage
-    .from("excel-files")
-    .upload(window._currentFilePath, wbArray, {
-      upsert: true,
-      contentType:
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    });
+    .from(BUCKET)
+    .upload(window._currentFilePath, wbArray, { upsert: true });
 
   if (error) {
-    console.error(error);
-    alert("Failed to save completion to cloud.");
+    console.error("Upload failed:", error);
+    alert("Failed to save updates.");
     return;
   }
 
-  alert(`${selected.length} stop(s) marked Delivered and saved.`);
+  console.log("Stops saved to cloud successfully");
 }
-
 
 // ================= COMPLETE BUTTON EVENTS =================
 document.getElementById("completeStopsBtn")

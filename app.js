@@ -655,6 +655,10 @@ function processExcelBuffer(buffer) {
 
   // Read rows as objects
   let rows = XLSX.utils.sheet_to_json(ws);
+  
+// ✅ store globally so completeStops() can rewrite & upload
+window._currentWorkbook = wb;
+window._currentRows = rows;
 
 
   allRows = rows;

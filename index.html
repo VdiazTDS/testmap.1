@@ -64,16 +64,26 @@
 
 
     
-    <div class="filter-group">
-      <div class="filter-header">
-        <strong>Routes</strong>
-        <div>
-          <button class="mini-btn" id="routesAll">All</button>
-          <button class="mini-btn" id="routesNone">None</button>
-        </div>
-      </div>
-      <div id="routeCheckboxes"></div>
+  <div class="filter-group">
+
+  <div class="filter-header collapsible-header" id="routesToggle">
+    <div class="routes-title">
+      <span class="arrow">▶</span>
+      <strong>Routes</strong>
     </div>
+
+    <div class="routes-buttons">
+      <button class="mini-btn" id="routesAll">All</button>
+      <button class="mini-btn" id="routesNone">None</button>
+    </div>
+  </div>
+
+  <div id="routesContent" class="collapsible-content collapsed">
+    <div id="routeCheckboxes"></div>
+  </div>
+
+</div>
+
 
 
     

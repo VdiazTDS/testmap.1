@@ -1627,6 +1627,8 @@ window.removeEventListener("deviceorientation", updateHeading);
 // ===== AUTO-RESIZE MARKERS ON ZOOM =====
 map.on("zoomend", () => {
   const newSize = getMarkerPixelSize();
+  const currentZoom = map.getZoom();
+  const STREET_LABEL_ZOOM = 17;
 
   Object.values(routeDayGroups).forEach(group => {
     group.layers.forEach(layer => {
@@ -1636,58 +1638,53 @@ map.on("zoomend", () => {
       // ---- CIRCLE ----
       if (layer.setRadius) {
         layer.setRadius(newSize);
-        return;
-      }
-
-      const { lat, lon, symbol } = base;
-
-      const scale = 40075016.686 / Math.pow(2, map.getZoom() + 8);
-      const dLat = newSize * scale / 111320;
-      const dLng = dLat / Math.cos(lat * Math.PI / 180);
-
-      // ---- SQUARE ----
-      if (symbol.shape === "square") {
-        layer.setBounds([[lat - dLat, lon - dLng], [lat + dLat, lon + dLng]]);
-      }
-
-      // ---- TRIANGLE ----
-      if (symbol.shape === "triangle") {
-        layer.setLatLngs([
-          [lat + dLat, lon],
-          [lat - dLat, lon - dLng],
-          [lat - dLat, lon + dLng]
-        ]);
-      }
-
-      // ---- DIAMOND ----
-      if (symbol.shape === "diamond") {
-        layer.setLatLngs([
-          [lat + dLat, lon],
-          [lat, lon + dLng],
-          [lat - dLat, lon],
-          [lat, lon - dLng]
-        ]);
-      }
-    });
-  });
-});
-   // ===== STREET LABEL ZOOM CONTROL =====
-  const STREET_LABEL_ZOOM = 17;
-  const currentZoom = map.getZoom();
-
-  Object.values(routeDayGroups).forEach(group => {
-    group.layers.forEach(layer => {
-      if (!layer._hasStreetLabel) return;
-
-      if (currentZoom >= STREET_LABEL_ZOOM && map.hasLayer(layer)) {
-        layer.openTooltip();
       } else {
-        layer.closeTooltip();
+        const { lat, lon, symbol } = base;
+
+        const scale = 40075016.686 / Math.pow(2, currentZoom + 8);
+        const dLat = newSize * scale / 111320;
+        const dLng = dLat / Math.cos(lat * Math.PI / 180);
+
+        // ---- SQUARE ----
+        if (symbol.shape === "square") {
+          layer.setBounds([
+            [lat - dLat, lon - dLng],
+            [lat + dLat, lon + dLng]
+          ]);
+        }
+
+        // ---- TRIANGLE ----
+        if (symbol.shape === "triangle") {
+          layer.setLatLngs([
+            [lat + dLat, lon],
+            [lat - dLat, lon - dLng],
+            [lat - dLat, lon + dLng]
+          ]);
+        }
+
+        // ---- DIAMOND ----
+        if (symbol.shape === "diamond") {
+          layer.setLatLngs([
+            [lat + dLat, lon],
+            [lat, lon + dLng],
+            [lat - dLat, lon],
+            [lat, lon - dLng]
+          ]);
+        }
+      }
+
+      // ===== STREET LABEL CONTROL =====
+      if (layer._hasStreetLabel) {
+        if (currentZoom >= STREET_LABEL_ZOOM && map.hasLayer(layer)) {
+          layer.openTooltip();
+        } else {
+          layer.closeTooltip();
+        }
       }
     });
   });
-
 });
+
 
   
 // Position Locate button correctly for desktop/mobile

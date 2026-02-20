@@ -1417,3 +1417,24 @@ body.sun-mode .layer-section {
   background: #ffffff;
   color: #111;
 }
+
+/* ===== FORCE SIDEBAR TEXT TO BE VISIBLE IN SUN MODE ===== */
+
+body.sun-mode .sidebar,
+body.sun-mode .sidebar * {
+  color: #000 !important;
+}
+
+body.sun-mode .sidebar h1,
+body.sun-mode .sidebar h2,
+body.sun-mode .sidebar h3,
+body.sun-mode .sidebar h4 {
+  color: #000 !important;
+  font-weight: 600;
+}
+
+body.sun-mode .sidebar label,
+body.sun-mode .sidebar span,
+body.sun-mode .sidebar p {
+  color: #000 !important;
+}

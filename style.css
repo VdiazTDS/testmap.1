@@ -1316,3 +1316,59 @@ header {
   }
 }
 
+/* ================= SUN MODE ================= */
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.theme-toggle {
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.theme-toggle input {
+  margin-right: 5px;
+}
+
+/* Sunlight Mode Theme */
+
+body.sun-mode {
+  background: #ffffff;
+  color: #000;
+}
+
+body.sun-mode header {
+  background: #ffffff;
+  border-bottom: 2px solid #ccc;
+}
+
+body.sun-mode .sidebar {
+  background: #f5f5f5;
+  color: #000;
+}
+
+body.sun-mode #selectionBox {
+  background: #ffffff;
+  color: #000;
+}
+
+body.sun-mode .filter-group {
+  border-color: #ccc;
+}
+
+body.sun-mode .primary-btn {
+  background: #000;
+  color: #fff;
+}
+
+body.sun-mode .mini-btn {
+  background: #e0e0e0;
+  color: #000;
+}

@@ -1234,3 +1234,15 @@ header {
 .undo-btn.pulse {
   animation: undoPulse 1.8s infinite;
 }
+
+/* Move LEFT controls (zoom, draw, etc.) halfway down */
+.leaflet-top.leaflet-left {
+  top: 50% !important;
+  transform: translateY(-50%);
+}
+
+/* Move RIGHT controls (if any) halfway down */
+.leaflet-top.leaflet-right {
+  top: 50% !important;
+  transform: translateY(-50%);
+}

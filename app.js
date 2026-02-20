@@ -397,10 +397,14 @@ function getSymbol(key) {
   return symbolMap[key];
 }
 
-//=====
 function getMarkerPixelSize() {
   const z = map.getZoom();
-  return Math.max(1, z * 0.4);
+
+  if (z <= 5) return 1;      // very small when fully zoomed out
+  if (z <= 8) return 1.5;    // small at city view
+  if (z <= 11) return 3;
+  if (z <= 14) return 5;
+  return 7;                  // normal size when zoomed in
 }
 
 

@@ -1476,3 +1476,32 @@ body.sun-mode .filter-header {
   background: transparent !important;
 }
 
+/* ================= SUN MODE – SIDEBAR FIX ================= */
+
+body.sun-mode .sidebar {
+  background: #f4f6f8 !important;
+  color: #000 !important;
+}
+
+/* Force all text inside sidebar to be readable */
+body.sun-mode .sidebar strong,
+body.sun-mode .sidebar label,
+body.sun-mode .sidebar span,
+body.sun-mode .sidebar div,
+body.sun-mode .sidebar li,
+body.sun-mode .sidebar button,
+body.sun-mode .sidebar p {
+  color: #000 !important;
+}
+
+/* Section boxes */
+body.sun-mode .filter-group {
+  background: #ffffff !important;
+  border: 1px solid #ddd !important;
+}
+
+/* Remove dark header backgrounds */
+body.sun-mode .filter-header {
+  background: transparent !important;
+}
+

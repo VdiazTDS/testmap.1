@@ -78,14 +78,23 @@
 
     
     <div class="filter-group">
-      <div class="filter-header">
-        <strong>Days</strong>
-        <div>
-          <button class="mini-btn" id="daysAll">All</button>
-          <button class="mini-btn" id="daysNone">None</button>
-        </div>
-      </div>
-      <div id="dayCheckboxes"></div>
+      
+       <div class="filter-header collapsible-header" id="daysToggle">
+    <div class="days-title">
+      <span class="arrow">▶</span>
+      <strong>Days</strong>
+    </div>
+
+    <div class="days-buttons">
+      <button class="mini-btn" id="daysAll">All</button>
+      <button class="mini-btn" id="daysNone">None</button>
+    </div>
+  </div>
+
+  <div id="daysContent" class="collapsible-content collapsed">
+    <div id="dayCheckboxes"></div>
+  </div>
+      
     </div>
 
 

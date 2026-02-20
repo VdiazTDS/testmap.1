@@ -1607,11 +1607,16 @@ updateUndoButtonState();
   alert(`${completedCount} stop(s) marked Delivered and saved.`);
 }
 ////////undo delivered stops
- async function undoDelivered() {
+async function undoDelivered() {
+
+  const confirmed = confirm("Are you sure you want to undo Delivered stops inside the selected area?");
+  if (!confirmed) return;
+
   if (!window._currentRows || !window._currentWorkbook || !window._currentFilePath) {
     alert("No Excel file loaded.");
     return;
   }
+
 
   const polygon = drawnLayer.getLayers()[0];
   if (!polygon) {

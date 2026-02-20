@@ -25,6 +25,31 @@ const DELETE_PASSWORD = "Austin1";  // ← change to whatever you want
 
 document.addEventListener("DOMContentLoaded", () => {
   initApp();
+  document.addEventListener("DOMContentLoaded", initApp);
+
+
+// ================= SUN MODE TOGGLE =================
+
+const sunToggle = document.getElementById("sunModeToggle");
+
+// Load saved preference
+if (localStorage.getItem("sunMode") === "on") {
+  document.body.classList.add("sun-mode");
+  if (sunToggle) sunToggle.checked = true;
+}
+
+if (sunToggle) {
+  sunToggle.addEventListener("change", () => {
+    if (sunToggle.checked) {
+      document.body.classList.add("sun-mode");
+      localStorage.setItem("sunMode", "on");
+    } else {
+      document.body.classList.remove("sun-mode");
+      localStorage.setItem("sunMode", "off");
+    }
+  });
+}
+
   });
 /* ⭐ Ensures mobile buttons move AFTER full page load */
 window.addEventListener("load", placeLocateButton);

@@ -1038,7 +1038,21 @@ function placeLocateButton() {
     completeBtn.textContent = "Complete Stops";
   }
 }
-// ================= COMPLETE STOPS =================
+//undo button state
+function updateUndoButtonState() {
+  const undoBtn = document.getElementById("undoDeliveredBtn");
+  if (!undoBtn) return;
+
+  const hasDelivered = Object.entries(routeDayGroups).some(([key, group]) =>
+    key.endsWith("|Delivered") && group.layers.length > 0
+  );
+
+  if (hasDelivered) {
+    undoBtn.classList.add("pulse");
+  } else {
+    undoBtn.classList.remove("pulse");
+  }
+}
 
 
 
@@ -1572,6 +1586,7 @@ document.querySelectorAll("#deliveredControls input[type='checkbox']")
   });
 
 buildRouteDayLayerControls(); // 🔥 refresh Delivered + Route/Day UI
+updateUndoButtonState();
 
   alert(`${completedCount} stop(s) marked Delivered and saved.`);
 }
@@ -1670,6 +1685,7 @@ buildRouteDayLayerControls(); // 🔥 refresh Delivered + Route/Day UI
   drawnLayer.clearLayers();
 
   buildRouteDayLayerControls();
+updateUndoButtonState();
 
   alert(`${undoCount} stop(s) restored.`);
 }
@@ -1713,12 +1729,6 @@ if (routesToggle && routesContent) {
 
     routesToggle.classList.toggle("open", !isCollapsed);
   });
-}
-///// undo pulse
-  if (deliveredStops.length > 0) {
-  undoBtn.classList.add("pulse");
-} else {
-  undoBtn.classList.remove("pulse");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

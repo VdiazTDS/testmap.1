@@ -839,9 +839,15 @@ data.forEach(file => {
     const openBtn = document.createElement("button");
     openBtn.textContent = "Open Map";
 
-    openBtn.onclick = async () => {
+   openBtn.onclick = async () => {
   const { data } = sb.storage.from(BUCKET).getPublicUrl(routeName);
-  const r = await fetch(data.publicUrl);
+
+  // 🔥 FORCE FRESH FILE (NO CACHE)
+  const urlWithBypass = data.publicUrl + "?v=" + Date.now();
+
+  const r = await fetch(urlWithBypass, {
+    cache: "no-store"
+  });
 
   // ⭐ STORE CURRENT CLOUD FILE PATH (REQUIRED FOR SAVE)
   window._currentFilePath = routeName;
@@ -849,6 +855,7 @@ data.forEach(file => {
   processExcelBuffer(await r.arrayBuffer());
   loadSummaryFor(routeName);
 };
+
 
 
     li.appendChild(openBtn);

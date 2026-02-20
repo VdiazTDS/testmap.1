@@ -1700,10 +1700,20 @@ document.querySelectorAll("#deliveredControls input[type='checkbox']")
     if (key) layerVisibilityState[key] = cb.checked;
   });
 
-buildRouteDayLayerControls(); // 🔥 refresh Delivered + Route/Day UI
+buildRouteDayLayerControls(); // refresh UI
 updateUndoButtonState();
 
-  alert(`${completedCount} stop(s) marked Delivered and saved.`);
+// 🔥 CLEAR selection + counter AFTER UI rebuild
+if (drawnLayer) {
+  drawnLayer.clearLayers();
+}
+
+// Reset selected counter display
+const counter = document.getElementById("selectedCount");
+if (counter) counter.textContent = 0;
+
+alert(`${completedCount} stop(s) marked Delivered and saved.`);
+
 }
 ////////undo delivered stops
 async function undoDelivered() {

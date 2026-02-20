@@ -1689,12 +1689,6 @@ Object.entries(routeDayGroups).forEach(([key, group]) => {
 });
 
 
- 
-}
-
-    });
-  });
-
   if (completedCount === 0) {
     alert("No stops inside selection.");
     return;

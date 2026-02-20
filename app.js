@@ -1721,15 +1721,17 @@ buildRouteDayLayerControls(); // refresh UI
 updateUndoButtonState();
 
 // 🔥 CLEAR selection + counter AFTER UI rebuild
+// 🔥 CLEAR polygon
 if (drawnLayer) {
   drawnLayer.clearLayers();
 }
 
-// Reset selected counter display
-const counter = document.getElementById("selectedCount");
-if (counter) counter.textContent = 0;
+// 🔥 Recalculate + restore marker styling properly
+updateSelectionCount();
+updateUndoButtonState();
 
 alert(`${completedCount} stop(s) marked Delivered and saved.`);
+
 
 }
 ////////undo delivered stops
@@ -1814,12 +1816,19 @@ if (!saved) {
 }
 
 
+// 🔥 CLEAR polygon
+if (drawnLayer) {
   drawnLayer.clearLayers();
+}
 
-  buildRouteDayLayerControls();
+// 🔥 Recalculate selection state + restore styling
+updateSelectionCount();
 updateUndoButtonState();
 
-  alert(`${undoCount} stop(s) restored.`);
+buildRouteDayLayerControls();
+
+alert(`${undoCount} stop(s) restored.`);
+
 }
 //////
   

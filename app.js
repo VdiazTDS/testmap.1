@@ -631,16 +631,49 @@ function buildRouteDayLayerControls() {
 
     // Toggle behavior
     checkbox.addEventListener("change", () => {
-      layerVisibilityState[key] = checkbox.checked;
 
-      routeDayGroups[key].layers.forEach(marker => {
-        if (checkbox.checked) {
-          map.addLayer(marker);
-        } else {
-          map.removeLayer(marker);
-        }
-      });
-    });
+  layerVisibilityState[key] = checkbox.checked;
+
+  const [route, type] = key.split("|");
+
+  // 🚫 Prevent Route + Delivered both visible
+  Object.keys(routeDayGroups).forEach(otherKey => {
+
+    const [otherRoute, otherType] = otherKey.split("|");
+
+    if (
+      otherRoute === route &&
+      otherKey !== key &&
+      (
+        (type === "Delivered" && otherType !== "Delivered") ||
+        (type !== "Delivered" && otherType === "Delivered")
+      )
+    ) {
+      // uncheck the conflicting layer
+      layerVisibilityState[otherKey] = false;
+
+      const otherCheckbox =
+        document.querySelector(`input[data-key="${otherKey}"]`);
+
+      if (otherCheckbox) otherCheckbox.checked = false;
+
+      routeDayGroups[otherKey].layers.forEach(m =>
+        map.removeLayer(m)
+      );
+    }
+  });
+
+  // Apply this checkbox visibility
+  routeDayGroups[key].layers.forEach(marker => {
+    if (checkbox.checked) {
+      map.addLayer(marker);
+    } else {
+      map.removeLayer(marker);
+    }
+  });
+
+});
+
 
     // === SYMBOL PREVIEW ===
     const symbol = getSymbol(key);

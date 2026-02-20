@@ -1019,6 +1019,8 @@ function placeLocateButton() {
   const completeBtn = document.getElementById("completeStopsBtn");
   const headerContainer = document.querySelector(".mobile-header-buttons");
   const desktopContainer = document.getElementById("desktopLocateContainer");
+  const undoBtn = document.getElementById("undoDeliveredBtn");
+
 
   if (!locateBtn || !completeBtn || !headerContainer || !desktopContainer) return;
 
@@ -1026,6 +1028,7 @@ function placeLocateButton() {
     // 📱 MOBILE → move both into header
     headerContainer.appendChild(locateBtn);
     headerContainer.appendChild(completeBtn);
+    if (undoBtn) headerContainer.appendChild(undoBtn);
 
     // icon-only look on mobile
     completeBtn.textContent = "✔";
@@ -1033,6 +1036,7 @@ function placeLocateButton() {
     // 🖥 DESKTOP → move both into sidebar
     desktopContainer.appendChild(locateBtn);
     desktopContainer.appendChild(completeBtn);
+    if (undoBtn) desktopContainer.appendChild(undoBtn);
 
     // restore desktop text
     completeBtn.textContent = "Complete Stops";

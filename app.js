@@ -14,6 +14,8 @@ window._currentRows = null;
 window._currentWorkbook = null;
 window._currentFilePath = null;
 
+window.streetLabelsEnabled = true;
+
 //======
 // 🔐 Delete protection password
 const DELETE_PASSWORD = "Austin1";  // ← change to whatever you want
@@ -1628,14 +1630,14 @@ window.removeEventListener("deviceorientation", updateHeading);
 map.on("zoomend", () => {
   const newSize = getMarkerPixelSize();
   const currentZoom = map.getZoom();
-  const STREET_LABEL_ZOOM = 17;
+  const maxZoom = map.getMaxZoom();
 
   Object.values(routeDayGroups).forEach(group => {
     group.layers.forEach(layer => {
       const base = layer._base;
       if (!base) return;
 
-      // ---- CIRCLE ----
+      // ---- Resize markers (your existing logic) ----
       if (layer.setRadius) {
         layer.setRadius(newSize);
       } else {
@@ -1645,15 +1647,10 @@ map.on("zoomend", () => {
         const dLat = newSize * scale / 111320;
         const dLng = dLat / Math.cos(lat * Math.PI / 180);
 
-        // ---- SQUARE ----
         if (symbol.shape === "square") {
-          layer.setBounds([
-            [lat - dLat, lon - dLng],
-            [lat + dLat, lon + dLng]
-          ]);
+          layer.setBounds([[lat - dLat, lon - dLng], [lat + dLat, lon + dLng]]);
         }
 
-        // ---- TRIANGLE ----
         if (symbol.shape === "triangle") {
           layer.setLatLngs([
             [lat + dLat, lon],
@@ -1662,7 +1659,6 @@ map.on("zoomend", () => {
           ]);
         }
 
-        // ---- DIAMOND ----
         if (symbol.shape === "diamond") {
           layer.setLatLngs([
             [lat + dLat, lon],
@@ -1673,9 +1669,13 @@ map.on("zoomend", () => {
         }
       }
 
-      // ===== STREET LABEL CONTROL =====
+      // ---- STREET LABEL LOGIC ----
       if (layer._hasStreetLabel) {
-        if (currentZoom >= STREET_LABEL_ZOOM && map.hasLayer(layer)) {
+        if (
+          currentZoom === maxZoom &&
+          window.streetLabelsEnabled &&
+          map.hasLayer(layer)
+        ) {
           layer.openTooltip();
         } else {
           layer.closeTooltip();
@@ -1685,11 +1685,21 @@ map.on("zoomend", () => {
   });
 });
 
-
   
 // Position Locate button correctly for desktop/mobile
 placeLocateButton();
 window.addEventListener("resize", placeLocateButton);
+
+  // Position Locate button correctly for desktop/mobile
+placeLocateButton();
+window.addEventListener("resize", placeLocateButton);
+
+
+// ===== STREET LABEL TOGGLE =====
+document.getElementById("streetLabelToggle").addEventListener("change", (e) => {
+  window.streetLabelsEnabled = e.target.checked;
+  map.fire("zoomend"); // refresh labels immediately
+});
 ////////////////central save function
 async function saveWorkbookToCloud() {
 

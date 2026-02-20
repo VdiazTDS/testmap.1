@@ -1461,7 +1461,8 @@ async function completeStops() {
     group.layers.forEach(marker => {
       const pos = marker.getLatLng();
 
-     if (leafletPip.pointInLayer(pos, polygon).length > 0 && marker._rowRef) {
+     if (polygon.getBounds().contains(pos) && marker._rowRef)
+ {
 
 
   const row = marker._rowRef;

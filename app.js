@@ -1658,24 +1658,56 @@ window.removeEventListener("deviceorientation", updateHeading);
 
   
 
-// ===== DOWNLOAD FULL EXCEL BUTTON =====
+// ===== DOWNLOAD FULL EXCEL (WITH CONFIRM MODAL) =====
 const downloadBtn = document.getElementById("downloadFullExcelBtn");
+const modal = document.getElementById("downloadConfirmModal");
+const confirmBtn = document.getElementById("confirmDownload");
+const cancelBtn = document.getElementById("cancelDownload");
 
-if (downloadBtn) {
+if (downloadBtn && modal && confirmBtn && cancelBtn) {
+
+  // Open confirmation modal
   downloadBtn.addEventListener("click", () => {
 
-    if (!window._currentWorkbook || !window._currentFilePath) {
+    if (!window._currentWorkbook) {
       alert("No Excel file loaded.");
       return;
     }
 
-    const confirmDownload = confirm(
-      "Are you sure you want to download the full Excel file?\n\nThis will export all sheets and data in its current state."
-    );
+    modal.style.display = "flex";
+  });
 
-    if (!confirmDownload) return;
+  // Cancel download
+  cancelBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
 
-    XLSX.writeFile(window._currentWorkbook, window._currentFilePath);
+  // Confirm download
+  confirmBtn.addEventListener("click", () => {
+
+    modal.style.display = "none";
+
+    if (!window._currentWorkbook) {
+      alert("No Excel file loaded.");
+      return;
+    }
+
+    const now = new Date();
+
+    const timestamp =
+      now.getFullYear() + "-" +
+      String(now.getMonth() + 1).padStart(2, "0") + "-" +
+      String(now.getDate()).padStart(2, "0") + "_" +
+      String(now.getHours()).padStart(2, "0") + "-" +
+      String(now.getMinutes()).padStart(2, "0") + "-" +
+      String(now.getSeconds()).padStart(2, "0");
+
+    let baseName = window._currentFilePath || "Export";
+    baseName = baseName.replace(/\.[^/.]+$/, "");
+
+    const newFileName = `${baseName}_Downloaded_${timestamp}.xlsx`;
+
+    XLSX.writeFile(window._currentWorkbook, newFileName);
   });
 }
 

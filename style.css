@@ -1299,3 +1299,20 @@ header {
 .street-toggle input {
   cursor: pointer;
 }
+
+
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: flex;
+  }
+
+  #selectionBox .street-toggle {
+    display: none;
+  }
+}
+

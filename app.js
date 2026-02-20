@@ -802,9 +802,31 @@ if (status === "delivered") {
 
     if (!routeDayGroups[key]) routeDayGroups[key] = { layers: [] };
 
-    const marker = createMarker(lat, lon, symbol)
-      .bindPopup(`Route ${route}<br>${dayName(day)}`)
-      .addTo(map);
+  // Build full street address safely
+const fullAddress = [
+  row["CSADR#"] || "",
+  row["CSSDIR"] || "",
+  row["CSSTRT"] || "",
+  row["CSSFUX"] || ""
+].join(" ").replace(/\s+/g, " ").trim();
+
+// Build popup content
+const popupContent = `
+  <div style="font-size:14px; line-height:1.4;">
+    <div style="font-weight:bold; font-size:15px; margin-bottom:6px;">
+      ${fullAddress || "Address not available"}
+    </div>
+
+    <div><strong>Container Size:</strong> ${row["SIZE"] || "-"}</div>
+    <div><strong>Quantity:</strong> ${row["QTY"] || "-"}</div>
+    <div><strong>Bin #:</strong> ${row["BINNO"] || "-"}</div>
+  </div>
+`;
+
+const marker = createMarker(lat, lon, symbol)
+  .bindPopup(popupContent)
+  .addTo(map);
+
 
     // 🔥 CRITICAL: link marker to Excel row
     marker._rowRef = row;

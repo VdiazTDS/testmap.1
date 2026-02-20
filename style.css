@@ -1217,3 +1217,20 @@ header {
   display: inline-block;
 }
 
+/* ===== Undo Pulse Animation ===== */
+@keyframes undoPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(229, 57, 53, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(229, 57, 53, 0);
+  }
+}
+
+/* Apply pulse */
+.undo-btn.pulse {
+  animation: undoPulse 1.8s infinite;
+}

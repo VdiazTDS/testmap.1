@@ -1636,6 +1636,8 @@ window.removeEventListener("deviceorientation", updateHeading);
 
 // ===== AUTO-RESIZE MARKERS ON ZOOM =====
 map.on("zoomend", () => {
+  window._labelCount = 0;
+
   const newSize = getMarkerPixelSize();
   const currentZoom = map.getZoom();
   const maxZoom = map.getMaxZoom();
@@ -1677,18 +1679,31 @@ map.on("zoomend", () => {
         }
       }
 
-      // ---- STREET LABEL LOGIC ----
-      if (layer._hasStreetLabel) {
-        if (
-          currentZoom === maxZoom &&
-          window.streetLabelsEnabled &&
-          map.hasLayer(layer)
-        ) {
-          layer.openTooltip();
-        } else {
-          layer.closeTooltip();
-        }
-      }
+     // ---- STREET LABEL LOGIC (MOBILE SAFE) ----
+if (layer._hasStreetLabel) {
+
+  const bounds = map.getBounds();
+  const isVisible = bounds.contains(layer.getLatLng());
+
+  // HARD LIMIT to prevent mobile overload
+  const MAX_LABELS = 150;
+
+  if (!window._labelCount) window._labelCount = 0;
+
+  if (
+    currentZoom === maxZoom &&
+    window.streetLabelsEnabled &&
+    map.hasLayer(layer) &&
+    isVisible &&
+    window._labelCount < MAX_LABELS
+  ) {
+    layer.openTooltip();
+    window._labelCount++;
+  } else {
+    layer.closeTooltip();
+  }
+}
+
     });
   });
 });

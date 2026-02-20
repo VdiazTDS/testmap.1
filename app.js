@@ -1552,6 +1552,97 @@ buildRouteDayLayerControls(); // 🔥 refresh Delivered + Route/Day UI
 
   alert(`${completedCount} stop(s) marked Delivered and saved.`);
 }
+////////undo delivered stops
+  async function undoDelivered() {
+  if (!window._currentRows || !window._currentWorkbook || !window._currentFilePath) {
+    alert("No Excel file loaded.");
+    return;
+  }
+
+  const polygon = drawnLayer.getLayers()[0];
+  if (!polygon) {
+    alert("Draw a selection first.");
+    return;
+  }
+
+  let undoCount = 0;
+
+  Object.entries(routeDayGroups).forEach(([key, group]) => {
+
+    if (!key.includes("|Delivered")) return;
+
+    group.layers.slice().forEach(marker => {
+      const pos = marker.getLatLng();
+
+      if (polygon.getBounds().contains(pos) && marker._rowRef) {
+
+        const row = marker._rowRef;
+
+        // Remove Delivered flag
+        row.del_status = "";
+
+        // Remove from Delivered group
+        routeDayGroups[key].layers =
+          routeDayGroups[key].layers.filter(l => l !== marker);
+
+        // Restore original key
+        const originalKey = `${row.NEWROUTE}|${row.NEWDAY}`;
+
+        if (!routeDayGroups[originalKey]) {
+          routeDayGroups[originalKey] = { layers: [] };
+        }
+
+        const symbol = getSymbol(originalKey);
+
+        marker.setStyle?.({
+          color: symbol.color,
+          fillColor: symbol.color,
+          fillOpacity: 0.95,
+          opacity: 1
+        });
+
+        routeDayGroups[originalKey].layers.push(marker);
+
+        undoCount++;
+      }
+    });
+  });
+
+  if (undoCount === 0) {
+    alert("No Delivered stops inside selection.");
+    return;
+  }
+
+  // Rewrite Excel sheet
+  const newSheet = XLSX.utils.json_to_sheet(window._currentRows);
+  window._currentWorkbook.Sheets[window._currentWorkbook.SheetNames[0]] = newSheet;
+
+  const bookType = window._currentFilePath.toLowerCase().endsWith(".xlsm") ? "xlsm" : "xlsx";
+
+  const wbArray = XLSX.write(window._currentWorkbook, {
+    bookType,
+    type: "array"
+  });
+
+  const { error } = await sb.storage
+    .from(BUCKET)
+    .upload(window._currentFilePath, wbArray, {
+      upsert: true,
+      contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+
+  if (error) {
+    console.error(error);
+    alert("Failed to save to cloud.");
+    return;
+  }
+
+  drawnLayer.clearLayers();
+
+  buildRouteDayLayerControls();
+
+  alert(`${undoCount} stop(s) restored.`);
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1562,6 +1653,9 @@ document.getElementById("completeStopsBtn")
 
 document.getElementById("completeStopsBtnMobile")
   ?.addEventListener("click", completeStops);
+//undo delivered stops button event
+  document.getElementById("undoDeliveredBtn")
+  ?.addEventListener("click", undoDelivered);
 
 
 

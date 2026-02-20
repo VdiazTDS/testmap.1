@@ -1505,3 +1505,31 @@ body.sun-mode .filter-header {
   background: transparent !important;
 }
 
+
+/* ===== HEADER TOP LAYOUT ===== */
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Download button on far left */
+.download-btn {
+  position: absolute;
+  left: 15px;
+
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid #444;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.download-btn:hover {
+  background: #444;
+}
+

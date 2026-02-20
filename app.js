@@ -1669,9 +1669,16 @@ if (downloadBtn) {
       return;
     }
 
+    const confirmDownload = confirm(
+      "Are you sure you want to download the full Excel file?\n\nThis will export all sheets and data in its current state."
+    );
+
+    if (!confirmDownload) return;
+
     XLSX.writeFile(window._currentWorkbook, window._currentFilePath);
   });
 }
+
 
 
 

@@ -15,6 +15,8 @@ window._currentWorkbook = null;
 window._currentFilePath = null;
 
 //======
+// 🔐 Delete protection password
+const DELETE_PASSWORD = "Austin1";  // ← change to whatever you want
 
 
 
@@ -901,13 +903,27 @@ data.forEach(file => {
     delBtn.textContent = "Delete";
     delBtn.style.marginLeft = "5px";
 
-    delBtn.onclick = async () => {
-      const toDelete = [routeName];
-      if (summaryName) toDelete.push(summaryName);
+  delBtn.onclick = async () => {
 
-      await sb.storage.from(BUCKET).remove(toDelete);
-      listFiles();
-    };
+  const entered = prompt("Enter password to delete this file:");
+
+  if (entered !== DELETE_PASSWORD) {
+    alert("❌ Incorrect password. File not deleted.");
+    return;
+  }
+
+  const confirmed = confirm("Are you sure you want to permanently delete this file?");
+  if (!confirmed) return;
+
+  const toDelete = [routeName];
+  if (summaryName) toDelete.push(summaryName);
+
+  await sb.storage.from(BUCKET).remove(toDelete);
+
+  alert("✅ File deleted successfully.");
+  listFiles();
+};
+
 
     li.appendChild(delBtn);
     li.appendChild(document.createTextNode(" " + routeName));

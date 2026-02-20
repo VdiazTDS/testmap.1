@@ -721,7 +721,7 @@ if (layerVisibilityState.hasOwnProperty(key)) {
     wrapper.appendChild(checkbox);
     wrapper.appendChild(preview);
     wrapper.appendChild(labelText);
-    wrapper.appendChild(label);
+    
 
     // === Decide which container ===
     if (type === "Delivered") {

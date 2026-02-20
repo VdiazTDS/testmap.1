@@ -526,17 +526,56 @@ document.getElementById("routeDayNone").onclick = () => {
 
 // ================= APPLY MAP FILTERS =================
 function applyFilters() {
-  const routes = [...document.querySelectorAll("#routeCheckboxes input:checked")].map(i => i.value);
-  const days   = [...document.querySelectorAll("#dayCheckboxes input:checked")].map(i => i.value);
 
+  const routeCheckboxes = [...document.querySelectorAll("#routeCheckboxes input")];
+  const dayCheckboxes   = [...document.querySelectorAll("#dayCheckboxes input")];
+
+  let routes = routeCheckboxes.filter(i => i.checked).map(i => i.value);
+  const days = dayCheckboxes.filter(i => i.checked).map(i => i.value);
+
+  // 🔥 PREVENT route + delivered from both being active
+  const activeRoutes = new Set(routes);
+
+  activeRoutes.forEach(route => {
+
+    if (route.endsWith("|Delivered")) {
+
+      const baseRoute = route.replace("|Delivered", "");
+
+      if (activeRoutes.has(baseRoute)) {
+        const baseCheckbox = routeCheckboxes.find(cb => cb.value === baseRoute);
+        if (baseCheckbox) baseCheckbox.checked = false;
+        activeRoutes.delete(baseRoute);
+      }
+
+    } else {
+
+      const deliveredRoute = route + "|Delivered";
+
+      if (activeRoutes.has(deliveredRoute)) {
+        const deliveredCheckbox = routeCheckboxes.find(cb => cb.value === deliveredRoute);
+        if (deliveredCheckbox) deliveredCheckbox.checked = false;
+        activeRoutes.delete(deliveredRoute);
+      }
+
+    }
+
+  });
+
+  routes = Array.from(activeRoutes);
+
+  // 🔥 Now apply visibility
   Object.entries(routeDayGroups).forEach(([key, group]) => {
     const [r, d] = key.split("|");
+
     const show = routes.includes(r) && days.includes(d);
+
     group.layers.forEach(l => show ? l.addTo(map) : map.removeLayer(l));
   });
 
   updateStats();
 }
+
 
 
 // ================= ROUTE STATISTICS =================

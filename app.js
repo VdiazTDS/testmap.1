@@ -400,12 +400,14 @@ function getSymbol(key) {
 function getMarkerPixelSize() {
   const z = map.getZoom();
 
-  if (z <= 5) return 1;      // very small when fully zoomed out
-  if (z <= 8) return 1.5;    // small at city view
-  if (z <= 11) return 3;
-  if (z <= 14) return 5;
-  return 7;                  // normal size when zoomed in
+  if (z <= 5) return 0.5;   // extremely small when fully zoomed out
+  if (z <= 7) return 1;
+  if (z <= 9) return 1.5;
+  if (z <= 11) return 2.5;
+  if (z <= 14) return 4;
+  return 6;                 // normal size when zoomed in
 }
+
 
 
 

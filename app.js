@@ -1658,6 +1658,20 @@ window.removeEventListener("deviceorientation", updateHeading);
 
   
 
+// ===== DOWNLOAD FULL EXCEL BUTTON =====
+const downloadBtn = document.getElementById("downloadFullExcelBtn");
+
+if (downloadBtn) {
+  downloadBtn.addEventListener("click", () => {
+
+    if (!window._currentWorkbook || !window._currentFilePath) {
+      alert("No Excel file loaded.");
+      return;
+    }
+
+    XLSX.writeFile(window._currentWorkbook, window._currentFilePath);
+  });
+}
 
 
 

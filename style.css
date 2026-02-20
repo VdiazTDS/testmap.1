@@ -1246,3 +1246,10 @@ header {
   top: 50% !important;
   transform: translateY(-50%);
 }
+
+@media (max-width: 768px) {
+  body {
+    overflow: hidden;
+    height: 100dvh;
+  }
+}

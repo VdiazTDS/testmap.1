@@ -605,11 +605,14 @@ function buildRouteDayLayerControls() {
   deliveredContainer.innerHTML = "";
 
   Object.entries(routeDayGroups).forEach(([key, group]) => {
+    const count = group.layers ? group.layers.length : 0;
     const [route, type] = key.split("|");
+    // === ROW WRAPPER ===
+const wrapper = document.createElement("div");
+wrapper.className = "layer-item";
 
-    const wrapper = document.createElement("div");
-    wrapper.className = "layer-item";
 
+  
     // === CHECKBOX ===
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -711,12 +714,14 @@ if (layerVisibilityState.hasOwnProperty(key)) {
 
     // === LABEL ===
     const labelText = document.createElement("span");
-    labelText.textContent = `Route ${route} - ${type}`;
+    labelText.textContent = `Route ${route} - ${type} (${count})`;
+
 
     // === BUILD ROW ===
     wrapper.appendChild(checkbox);
     wrapper.appendChild(preview);
     wrapper.appendChild(labelText);
+    wrapper.appendChild(label);
 
     // === Decide which container ===
     if (type === "Delivered") {

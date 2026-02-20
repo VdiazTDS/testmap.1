@@ -400,12 +400,7 @@ function getSymbol(key) {
 //=====
 function getMarkerPixelSize() {
   const z = map.getZoom();
-
-  if (z <= 5) return 1.5;
-  if (z <= 8) return 2;
-  if (z <= 11) return 3;
-  if (z <= 14) return 4;
-  return 6;
+  return Math.max(1, z * 0.4);
 }
 
 

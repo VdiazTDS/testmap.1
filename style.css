@@ -45,6 +45,12 @@ header p {
   gap: 10px;
   overflow-y: auto;
   border-right: 1px solid #333;
+
+  color: #eee; /* 🔥 ADD THIS LINE */
+}
+
+.sidebar strong {
+  color: #ffffff;
 }
 
 

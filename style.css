@@ -1124,12 +1124,6 @@ header {
   cursor: pointer;
 }
 
-.days-title {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
 .arrow {
   font-size: 12px;
   transition: transform 0.2s ease;
@@ -1148,10 +1142,9 @@ header {
   max-height: 600px;
 }
 
-
-
-.collapsible-header.open .arrow
-
-
+/* Rotate arrow when open */
+.collapsible-header.open .arrow {
+  transform: rotate(90deg);
+}
 
 

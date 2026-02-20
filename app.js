@@ -554,6 +554,7 @@ function updateStats() {
   });
 }
   // ===== BUILD ROUTE + DAY LAYER CHECKBOXES =====
+// ===== BUILD ROUTE + DAY LAYER CHECKBOXES =====
 function buildRouteDayLayerControls() {
   const routeDayContainer = document.getElementById("routeDayLayers");
   const deliveredContainer = document.getElementById("deliveredControls");
@@ -567,80 +568,81 @@ function buildRouteDayLayerControls() {
     const [route, type] = key.split("|");
 
     const wrapper = document.createElement("div");
+    wrapper.className = "layer-item";
 
+    // === CHECKBOX ===
     const checkbox = document.createElement("input");
-checkbox.type = "checkbox";
-
+    checkbox.type = "checkbox";
     checkbox.dataset.key = key;
-    
-// Restore previous state if it exists
-if (layerVisibilityState.hasOwnProperty(key)) {
-  checkbox.checked = layerVisibilityState[key];
-} else {
-  checkbox.checked = true; // default first time
-}
 
-// Apply visibility immediately
-routeDayGroups[key].layers.forEach(marker => {
-  if (checkbox.checked) {
-    map.addLayer(marker);
-  } else {
-    map.removeLayer(marker);
-  }
-});
+    // Restore previous state
+    checkbox.checked = layerVisibilityState.hasOwnProperty(key)
+      ? layerVisibilityState[key]
+      : true;
 
-// When user toggles checkbox
+    // Apply visibility immediately
+    routeDayGroups[key].layers.forEach(marker => {
+      if (checkbox.checked) {
+        map.addLayer(marker);
+      } else {
+        map.removeLayer(marker);
+      }
+    });
 
+    // Toggle behavior
+    checkbox.addEventListener("change", () => {
+      layerVisibilityState[key] = checkbox.checked;
 
-const checkbox = document.createElement("input");
-checkbox.type = "checkbox";
-checkbox.checked = layerVisibilityState[key] ?? true;
+      routeDayGroups[key].layers.forEach(marker => {
+        if (checkbox.checked) {
+          map.addLayer(marker);
+        } else {
+          map.removeLayer(marker);
+        }
+      });
+    });
 
-checkbox.addEventListener("change", () => {
-  layerVisibilityState[key] = checkbox.checked;
+    // === SYMBOL PREVIEW ===
+    const symbol = getSymbol(key);
 
-  routeDayGroups[key].layers.forEach(marker => {
-    if (checkbox.checked) {
-      map.addLayer(marker);
+    const preview = document.createElement("span");
+    preview.className = "layer-preview";
+    preview.style.background = symbol.color;
+
+    if (symbol.shape === "circle") preview.style.borderRadius = "50%";
+    if (symbol.shape === "square") preview.style.borderRadius = "2px";
+
+    if (symbol.shape === "triangle") {
+      preview.style.background = "transparent";
+      preview.style.width = "0";
+      preview.style.height = "0";
+      preview.style.borderLeft = "7px solid transparent";
+      preview.style.borderRight = "7px solid transparent";
+      preview.style.borderBottom = `14px solid ${symbol.color}`;
+    }
+
+    if (symbol.shape === "diamond") {
+      preview.style.transform = "rotate(45deg)";
+    }
+
+    // === LABEL ===
+    const labelText = document.createElement("span");
+    labelText.textContent = `Route ${route} - ${type}`;
+
+    // === BUILD ROW ===
+    wrapper.appendChild(checkbox);
+    wrapper.appendChild(preview);
+    wrapper.appendChild(labelText);
+
+    // === Decide which container ===
+    if (type === "Delivered") {
+      deliveredContainer.appendChild(wrapper);
     } else {
-      map.removeLayer(marker);
+      routeDayContainer.appendChild(wrapper);
     }
   });
-});
-
-const symbol = getSymbol(key);
-
-const preview = document.createElement("span");
-preview.className = "layer-preview";
-preview.style.background = symbol.color;
-
-if (symbol.shape === "circle") preview.style.borderRadius = "50%";
-if (symbol.shape === "square") preview.style.borderRadius = "2px";
-
-if (symbol.shape === "triangle") {
-  preview.style.background = "transparent";
-  preview.style.width = "0";
-  preview.style.height = "0";
-  preview.style.borderLeft = "7px solid transparent";
-  preview.style.borderRight = "7px solid transparent";
-  preview.style.borderBottom = `14px solid ${symbol.color}`;
 }
 
-if (symbol.shape === "diamond") {
-  preview.style.transform = "rotate(45deg)";
-}
-
-const labelText = document.createElement("span");
-labelText.textContent = `Route ${route} - ${type}`;
-
-wrapper.className = "layer-item";
-wrapper.appendChild(checkbox);
-wrapper.appendChild(preview);
-wrapper.appendChild(labelText);
-
-container.appendChild(wrapper);   
-}); // closes forEach
-}  // closes function
 
 // ================= PROCESS ROUTE EXCEL =================
 function processExcelBuffer(buffer) {

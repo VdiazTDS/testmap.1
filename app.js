@@ -1553,7 +1553,7 @@ buildRouteDayLayerControls(); // 🔥 refresh Delivered + Route/Day UI
   alert(`${completedCount} stop(s) marked Delivered and saved.`);
 }
 ////////undo delivered stops
-  async function undoDelivered() {
+ async function undoDelivered() {
   if (!window._currentRows || !window._currentWorkbook || !window._currentFilePath) {
     alert("No Excel file loaded.");
     return;
@@ -1567,25 +1567,32 @@ buildRouteDayLayerControls(); // 🔥 refresh Delivered + Route/Day UI
 
   let undoCount = 0;
 
+  // 🔥 ONLY loop Delivered groups
   Object.entries(routeDayGroups).forEach(([key, group]) => {
 
-    if (!key.includes("|Delivered")) return;
+    if (!key.endsWith("|Delivered")) return;  // HARD FILTER
 
     group.layers.slice().forEach(marker => {
+
       const pos = marker.getLatLng();
 
-      if (polygon.getBounds().contains(pos) && marker._rowRef) {
+      // must be inside selection AND actually marked Delivered
+      if (
+        polygon.getBounds().contains(pos) &&
+        marker._rowRef &&
+        String(marker._rowRef.del_status || "").trim().toLowerCase() === "delivered"
+      ) {
 
         const row = marker._rowRef;
 
-        // Remove Delivered flag
+        // remove Delivered from Excel data
         row.del_status = "";
 
-        // Remove from Delivered group
+        // remove marker from Delivered layer
         routeDayGroups[key].layers =
           routeDayGroups[key].layers.filter(l => l !== marker);
 
-        // Restore original key
+        // restore original route/day layer
         const originalKey = `${row.NEWROUTE}|${row.NEWDAY}`;
 
         if (!routeDayGroups[originalKey]) {
@@ -1643,6 +1650,7 @@ buildRouteDayLayerControls(); // 🔥 refresh Delivered + Route/Day UI
 
   alert(`${undoCount} stop(s) restored.`);
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

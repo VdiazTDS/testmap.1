@@ -607,6 +607,16 @@ function buildRouteDayLayerControls() {
   Object.entries(routeDayGroups).forEach(([key, group]) => {
     const count = group.layers ? group.layers.length : 0;
     const [route, type] = key.split("|");
+    const dayNameMap = {
+  1: "Monday",
+  2: "Tuesday",
+  3: "Wednesday",
+  4: "Thursday",
+  5: "Friday",
+  6: "Saturday",
+  7: "Sunday"
+};
+
     // === ROW WRAPPER ===
 const wrapper = document.createElement("div");
 wrapper.className = "layer-item";
@@ -714,7 +724,13 @@ if (layerVisibilityState.hasOwnProperty(key)) {
 
     // === LABEL ===
     const labelText = document.createElement("span");
-    labelText.textContent = `Route ${route} - ${type} (${count})`;
+   if (type !== "Delivered") {
+  const dayName = dayNameMap[type] || type;
+  labelText.textContent = `Route ${route} - ${type}-${dayName} (${count})`;
+} else {
+  labelText.textContent = `Route ${route} - Delivered (${count})`;
+}
+
 
 
     // === BUILD ROW ===

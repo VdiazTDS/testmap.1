@@ -387,19 +387,25 @@ function getMarkerPixelSize() {
 // Create marker with correct shape
 function createMarker(lat, lon, symbol, row) {
 
-  const streetNumber = row["CSADR#"] || "";
-  const streetName = row["CSSTRT"] || "";
-
-  const labelText = `${streetNumber} ${streetName}`.trim();
-
-  const marker = L.marker([lat, lon], {
-    icon: L.divIcon({
-      className: "custom-stop-marker",
-      html: `<div class="marker-label">${labelText}</div>`,
-      iconSize: [90, 30],        // adjust width if needed
-      iconAnchor: [45, 15]       // keeps marker centered
-    })
+  const marker = L.circleMarker([lat, lon], {
+    radius: 4,              // small and precise
+    fillColor: "#1e90ff",
+    color: "#ffffff",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.9
   });
+
+  const popupContent = `
+    <strong>${row["CSADR#"] || ""} ${row["CSSTRT"] || ""}</strong><br>
+    Direction: ${row["CSSDIR"] || ""}<br>
+    Suffix: ${row["CSSFUX"] || ""}<br>
+    Size: ${row["SIZE"] || ""}<br>
+    Quantity: ${row["QTY"] || ""}<br>
+    Bin #: ${row["BINNO"] || ""}
+  `;
+
+  marker.bindPopup(popupContent);
 
   return marker;
 }

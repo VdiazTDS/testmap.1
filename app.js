@@ -726,7 +726,13 @@ if (layerVisibilityState.hasOwnProperty(key)) {
     const labelText = document.createElement("span");
    if (type !== "Delivered") {
   const dayName = dayNameMap[type] || type;
-  labelText.textContent = `Route ${route} - ${type}-${dayName} (${count})`;
+ if (type !== "Delivered") {
+  const dayName = dayNameMap[type] || type;
+  labelText.textContent = `Route ${route} - ${dayName} (${count})`;
+} else {
+  labelText.textContent = `Route ${route} - Delivered (${count})`;
+}
+
 } else {
   labelText.textContent = `Route ${route} - Delivered (${count})`;
 }

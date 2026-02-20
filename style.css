@@ -1155,5 +1155,42 @@ header {
   transform: rotate(90deg);
 }
 
+/* ===== Collapsible Sections ===== */
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.routes-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.arrow {
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.collapsible-content {
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+.collapsible-content.collapsed {
+  max-height: 0;
+}
+
+.collapsible-content:not(.collapsed) {
+  max-height: 600px;
+}
+
+/* Rotate arrow when open */
+.collapsible-header.open .arrow {
+  transform: rotate(90deg);
+}
 
 

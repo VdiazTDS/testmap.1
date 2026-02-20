@@ -826,6 +826,22 @@ const popupContent = `
 const marker = createMarker(lat, lon, symbol)
   .bindPopup(popupContent)
   .addTo(map);
+// ===== STREET LABEL (ZOOM-BASED) =====
+const streetNumber = row["CSADR#"] ? String(row["CSADR#"]).trim() : "";
+const streetName = row["CSSTRT"] ? String(row["CSSTRT"]).trim() : "";
+
+const labelText = `${streetNumber} ${streetName}`.trim();
+
+if (labelText) {
+  marker.bindTooltip(labelText, {
+    permanent: false,
+    direction: "top",
+    offset: [0, -8],
+    className: "street-label"
+  });
+
+  marker._hasStreetLabel = true;
+}
 
 
     // 🔥 CRITICAL: link marker to Excel row
@@ -1654,6 +1670,23 @@ map.on("zoomend", () => {
       }
     });
   });
+});
+   // ===== STREET LABEL ZOOM CONTROL =====
+  const STREET_LABEL_ZOOM = 17;
+  const currentZoom = map.getZoom();
+
+  Object.values(routeDayGroups).forEach(group => {
+    group.layers.forEach(layer => {
+      if (!layer._hasStreetLabel) return;
+
+      if (currentZoom >= STREET_LABEL_ZOOM && map.hasLayer(layer)) {
+        layer.openTooltip();
+      } else {
+        layer.closeTooltip();
+      }
+    });
+  });
+
 });
 
   

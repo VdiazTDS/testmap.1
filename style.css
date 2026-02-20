@@ -401,6 +401,17 @@ header p {
 }
 
 
+/* ===== UNDO DELIVERED BUTTON ===== */
+.undo-btn {
+  background: #e53935;   /* strong red */
+  color: #fff;
+}
+
+.undo-btn:hover {
+  background: #c62828;
+}
+
+
 /* ===== FINAL HEADER LAYOUT ===== */
 /* ===== FINAL BOTTOM SUMMARY HEADER ===== */
 .bottom-summary-header {

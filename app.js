@@ -1588,9 +1588,40 @@ map.on("zoomend", () => {
 // Position Locate button correctly for desktop/mobile
 placeLocateButton();
 window.addEventListener("resize", placeLocateButton);
+////////////////central save function
+async function saveWorkbookToCloud() {
+
+  const newSheet = XLSX.utils.json_to_sheet(window._currentRows);
+  window._currentWorkbook.Sheets[
+    window._currentWorkbook.SheetNames[0]
+  ] = newSheet;
+
+  const bookType = window._currentFilePath.toLowerCase().endsWith(".xlsm")
+    ? "xlsm"
+    : "xlsx";
+
+  const wbArray = XLSX.write(window._currentWorkbook, {
+    bookType,
+    type: "array"
+  });
+
+  const { error } = await sb.storage
+    .from(BUCKET)
+    .upload(window._currentFilePath, wbArray, {
+      upsert: true,
+      contentType:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+
+  if (error) {
+    console.error("Cloud Save Error:", error);
+    return false;
+  }
+
+  return true;
+}
 
 
-// ================= COMPLETE STOPS + SAVE TO CLOUD =================
 // ================= COMPLETE STOPS + SAVE TO CLOUD =================
 async function completeStops() {
   if (!window._currentRows || !window._currentWorkbook || !window._currentFilePath) {
@@ -1661,30 +1692,13 @@ async function completeStops() {
   }
 
   // rewrite worksheet from updated rows
-  const newSheet = XLSX.utils.json_to_sheet(window._currentRows);
-  window._currentWorkbook.Sheets[window._currentWorkbook.SheetNames[0]] = newSheet;
+  const saved = await saveWorkbookToCloud();
 
-  // preserve correct Excel format
-  const bookType = window._currentFilePath.toLowerCase().endsWith(".xlsm") ? "xlsm" : "xlsx";
+if (!saved) {
+  alert("❌ Cloud save failed. Excel file was NOT updated.");
+  return;
+}
 
-  const wbArray = XLSX.write(window._currentWorkbook, {
-    bookType,
-    type: "array"
-  });
-
-  // upload back to Supabase (overwrite)
-  const { error } = await sb.storage
-    .from(BUCKET)
-    .upload(window._currentFilePath, wbArray, {
-      upsert: true,
-      contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    });
-
-  if (error) {
-    console.error(error);
-    alert("Failed to save to cloud.");
-    return;
-  }
 // 🔥 remove selection polygon after completion
 drawnLayer.clearLayers();
   // Save current checkbox states
@@ -1789,28 +1803,13 @@ async function undoDelivered() {
   }
 
   // Rewrite Excel sheet
-  const newSheet = XLSX.utils.json_to_sheet(window._currentRows);
-  window._currentWorkbook.Sheets[window._currentWorkbook.SheetNames[0]] = newSheet;
+ const saved = await saveWorkbookToCloud();
 
-  const bookType = window._currentFilePath.toLowerCase().endsWith(".xlsm") ? "xlsm" : "xlsx";
+if (!saved) {
+  alert("❌ Cloud save failed. Excel file was NOT updated.");
+  return;
+}
 
-  const wbArray = XLSX.write(window._currentWorkbook, {
-    bookType,
-    type: "array"
-  });
-
-  const { error } = await sb.storage
-    .from(BUCKET)
-    .upload(window._currentFilePath, wbArray, {
-      upsert: true,
-      contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    });
-
-  if (error) {
-    console.error(error);
-    alert("Failed to save to cloud.");
-    return;
-  }
 
   drawnLayer.clearLayers();
 

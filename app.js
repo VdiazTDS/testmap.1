@@ -590,7 +590,7 @@ routeDayGroups[key].layers.forEach(marker => {
 });
 
 // When user toggles checkbox
-const wrapper = document.createElement("div");
+
 
 const checkbox = document.createElement("input");
 checkbox.type = "checkbox";

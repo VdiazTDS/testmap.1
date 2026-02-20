@@ -1714,6 +1714,12 @@ if (routesToggle && routesContent) {
     routesToggle.classList.toggle("open", !isCollapsed);
   });
 }
+///// undo pulse
+  if (deliveredStops.length > 0) {
+  undoBtn.classList.add("pulse");
+} else {
+  undoBtn.classList.remove("pulse");
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

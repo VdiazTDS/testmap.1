@@ -1117,11 +1117,19 @@ header {
 
 /* ===== Days Collapsible ===== */
 
+/* ===== Days Collapsible ===== */
+
 .collapsible-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+}
+
+.days-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .arrow {
@@ -1146,5 +1154,6 @@ header {
 .collapsible-header.open .arrow {
   transform: rotate(90deg);
 }
+
 
 

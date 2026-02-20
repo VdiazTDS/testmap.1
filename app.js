@@ -405,57 +405,7 @@ function createMarker(lat, lon, symbol, row) {
 }
 
 
-  function pixelOffset() {
-    const zoom = map.getZoom();
-    const scale = 40075016.686 / Math.pow(2, zoom + 8);
-    const latOffset = size * scale / 111320;
-    const lngOffset = latOffset / Math.cos(lat * Math.PI / 180);
-    return [latOffset, lngOffset];
-  }
-
-  const [dLat, dLng] = pixelOffset();
-
-  let shape;
-
-  if (symbol.shape === "square") {
-    shape = L.rectangle([[lat - dLat, lon - dLng], [lat + dLat, lon + dLng]], {
-      color: symbol.color,
-      fillColor: symbol.color,
-      fillOpacity: 0.95,
-      weight: 1,
-      renderer: canvasRenderer
-    });
-  }
-
-  if (symbol.shape === "triangle") {
-    shape = L.polygon(
-      [[lat + dLat, lon], [lat - dLat, lon - dLng], [lat - dLat, lon + dLng]],
-      {
-        color: symbol.color,
-        fillColor: symbol.color,
-        fillOpacity: 0.95,
-        weight: 1,
-        renderer: canvasRenderer
-      }
-    );
-  }
-
-  if (symbol.shape === "diamond") {
-    shape = L.polygon(
-      [[lat + dLat, lon], [lat, lon + dLng], [lat - dLat, lon], [lat, lon - dLng]],
-      {
-        color: symbol.color,
-        fillColor: symbol.color,
-        fillOpacity: 0.95,
-        weight: 1,
-        renderer: canvasRenderer
-      }
-    );
-  }
-
-  shape._base = { lat, lon, symbol };
-  return shape;
-}
+ 
 
 
 

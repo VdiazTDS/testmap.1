@@ -1647,8 +1647,49 @@ async function completeStops() {
 
 
   // find markers inside polygon
-  Object.values(routeDayGroups).forEach(group => {
-    group.layers.forEach(marker => {
+  // 🔥 ONLY process NON-Delivered layers
+Object.entries(routeDayGroups).forEach(([key, group]) => {
+
+  if (key.endsWith("|Delivered")) return; // skip Delivered layer
+
+  group.layers.slice().forEach(marker => {
+
+    const pos = marker.getLatLng();
+
+    if (polygon.getBounds().contains(pos) && marker._rowRef) {
+
+      const row = marker._rowRef;
+
+      // mark delivered in Excel data
+      row.del_status = "Delivered";
+
+      // remove from current group
+      routeDayGroups[key].layers =
+        routeDayGroups[key].layers.filter(l => l !== marker);
+
+      // move to Delivered group
+      const deliveredKey = `${row.NEWROUTE}|Delivered`;
+
+      if (!routeDayGroups[deliveredKey]) {
+        routeDayGroups[deliveredKey] = { layers: [] };
+      }
+
+      marker.setStyle?.({
+        color: "#00FF00",
+        fillColor: "#00FF00",
+        fillOpacity: 1,
+        opacity: 1
+      });
+
+      routeDayGroups[deliveredKey].layers.push(marker);
+
+      completedCount++;
+    }
+
+  });
+
+});
+
       const pos = marker.getLatLng();
 
      if (polygon.getBounds().contains(pos) && marker._rowRef)

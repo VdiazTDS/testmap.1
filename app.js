@@ -1671,6 +1671,26 @@ if (daysToggle && daysContent) {
     daysToggle.classList.toggle("open", !isCollapsed);
   });
 }
+//////////
+  // ===== ROUTES COLLAPSIBLE =====
+const routesToggle = document.getElementById("routesToggle");
+const routesContent = document.getElementById("routesContent");
+
+if (routesToggle && routesContent) {
+
+  // Closed by default
+  routesContent.classList.add("collapsed");
+
+  routesToggle.addEventListener("click", (e) => {
+
+    // Prevent clicking All/None from toggling collapse
+    if (e.target.id === "routesAll" || e.target.id === "routesNone") return;
+
+    const isCollapsed = routesContent.classList.toggle("collapsed");
+
+    routesToggle.classList.toggle("open", !isCollapsed);
+  });
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

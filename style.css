@@ -1193,4 +1193,16 @@ header {
   transform: rotate(90deg);
 }
 
+.layer-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.layer-preview {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+}
 

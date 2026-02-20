@@ -590,8 +590,13 @@ routeDayGroups[key].layers.forEach(marker => {
 });
 
 // When user toggles checkbox
-checkbox.addEventListener("change", () => {
+const wrapper = document.createElement("div");
 
+const checkbox = document.createElement("input");
+checkbox.type = "checkbox";
+checkbox.checked = layerVisibilityState[key] ?? true;
+
+checkbox.addEventListener("change", () => {
   layerVisibilityState[key] = checkbox.checked;
 
   routeDayGroups[key].layers.forEach(marker => {
@@ -601,28 +606,16 @@ checkbox.addEventListener("change", () => {
       map.removeLayer(marker);
     }
   });
-
 });
 
-   
+const symbol = getSymbol(key);
 
-    const symbol = getSymbol(key);
-
-// === Symbol Preview Element ===
 const preview = document.createElement("span");
 preview.className = "layer-preview";
-
-// Match map color
 preview.style.background = symbol.color;
 
-// Match map shape
-if (symbol.shape === "circle") {
-  preview.style.borderRadius = "50%";
-}
-
-if (symbol.shape === "square") {
-  preview.style.borderRadius = "2px";
-}
+if (symbol.shape === "circle") preview.style.borderRadius = "50%";
+if (symbol.shape === "square") preview.style.borderRadius = "2px";
 
 if (symbol.shape === "triangle") {
   preview.style.background = "transparent";
@@ -637,19 +630,17 @@ if (symbol.shape === "diamond") {
   preview.style.transform = "rotate(45deg)";
 }
 
-// === Text Label ===
 const labelText = document.createElement("span");
 labelText.textContent = `Route ${route} - ${type}`;
 
-// === Build Row ===
 wrapper.className = "layer-item";
 wrapper.appendChild(checkbox);
 wrapper.appendChild(preview);
 wrapper.appendChild(labelText);
 
-    }
-  });
-}
+container.appendChild(wrapper);   
+}); // closes forEach
+}  // closes function
 
 // ================= PROCESS ROUTE EXCEL =================
 function processExcelBuffer(buffer) {

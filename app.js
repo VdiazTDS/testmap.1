@@ -324,6 +324,7 @@ map.on(L.Draw.Event.CREATED, e => {
   drawnLayer.clearLayers();
   drawnLayer.addLayer(e.layer);
   updateSelectionCount();
+  updateUndoButtonState();   // 🔥 ADD THIS
 });
 
 // Default map
@@ -1047,22 +1048,36 @@ function updateUndoButtonState() {
   const undoBtn = document.getElementById("undoDeliveredBtn");
   if (!undoBtn) return;
 
-  let hasDelivered = false;
+  const polygon = drawnLayer.getLayers()[0];
+  if (!polygon) {
+    undoBtn.classList.remove("pulse");
+    return;
+  }
+
+  let hasDeliveredInSelection = false;
 
   Object.entries(routeDayGroups).forEach(([key, group]) => {
+
     if (!key.endsWith("|Delivered")) return;
 
     group.layers.forEach(marker => {
+
+      if (!map.hasLayer(marker)) return;
+
+      const pos = marker.getLatLng();
+
       if (
+        polygon.getBounds().contains(pos) &&
         marker._rowRef &&
         String(marker._rowRef.del_status || "").trim().toLowerCase() === "delivered"
       ) {
-        hasDelivered = true;
+        hasDeliveredInSelection = true;
       }
+
     });
   });
 
-  if (hasDelivered) {
+  if (hasDeliveredInSelection) {
     undoBtn.classList.add("pulse");
   } else {
     undoBtn.classList.remove("pulse");
@@ -1119,6 +1134,7 @@ if (clearBtn) {
 
     // 🔥 Force counter refresh everywhere (desktop + mobile)
     updateSelectionCount();
+    updateUndoButtonState();
   };
 }
 

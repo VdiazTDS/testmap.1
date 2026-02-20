@@ -1047,9 +1047,20 @@ function updateUndoButtonState() {
   const undoBtn = document.getElementById("undoDeliveredBtn");
   if (!undoBtn) return;
 
-  const hasDelivered = Object.entries(routeDayGroups).some(([key, group]) =>
-    key.endsWith("|Delivered") && group.layers.length > 0
-  );
+  let hasDelivered = false;
+
+  Object.entries(routeDayGroups).forEach(([key, group]) => {
+    if (!key.endsWith("|Delivered")) return;
+
+    group.layers.forEach(marker => {
+      if (
+        marker._rowRef &&
+        String(marker._rowRef.del_status || "").trim().toLowerCase() === "delivered"
+      ) {
+        hasDelivered = true;
+      }
+    });
+  });
 
   if (hasDelivered) {
     undoBtn.classList.add("pulse");
@@ -1057,6 +1068,7 @@ function updateUndoButtonState() {
     undoBtn.classList.remove("pulse");
   }
 }
+
 
 
 

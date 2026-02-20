@@ -385,22 +385,25 @@ function getMarkerPixelSize() {
 
 
 // Create marker with correct shape
-function createMarker(lat, lon, symbol) {
-  const size = getMarkerPixelSize();
+function createMarker(lat, lon, symbol, row) {
 
-  // ===== CIRCLE =====
-  if (symbol.shape === "circle") {
-    const marker = L.circleMarker([lat, lon], {
-      radius: size,
-      color: symbol.color,
-      fillColor: symbol.color,
-      fillOpacity: 0.95,
-      renderer: canvasRenderer
-    });
+  const streetNumber = row["CSADR#"] || "";
+  const streetName = row["CSSTRT"] || "";
 
-    marker._base = { lat, lon, symbol };
-    return marker;
-  }
+  const labelText = `${streetNumber} ${streetName}`.trim();
+
+  const marker = L.marker([lat, lon], {
+    icon: L.divIcon({
+      className: "custom-stop-marker",
+      html: `<div class="marker-label">${labelText}</div>`,
+      iconSize: [90, 30],        // adjust width if needed
+      iconAnchor: [45, 15]       // keeps marker centered
+    })
+  });
+
+  return marker;
+}
+
 
   function pixelOffset() {
     const zoom = map.getZoom();
@@ -823,7 +826,7 @@ const popupContent = `
   </div>
 `;
 
-const marker = createMarker(lat, lon, symbol)
+const marker = createMarker(lat, lon, symbol, row)
   .bindPopup(popupContent)
   .addTo(map);
 

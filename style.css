@@ -1148,10 +1148,7 @@ header {
   max-height: 600px;
 }
 
-/* Rotate arrow when open */
-.collapsible-header.open .arrow {
-  transform: rotate(90deg);
-}
+
 
 .collapsible-header.open .arrow
 

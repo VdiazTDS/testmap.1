@@ -1650,7 +1650,8 @@ async function completeStops() {
   // 🔥 ONLY process NON-Delivered layers
 Object.entries(routeDayGroups).forEach(([key, group]) => {
 
-  if (key.endsWith("|Delivered")) return; // skip Delivered layer
+  if (key.endsWith("|Delivered")) return;
+  if (!layerVisibilityState[key]) return; // 🔥 ONLY active layer
 
   group.layers.slice().forEach(marker => {
 
@@ -1660,14 +1661,11 @@ Object.entries(routeDayGroups).forEach(([key, group]) => {
 
       const row = marker._rowRef;
 
-      // mark delivered in Excel data
       row.del_status = "Delivered";
 
-      // remove from current group
       routeDayGroups[key].layers =
         routeDayGroups[key].layers.filter(l => l !== marker);
 
-      // move to Delivered group
       const deliveredKey = `${row.NEWROUTE}|Delivered`;
 
       if (!routeDayGroups[deliveredKey]) {
@@ -1690,45 +1688,8 @@ Object.entries(routeDayGroups).forEach(([key, group]) => {
 
 });
 
-      const pos = marker.getLatLng();
 
-     if (polygon.getBounds().contains(pos) && marker._rowRef)
- {
-
-
-  const row = marker._rowRef;
-  const oldKey = Object.keys(routeDayGroups).find(k =>
-    routeDayGroups[k].layers.includes(marker)
-  );
-
-  // mark delivered in Excel data
-  row.del_status = "Delivered";
-
-  // remove marker from old group
-  if (oldKey) {
-    routeDayGroups[oldKey].layers =
-      routeDayGroups[oldKey].layers.filter(l => l !== marker);
-  }
-
-  // create Delivered group key
-  const deliveredKey = `${row.NEWROUTE}|Delivered`;
-
-  if (!routeDayGroups[deliveredKey]) {
-    routeDayGroups[deliveredKey] = { layers: [] };
-  }
-
-  // recolor marker bright green
-  marker.setStyle?.({
-    color: "#00FF00",
-    fillColor: "#00FF00",
-    fillOpacity: 1,
-    opacity: 1
-  });
-
-  // add marker to Delivered group
-  routeDayGroups[deliveredKey].layers.push(marker);
-
-  completedCount++;
+ 
 }
 
     });

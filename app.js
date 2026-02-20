@@ -1206,8 +1206,14 @@ function placeLocateButton() {
 
     // icon-only look on mobile
     completeBtn.textContent = "✔";
+      const streetToggle = document.getElementById("streetLabelToggle");
+  if (streetToggle) headerContainer.appendChild(streetToggle.parentElement);
+
   } else {
     // 🖥 DESKTOP → move both into sidebar
+      const streetToggle = document.getElementById("streetLabelToggle");
+  if (streetToggle) headerContainer.appendChild(streetToggle.parentElement);
+
     desktopContainer.appendChild(locateBtn);
     desktopContainer.appendChild(completeBtn);
     if (undoBtn) desktopContainer.appendChild(undoBtn);

@@ -385,33 +385,74 @@ function getMarkerPixelSize() {
 
 
 // Create marker with correct shape
-function createMarker(lat, lon, symbol, row) {
+function createMarker(lat, lon, symbol) {
+  const size = getMarkerPixelSize();
 
-  const marker = L.circleMarker([lat, lon], {
-    radius: 4,              // small and precise
-    fillColor: "#1e90ff",
-    color: "#ffffff",
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.9
-  });
+  // ===== CIRCLE =====
+  if (symbol.shape === "circle") {
+    const marker = L.circleMarker([lat, lon], {
+      radius: size,
+      color: symbol.color,
+      fillColor: symbol.color,
+      fillOpacity: 0.95,
+      renderer: canvasRenderer
+    });
 
-  const popupContent = `
-    <strong>${row["CSADR#"] || ""} ${row["CSSTRT"] || ""}</strong><br>
-    Direction: ${row["CSSDIR"] || ""}<br>
-    Suffix: ${row["CSSFUX"] || ""}<br>
-    Size: ${row["SIZE"] || ""}<br>
-    Quantity: ${row["QTY"] || ""}<br>
-    Bin #: ${row["BINNO"] || ""}
-  `;
+    marker._base = { lat, lon, symbol };
+    return marker;
+  }
 
-  marker.bindPopup(popupContent);
+  function pixelOffset() {
+    const zoom = map.getZoom();
+    const scale = 40075016.686 / Math.pow(2, zoom + 8);
+    const latOffset = size * scale / 111320;
+    const lngOffset = latOffset / Math.cos(lat * Math.PI / 180);
+    return [latOffset, lngOffset];
+  }
 
-  return marker;
+  const [dLat, dLng] = pixelOffset();
+
+  let shape;
+
+  if (symbol.shape === "square") {
+    shape = L.rectangle([[lat - dLat, lon - dLng], [lat + dLat, lon + dLng]], {
+      color: symbol.color,
+      fillColor: symbol.color,
+      fillOpacity: 0.95,
+      weight: 1,
+      renderer: canvasRenderer
+    });
+  }
+
+  if (symbol.shape === "triangle") {
+    shape = L.polygon(
+      [[lat + dLat, lon], [lat - dLat, lon - dLng], [lat - dLat, lon + dLng]],
+      {
+        color: symbol.color,
+        fillColor: symbol.color,
+        fillOpacity: 0.95,
+        weight: 1,
+        renderer: canvasRenderer
+      }
+    );
+  }
+
+  if (symbol.shape === "diamond") {
+    shape = L.polygon(
+      [[lat + dLat, lon], [lat, lon + dLng], [lat - dLat, lon], [lat, lon - dLng]],
+      {
+        color: symbol.color,
+        fillColor: symbol.color,
+        fillOpacity: 0.95,
+        weight: 1,
+        renderer: canvasRenderer
+      }
+    );
+  }
+
+  shape._base = { lat, lon, symbol };
+  return shape;
 }
-
-
- 
 
 
 
@@ -782,7 +823,7 @@ const popupContent = `
   </div>
 `;
 
-const marker = createMarker(lat, lon, symbol, row)
+const marker = createMarker(lat, lon, symbol)
   .bindPopup(popupContent)
   .addTo(map);
 

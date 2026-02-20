@@ -1650,7 +1650,27 @@ buildRouteDayLayerControls(); // 🔥 refresh Delivered + Route/Day UI
 
   alert(`${undoCount} stop(s) restored.`);
 }
+//////
+  
+// ===== DAYS COLLAPSIBLE =====
+const daysToggle = document.getElementById("daysToggle");
+const daysContent = document.getElementById("daysContent");
 
+if (daysToggle && daysContent) {
+
+  // Closed by default
+  daysContent.classList.add("collapsed");
+
+  daysToggle.addEventListener("click", (e) => {
+
+    // Prevent clicking All/None from toggling collapse
+    if (e.target.id === "daysAll" || e.target.id === "daysNone") return;
+
+    const isCollapsed = daysContent.classList.toggle("collapsed");
+
+    daysToggle.classList.toggle("open", !isCollapsed);
+  });
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

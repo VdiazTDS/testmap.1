@@ -1194,34 +1194,36 @@ function placeLocateButton() {
   const headerContainer = document.querySelector(".mobile-header-buttons");
   const desktopContainer = document.getElementById("desktopLocateContainer");
   const undoBtn = document.getElementById("undoDeliveredBtn");
-
+  const streetToggle = document.getElementById("streetLabelToggle");
 
   if (!locateBtn || !completeBtn || !headerContainer || !desktopContainer) return;
 
   if (window.innerWidth <= 900) {
-    // 📱 MOBILE → move both into header
+    // 📱 MOBILE
     headerContainer.appendChild(locateBtn);
     headerContainer.appendChild(completeBtn);
     if (undoBtn) headerContainer.appendChild(undoBtn);
 
-    // icon-only look on mobile
+    if (streetToggle) {
+      headerContainer.appendChild(streetToggle.parentElement);
+    }
+
     completeBtn.textContent = "✔";
-      const streetToggle = document.getElementById("streetLabelToggle");
-  if (streetToggle) headerContainer.appendChild(streetToggle.parentElement);
 
   } else {
-    // 🖥 DESKTOP → move both into sidebar
-      const streetToggle = document.getElementById("streetLabelToggle");
-  if (streetToggle) headerContainer.appendChild(streetToggle.parentElement);
-
+    // 🖥 DESKTOP
     desktopContainer.appendChild(locateBtn);
     desktopContainer.appendChild(completeBtn);
     if (undoBtn) desktopContainer.appendChild(undoBtn);
 
-    // restore desktop text
+    if (streetToggle) {
+      desktopContainer.appendChild(streetToggle.parentElement);
+    }
+
     completeBtn.textContent = "Complete Stops";
   }
 }
+
 //undo button state
 function updateUndoButtonState() {
   const undoBtn = document.getElementById("undoDeliveredBtn");

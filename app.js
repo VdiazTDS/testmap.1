@@ -615,10 +615,21 @@ function buildRouteDayLayerControls() {
     checkbox.type = "checkbox";
     checkbox.dataset.key = key;
 
-    // Restore previous state
-    checkbox.checked = layerVisibilityState.hasOwnProperty(key)
-      ? layerVisibilityState[key]
-      : true;
+    // Default state on load:
+// Route + Day = checked
+// Delivered = unchecked
+
+if (layerVisibilityState.hasOwnProperty(key)) {
+  checkbox.checked = layerVisibilityState[key];
+} else {
+  if (type === "Delivered") {
+    checkbox.checked = false;
+    layerVisibilityState[key] = false;
+  } else {
+    checkbox.checked = true;
+    layerVisibilityState[key] = true;
+  }
+}
 
     // Apply visibility immediately
     routeDayGroups[key].layers.forEach(marker => {

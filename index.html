@@ -243,6 +243,16 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://unpkg.com/leaflet-pip@1.1.0/leaflet-pip.min.js"></script>
+<div id="downloadConfirmModal" class="modal">
+  <div class="modal-content">
+    <h3>Download Excel File</h3>
+    <p>Are you sure you want to download the full Excel file?</p>
+    <div class="modal-actions">
+      <button id="cancelDownload">Cancel</button>
+      <button id="confirmDownload">Download</button>
+    </div>
+  </div>
+</div>
 
 <script src="app.js" defer></script>
 <!-- MOBILE Selected Stops Button -->

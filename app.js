@@ -606,17 +606,47 @@ checkbox.addEventListener("change", () => {
 
    
 
-    const label = document.createElement("label");
-    label.textContent = `Route ${route} - ${type}`;
+    const symbol = getSymbol(key);
 
-    wrapper.appendChild(checkbox);
-    wrapper.appendChild(label);
+// === Symbol Preview Element ===
+const preview = document.createElement("span");
+preview.className = "layer-preview";
 
-    // 🔥 Separate Delivered from normal Route+Day
-    if (type === "Delivered") {
-      deliveredContainer.appendChild(wrapper);
-    } else {
-      routeDayContainer.appendChild(wrapper);
+// Match map color
+preview.style.background = symbol.color;
+
+// Match map shape
+if (symbol.shape === "circle") {
+  preview.style.borderRadius = "50%";
+}
+
+if (symbol.shape === "square") {
+  preview.style.borderRadius = "2px";
+}
+
+if (symbol.shape === "triangle") {
+  preview.style.background = "transparent";
+  preview.style.width = "0";
+  preview.style.height = "0";
+  preview.style.borderLeft = "7px solid transparent";
+  preview.style.borderRight = "7px solid transparent";
+  preview.style.borderBottom = `14px solid ${symbol.color}`;
+}
+
+if (symbol.shape === "diamond") {
+  preview.style.transform = "rotate(45deg)";
+}
+
+// === Text Label ===
+const labelText = document.createElement("span");
+labelText.textContent = `Route ${route} - ${type}`;
+
+// === Build Row ===
+wrapper.className = "layer-item";
+wrapper.appendChild(checkbox);
+wrapper.appendChild(preview);
+wrapper.appendChild(labelText);
+
     }
   });
 }

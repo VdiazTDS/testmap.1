@@ -1372,3 +1372,48 @@ body.sun-mode .mini-btn {
   background: #e0e0e0;
   color: #000;
 }
+
+/* ================= SUN MODE ================= */
+
+body.sun-mode {
+  background: #ffffff;
+  color: #111;
+}
+
+/* Sidebar */
+body.sun-mode .sidebar {
+  background: #f4f4f4;
+  color: #111;
+}
+
+/* Header */
+body.sun-mode header {
+  background: #ffffff;
+  color: #111;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Buttons */
+body.sun-mode button {
+  background: #ffffff;
+  color: #111;
+  border: 1px solid #ccc;
+}
+
+body.sun-mode button:hover {
+  background: #eaeaea;
+}
+
+/* Inputs */
+body.sun-mode input,
+body.sun-mode select {
+  background: #ffffff;
+  color: #111;
+  border: 1px solid #ccc;
+}
+
+/* Layer section boxes */
+body.sun-mode .layer-section {
+  background: #ffffff;
+  color: #111;
+}
